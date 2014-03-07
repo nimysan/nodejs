@@ -7,15 +7,51 @@ var express = require('express');
 
 // setup middleware
 var app = express();
+app.use(express.bodyParser());
+app.use(express.methodOverride());
 app.use(app.router);
-app.use(express.errorHandler());
-app.use(express.static(__dirname + '/public')); //setup static public directory
+app.use(express.logger());
+app.use(express.static(__dirname + '/public')); // setup static public directory
 app.set('view engine', 'jade');
-app.set('views', __dirname + '/views'); //optional since express defaults to CWD/views
+app.set('views', __dirname + '/views'); // optional since express defaults to
+// CWD/views
 
 // render index page
-app.get('/', function(req, res){
-	res.render('index');
+app.get('/', function(req, res) {
+	console.log('---=XXX==>' + req.params);
+	res.render('index', {
+		view : app.messages
+	});
+});
+
+app.param(function(name, fn) {
+	if (fn instanceof RegExp) {
+		return function(req, res, next, val) {
+			var captures;
+			if (captures = fn.exec(String(val))) {
+				req.params[name] = captures;
+				next();
+			} else {
+				next('route');
+			}
+		};
+	}
+});
+
+// declare a global variables to temprary save all messages
+app.messages = [ 'hello, foo bar!', 'hey man', 'hey google', 'Bluemix' ];
+// post text message
+app.post('/send', function(req, res) {
+	console.log('---===>' + req.body);
+	if (req.body && req.body.value) {
+		app.messages.push(req.body.value);
+	}
+});
+
+app.get('/poll', function(req, res) {
+	res.json({
+		view : app.messages
+	});
 });
 
 // There are many useful environment variables available in process.env,
@@ -32,11 +68,11 @@ var appInfo = JSON.parse(process.env.VCAP_APPLICATION || "{}");
 var services = JSON.parse(process.env.VCAP_SERVICES || "{}");
 // TODO: Get service credentials and communicate with bluemix services.
 
-// The IP address of the Cloud Foundry DEA (Droplet Execution Agent) that hosts this application:
+// The IP address of the Cloud Foundry DEA (Droplet Execution Agent) that hosts
+// this application:
 var host = (process.env.VCAP_APP_HOST || 'localhost');
 // The port on the DEA for communication with the application:
 var port = (process.env.VCAP_APP_PORT || 3000);
 // Start server
 app.listen(port, host);
 console.log('App started on port ' + port);
-

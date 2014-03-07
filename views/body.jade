@@ -20,18 +20,15 @@ block content
 				a.btn.btn-lg.btn-success(role="button") Sign up today
 		
 		div.row.marketing
-			div.col-lg-6
-				h4 SubHeading
-				p Donec id elit non mi porta gravida at eget metuds.
+			div.col-lg-6#popface
+				each item in view
+					h4 #{item}
+					p Message metadata
 				
-			div.col-lg-6
-				h4 SubHeading
-				p Donec id elit non mi porta gravida at eget metuds.
-				
-			div.col-lg-6
-				h4 SubHeading
-				p Donec id elit non mi porta gravida at eget metuds.
-
+			form.col-lg-6(role="form")
+				div.form-group
+					input.form-control#inputpoint(type="text")
+				button.btn.btn-default#submit_button(type="submit") Submit	
  
 		div.footer
 			p &copy; Company 2014
