@@ -39,10 +39,9 @@ app.param(function(name, fn) {
 });
 
 // declare a global variables to temprary save all messages
-app.messages = [ 'hello, foo bar!', 'hey man', 'hey google', 'Bluemix' ];
+app.messages = [ 'Bluemix', 'IBM' ];
 // post text message
 app.post('/send', function(req, res) {
-	console.log('---===>' + req.body);
 	if (req.body && req.body.value) {
 		app.messages.push(req.body.value);
 	}

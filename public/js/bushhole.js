@@ -39,7 +39,7 @@
 	$(window.document).ready(function() {
 		window.bh.initialize();
 		function sayHi() {
-			setTimeout(sayHi, 5000);
+			setTimeout(sayHi, 1000);
 			window.bh.pm();
 		}
 		sayHi();
