@@ -1,0 +1,34 @@
+block content
+
+	div.container
+		div.header
+			ul.nav.nav-pills.pull-right
+				li.active
+					a Home
+				li
+					a About
+				li
+					a Contact
+					
+			h3.text-muted Bushole
+
+			
+		div.jumbotron
+			h1 Communication
+			p.lead Everywhere!
+			p
+				a.btn.btn-lg.btn-success(role="button") Sign up today
+		
+		div.row.marketing
+			div.col-lg-6#popface
+				each item in view
+					h4 #{item}
+					p Message metadata
+				
+			form.col-lg-6(role="form")
+				div.form-group
+					input.form-control#inputpoint(type="text")
+				button.btn.btn-default#submit_button(type="submit") Submit	
+ 
+		div.footer
+			p &copy; Company 2014
