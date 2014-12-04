@@ -2,24 +2,36 @@ block content
 
 	div.container
 		div.header
-			ul.nav.nav-pills.pull-right
-				li.active
-					a Home
-				li
-					a About
-				li
-					a Contact
-					
 			h3.text-muted Photos Repository
-
-			
-		div.jumbotron
-			h1 Communication
-			p.lead Everywhere!
-			p
-				a.btn.btn-lg.btn-success(role="button") Sign up today
 		
-		div.row.marketing
+		div#blueimp-gallery.blueimp-gallery
+			div.slides
+			h3.title
+			a.prev 
+			a.next 
+			a.close
+			a.play-pause Pause
+			ol.indicator
+			div(class='modal fade')
+				div.modal-dialog
+					div.modal-content
+						div.modal-header
+							button.close
+							h4.modal-title Gallery title
+						div.modal-body next
+						div.modal-footer
+							button(class='btn btn-default pull-left prev', type='Button')
+								i(class='glyphicon glyphicon-chevron-left')
+								Previous
+							button(class='btn btn-primary next', type='Button')
+								i(class='glyphicon glyphicon-chevron-right')
+								Next
+							
+		div#links
+		
+		script(src='//blueimp.github.io/Gallery/js/jquery.blueimp-gallery.min.js')
+		script(src='bootstrap_lib/Bootstrap-Image-Gallery-3.1.1/js/bootstrap-image-gallery.js')
+		script(src='bootstrap_lib/Bootstrap-Image-Gallery-3.1.1/js/demo.js')
  
 		div.footer
 			p &copy; Company 2014
