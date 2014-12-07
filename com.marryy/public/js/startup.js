@@ -27,7 +27,7 @@ $(function() {
 				// Add the demo images as links with thumbnails to the page:
 				$.each(result, function(index, photo) {
 					$('<a/>').append(
-							$('<img>').css('width', '80px').css('height',
+							$('<img>').css('width', '100px').css('height',
 									'auto').prop('src', photo)).prop('href',
 							photo).prop('title', photo.title).attr(
 							'data-gallery', '').appendTo(linksContainer);

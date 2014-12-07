@@ -1,6 +1,23 @@
 (function(window, $) {
 	'use strict';
 
+	function _showStatus(text, trueOrFalse) {
+		$('div.form-group span').removeClass('hide');
+		$('label.control-label').text(text).removeClass('hide');
+		if (trueOrFalse) {
+			$('div.form-group span.glyphicon').addClass('glyphicon-ok')
+					.removeClass('glyphicon-remove');
+			$('div.form-group').removeClass('has-error')
+					.addClass('has-success');
+		} else {
+			$('div.form-group span.glyphicon').addClass('glyphicon-remove')
+					.removeClass('glyphicon-ok');
+			$('div.form-group').removeClass('has-success')
+					.addClass('has-error');
+		}
+
+	}
+
 	$('#space_name').change(function() {
 		var name = $(this).val();
 		$.ajax({
@@ -9,13 +26,9 @@
 			type : 'get'
 		}).done(function(result) {
 			if (result && 1 === result) {
-				$('#fail').text('Space with name ' + name + ' already exists');
-				$('#success').addClass('hide');
-				$('#fail').removeClass('hide');
+				_showStatus('Space is not availale', false);
 			} else {
-				$('#success').text('The name is available!');
-				$('#success').removeClass('hide');
-				$('#fail').addClass('hide');
+				_showStatus('Space is availale', true);
 			}
 		});
 	});
@@ -28,13 +41,9 @@
 			type : 'post'
 		}).done(function(result) {
 			if (result && 0 === result) {
-				$('#fail').text('Failed to create the space ' + name);
-				$('#success').addClass('hide');
-				$('#fail').removeClass('hide');
+				_showStatus('Failed to create space', false);
 			} else {
-				$('#success').text('Create space successfully!');
-				$('#success').removeClass('hide');
-				$('#fail').addClass('hide');
+				_showStatus('Create space successfully', true);
 			}
 		});
 	});
