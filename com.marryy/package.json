@@ -8,7 +8,8 @@
   "dependencies": {
     "express": "3.2.6",
     "jade": "*",
-    "upyun": "^1.1.2"
+    "upyun": "^1.1.2",
+    "mongoose" : "3.8.20"
   },
   "subdomain": "marryy",
   "engines": {

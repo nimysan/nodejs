@@ -1,0 +1,13 @@
+block content
+
+	div.container
+		div.header 
+			h3 Test Space available
+		div.row
+		div.input-group
+			input#space_name(type='text', class='form-control',placeholder='Space name')
+			div#success(class='alert alert-success hide', role='alert') Name is okay
+			div#fail(class='alert alert-danger hide', role='alert') Name is not available
+			button#create_space(type='button', class='btn btn-primary') Create
+			
+		script(src='/js/admin.js')
