@@ -9,6 +9,14 @@ var UPYUN = require('upyun');
 
 var PhotoGateway = function() {
 	this.iclient = new UPYUN('nimysan', 'nimysan', '3edcVFR$', 'v0', 'legacy');
+	this.iclient.getUsage(function(err, data) {
+		if (err) {
+			console.error('UPYUN got some errir at ' + new Date());
+		} else {
+			console.log('UPYUN is okay');
+			console.log(data);
+		}
+	});
 	this.version = '1.0.0';
 };
 
@@ -17,22 +25,33 @@ PhotoGateway.prototype = {
 		return this.iclient;
 	},
 	uploadFiles : function(localFiles) {
-
+		// TODO
 	},
 	/*
 	 * upyun api: uploadFile(remotePath, localFile, type, checksum, [opts],
 	 * callback)
 	 */
 	uploadFile : function(localFile) {
-		console.log('upload file ' + localFile);
-		this._getCS().uploadFile('nimysan/test/test1.jpg', localFile, 'JPG',
-				true, [], function() {
-					console.log("--------" + "File upload failed!");
-					console.log(arguments);
-				});
+		// TODO
 	},
-	listPictures : function(key) {
-		//http://nimysan.b0.upaiyun.com/test/test.jpg?123
+	listPictures : function(key, callback) {
+		this._getCS().listDir(
+				key,
+				null,
+				null,
+				null,
+				function(err, result) {
+					if (err) {
+						console.log('There is not any files for ' + key
+								+ 'with error detail: ' + err);
+						callback([]);
+					} else {
+						if (result && result.data.files) {
+							callback(result.data.files);
+						}
+						callback([]);
+					}
+				});
 	}
 };
 

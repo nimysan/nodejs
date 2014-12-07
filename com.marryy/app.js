@@ -2,7 +2,7 @@
  * Module dependencies.
  */
 
-var express = require('express'), routes = require('./routes'), user = require('./routes/user'), http = require('http'), path = require('path'), pig = require('./lib/photo_gateway.js');
+var express = require('express'), routes = require('./routes'), user = require('./routes/user'), pic = require('./routes/pic'), http = require('http'), path = require('path'), pig = require('./lib/photo_gateway.js');
 
 var app = express();
 
@@ -25,7 +25,7 @@ if ('development' == app.get('env')) {
 
 app.get('/', routes.index);
 app.get('/users', user.list);
-app.get('/up', routes.uphoto);
+app.get('/list/:uk', pic.listff);
 
 http.createServer(app).listen(app.get('port'), function() {
 	console.log('Express server listening on port ' + app.get('port'));
