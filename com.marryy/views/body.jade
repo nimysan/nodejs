@@ -1,5 +1,6 @@
 block content
-
+	div.metadata(class='hide')
+		li.metadata_base_path=basePath	
 	div.container
 		div.header
 			h3.text-muted Photos Repository
@@ -15,7 +16,7 @@ block content
 		div#links
 		
 		script(src='//blueimp.github.io/Gallery/js/jquery.blueimp-gallery.min.js')
-		script(src='js/startup.js')
+		script(src='/js/startup.js')
  
 		div.footer
 			p &copy; Company 2014

@@ -3,8 +3,8 @@
  */
 var pig = require('../lib/photo_gateway.js');
 var fs = require('fs');
-exports.listff = function(req, res) {
-	var unique_key = req.params.uk; // unique key
+exports.list = function(req, res) {
+	var unique_key = req.params.space; // unique key
 	console.log('The unique key is ' + unique_key);
 	var links = [];
 	pig.listPictures('/' + unique_key, function(files) {
@@ -18,3 +18,4 @@ exports.listff = function(req, res) {
 		res.send(JSON.stringify(links));
 	});
 };
+

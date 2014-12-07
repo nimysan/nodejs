@@ -27,11 +27,30 @@ if ('development' == app.get('env')) {
 var model = require('./models/userspace').dao;
 app.get('/', routes.index);
 app.get('/users', user.list);
-app.get('/list/:uk', pic.listff);
-app.get('/admin/space', function(req, res) {
-	res.render('admin/space', {
-		title : 'Marry for ever'
+
+// space entry point
+app.get('/space/:space', function(req, res) {
+	var unique_key = req.params.space; // unique key
+	var space = req.params.space;
+	model.nameExists(space, function(err, data) {
+		if (data.length === 1) {
+			var upyun_path = data[0].upyun_path;
+			res.render('show', {
+				basePath : upyun_path
+			});
+		} else {
+			res.render('index', {
+				basePath : 'test'
+			});
+		}
 	});
+});
+// pictures list modules
+app.get('/list/:space', pic.list); // list the file under unique key
+
+// admin module
+app.get('/admin/space', function(req, res) {
+	res.render('admin/space', {});
 });
 app.get('/admin/space/:space', function(req, res) {
 	model.nameExists(req.params.space, function(err, result) {
@@ -50,9 +69,7 @@ app.post('/admin/space/:space', function(req, res) {
 		} else {
 			// create new one
 			model.createSpace(req.params.space, function(err, data) {
-				console.log("---" + err);
-				console.log("sdfsdf" + data);
-				if (err ) {
+				if (err) {
 					res.json(0);
 				} else {
 					res.json(1);

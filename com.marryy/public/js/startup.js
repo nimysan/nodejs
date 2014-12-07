@@ -14,9 +14,12 @@
 
 $(function() {
 	'use strict';
-	// Load demo images from flickr:
+	var space = $('li.metadata_base_path').text().trim();
+	if ('' === space) {
+		space = 'test'; // default one
+	}
 	$.ajax({
-		url : '/list/test',
+		url : '/list/' + space,
 		dataType : 'json',
 	}).done(
 			function(result) {
@@ -24,7 +27,7 @@ $(function() {
 				// Add the demo images as links with thumbnails to the page:
 				$.each(result, function(index, photo) {
 					$('<a/>').append(
-							$('<img>').css('width', '120px').css('height',
+							$('<img>').css('width', '80px').css('height',
 									'auto').prop('src', photo)).prop('href',
 							photo).prop('title', photo.title).attr(
 							'data-gallery', '').appendTo(linksContainer);
