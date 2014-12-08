@@ -28,9 +28,10 @@ $(function() {
 				$.each(result, function(index, photo) {
 					$('<a/>').append(
 							$('<img>').css('width', '100px').css('height',
-									'auto').prop('src', photo)).prop('href',
-							photo).prop('title', photo.title).attr(
-							'data-gallery', '').appendTo(linksContainer);
+									'auto').prop('src', photo + '!100')).prop(
+							'href', photo + '!phone')
+							.prop('title', photo.title)
+							.attr('data-gallery', '').appendTo(linksContainer);
 				});
 			});
 

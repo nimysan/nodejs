@@ -13,6 +13,7 @@ var userSpaceSchema = new Schema({
 	unique_readable_key : String,
 	upyun_path : String,
 	author : String,
+	title : String,
 	desc : String,
 	body : String,
 	comments : [ {
