@@ -5,6 +5,8 @@
 var express = require('express'), routes = require('./routes'), user = require('./routes/user'), pic = require('./routes/pic'), http = require('http'), path = require('path'), pig = require('./lib/photo_gateway.js');
 // model
 var admin = require('./routes/admin');
+var cookieParser = require('cookie-parser');
+var hash = require('pbkdf2');
 var app = express();
 
 // all environments
@@ -12,6 +14,10 @@ app.set('port', process.env.PORT || 3000);
 app.set('views', __dirname + '/views');
 app.set('view engine', 'jade');
 app.use(express.favicon());
+app.use(cookieParser());
+express.session({
+	secret : "andylau"
+})
 app.use(express.logger('dev'));
 app.use(express.bodyParser());
 app.use(express.methodOverride());
@@ -78,6 +84,67 @@ app.post('/admin/space/:space', function(req, res) {
 		}
 	});
 });
+
+// user management
+var user_dao = require('./models/user').user_dao;
+app.get('/user/signup', function(req, res) {
+	if (req.cookies.user_name) {
+		res.redirect('/');
+	} else {
+		res.render('user/signup');
+	}
+});
+app.get("/user/login", function(req, res) {
+	res.render("user/login");
+});
+
+app.post("/user/login", function(req, res) {
+	user_dao.authenticate(req.body.username, req.body.password, function(err,
+			user) {
+		console.log('Login result ' + err + ' - ' + user);
+		if (user) {
+			console.log('user login successfully! ' + user);
+			console.log('session ' + req.session);
+		} else {
+			res.json({
+				'error' : '登录失败。 用户名或密码错误'
+			});
+		}
+	});
+});
+
+app.post("/user/signup", function(req, res) {
+	var password = req.body.password;
+	var username = req.body.username;
+	console.log('sign up user - ' + username + ' - password ' + password);
+	var salt = hash.generateSaltSync(32);
+	var hash_password = password; // TODO need to find a good library
+	console.log('salt - ' + salt);
+	user_dao.exists(username, function(err, count) {
+		if (err !== null) {
+			console.log(err + " goto error!");
+			res.json(err);
+		} else {
+			if (count <= 0) {
+				user_dao.create(username, password, {}, function(err, user) {
+					console.log('create user result ' + err + ' - ' + user);
+					if (err !== null) {
+						console.log(err + " goto error 1!");
+						res.json(err);
+					} else {
+						res.json(1);
+					}
+				});
+			} else {
+				res.json({
+					'error' : '用户已经存在了'
+				});
+			}
+		}
+	});
+
+});
+// user management
 
 http.createServer(app).listen(app.get('port'), function() {
 	console.log('Express server listening on port ' + app.get('port'));
