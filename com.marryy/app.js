@@ -16,7 +16,6 @@ var app = express();
 // model
 var admin = require('./routes/admin');
 var cookieParser = require('cookie-parser');
-var hash = require('pbkdf2');
 
 // all environments
 app.set('port', process.env.PORT || 3000);
@@ -191,7 +190,7 @@ app.post("/user/signup", function(req, res) {
 	var password = req.body.password;
 	var username = req.body.username;
 	console.log('sign up user - ' + username + ' - password ' + password);
-	var salt = hash.generateSaltSync(32);
+	var salt = '1234'; // TODO
 	var hash_password = password; // TODO need to find a good library
 	console.log('salt - ' + salt);
 	user_dao.exists(username, function(err, count) {
