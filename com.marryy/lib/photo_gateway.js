@@ -48,6 +48,7 @@ PhotoGateway.prototype = {
 					} else {
 						if (result && result.data.files) {
 							callback(result.data.files);
+							return; // avoid duplication return
 						}
 						callback([]);
 					}

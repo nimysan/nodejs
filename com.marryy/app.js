@@ -2,31 +2,36 @@
  * Module dependencies.
  */
 
-var express = require('express'), routes = require('./routes'), user = require('./routes/user'), pic = require('./routes/pic'), http = require('http'), path = require('path'), pig = require('./lib/photo_gateway.js');
+var express = require('express'), routes = require('./routes'), user = require('./routes/user'), http = require('http'), path = require('path'), pig = require('./lib/photo_gateway.js');
+express.static = require('serve-static');
+var favicon = require('serve-favicon');
+var morgan = require('morgan');
+var bodyParser = require('body-parser');
+var methodOverride = require('method-override');
+var errorhandler = require('errorhandler');
+
+var app = express();
+
 // model
 var admin = require('./routes/admin');
 var cookieParser = require('cookie-parser');
 var hash = require('pbkdf2');
-var app = express();
 
 // all environments
 app.set('port', process.env.PORT || 3000);
 app.set('views', __dirname + '/views');
 app.set('view engine', 'jade');
-app.use(express.favicon());
+app.use(favicon(__dirname + '/public/favicon.ico'));
+app.use(bodyParser.urlencoded());
+app.use(bodyParser.json());
 app.use(cookieParser());
-express.session({
-	secret : "andylau"
-})
-app.use(express.logger('dev'));
-app.use(express.bodyParser());
-app.use(express.methodOverride());
-app.use(app.router);
+app.use(methodOverride());
+app.use(morgan('combined'));
 app.use(express.static(path.join(__dirname, 'public')));
 
 // development only
-if ('development' == app.get('env')) {
-	app.use(express.errorHandler());
+if ('development' === app.get('env')) {
+	app.use(errorhandler());
 	app.locals.pretty = true;
 }
 
@@ -52,7 +57,22 @@ app.get('/space/:space', function(req, res) {
 	});
 });
 // pictures list modules
-app.get('/list/:space', pic.list); // list the file under unique key
+app.get('/list/:space', function(req, res) {
+	var unique_key = req.params.space; // unique key
+	console.log('The unique key is ' + unique_key);
+	var links = [];
+	pig.listPictures('/' + unique_key, function(files) {
+		for (var i = 0; i < files.length; i++) {
+			var file = files[i];
+			if ('file' === file.type) {
+				links.push('http://nimysan.b0.upaiyun.com' + '/' + unique_key
+						+ '/' + file.name);
+			}
+		}
+		res.json(links);
+	});
+
+}); // list the file under unique key
 
 // admin module
 app.get('/admin/space', function(req, res) {
