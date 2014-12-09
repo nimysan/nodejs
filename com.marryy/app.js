@@ -9,6 +9,7 @@ var morgan = require('morgan');
 var bodyParser = require('body-parser');
 var methodOverride = require('method-override');
 var errorhandler = require('errorhandler');
+var session = require('express-session');
 
 var app = express();
 
@@ -29,14 +30,40 @@ app.use(methodOverride());
 app.use(morgan('combined'));
 app.use(express.static(path.join(__dirname, 'public')));
 
+var sess = session({
+	secret : 'com.marryy',
+	resave : true,
+	cookie : {
+		secure : false
+	}
+});
+
 // development only
 if ('development' === app.get('env')) {
 	app.use(errorhandler());
 	app.locals.pretty = true;
+} else if (app.get('env') === 'production') {
+	app.set('trust proxy', 1); // trust first proxy
 }
+app.use(sess);
+
+app.use(function(req, res, next) {
+	var sess = req.session;
+	if (sess.views) {
+		sess.views++;
+	} else {
+		sess.views = 1;
+	}
+	console.info('Session ' + sess);
+	console.info(sess);
+	console.info("-----------------");
+	next();
+});
 
 var model = require('./models/userspace').dao;
-app.get('/', routes.index);
+app.get("/", routes.index, function(req, res, next) {
+	next();
+});
 app.get('/users', user.list);
 
 // space entry point
@@ -117,21 +144,48 @@ app.get('/user/signup', function(req, res) {
 app.get("/user/login", function(req, res) {
 	res.render("user/login");
 });
-
-app.post("/user/login", function(req, res) {
-	user_dao.authenticate(req.body.username, req.body.password, function(err,
-			user) {
-		console.log('Login result ' + err + ' - ' + user);
-		if (user) {
-			console.log('user login successfully! ' + user);
-			console.log('session ' + req.session);
-		} else {
-			res.json({
-				'error' : '登录失败。 用户名或密码错误'
-			});
-		}
+app.get("/user/logout", function(req, res) {
+	req.session.destroy(function(err) {
+		// cannot access session here
 	});
+	res.redirect('/user/login');
 });
+
+app
+		.post(
+				"/user/login",
+				function(req, res) {
+					user_dao
+							.authenticate(
+									req.body.username,
+									req.body.password,
+									function(err, user) {
+										console.log('Login result ' + err
+												+ ' - ' + user);
+										if (user) {
+											console
+													.log('user login successfully! '
+															+ user);
+											console.log('session '
+													+ req.session);
+											req.session
+													.regenerate(function() {
+														req.session.user = user;
+														req.session.success = 'Authenticated as '
+																+ user.username
+																+ ' click to <a href="/logout">logout</a>. '
+																+ ' You may now access <a href="/restricted">/restricted</a>.';
+														console
+																.log(req.session);
+														res.json(1);
+													});
+										} else {
+											res.json({
+												'error' : '登录失败。 用户名或密码错误'
+											});
+										}
+									});
+				});
 
 app.post("/user/signup", function(req, res) {
 	var password = req.body.password;
