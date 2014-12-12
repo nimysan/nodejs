@@ -41,6 +41,7 @@ var sess = session({
 if ('development' === app.get('env')) {
 	app.use(errorhandler());
 	app.locals.pretty = true;
+	app.locals.debug = true;
 } else if (app.get('env') === 'production') {
 	app.set('trust proxy', 1); // trust first proxy
 }

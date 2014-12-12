@@ -10,6 +10,7 @@ exports.index = function(req, res) {
 	}
 	res.render('index', {
 		title : 'Marry for ever',
-		user : name
+		user : name,
+		layout : true
 	});
 };
