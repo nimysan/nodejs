@@ -10,11 +10,28 @@
 	text-align: center;
 }
 
+.container-body{
+	margin-top: 100px;
+}
 .logo-container {
 	text-align: center;
 	background-color: #00a86b;
 	padding-top: 50px;
 	padding-bottom: 50px;
+}
+
+.gallery_thumbnail {
+	display: block;
+	border: 1px solid #CCC;
+	box-shadow: 1px 1px 5px #999;
+	width: 100%;
+	height: 176px;
+}
+
+.gallary_qr_code {
+	width: 120px;
+	height: 120px;
+	float: right;
 }
 
 #qr{
@@ -26,6 +43,3 @@
 	margin-top: 40px;
 }
 
-.pad10 {
-	padding-top: 100px;
-}
