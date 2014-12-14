@@ -43,3 +43,24 @@
 	margin-top: 40px;
 }
 
+/* users */
+.login_panel{
+	margin-bottom: 64px;
+}
+.login_form {
+	text-align : center;
+	width: 90%;
+	height: 100%;
+	margin: 0 auto;
+}
+#user_password{
+	margin-top: 1px;
+}
+#user_name {
+	margin-top : 1px;
+}
+button#user_login{
+	width: 100%;
+}
+/* usre */
+

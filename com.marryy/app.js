@@ -64,6 +64,9 @@ var model = require('./models/userspace').dao;
 app.get("/", routes.index, function(req, res, next) {
 	next();
 });
+// app users
+app.get('/user/index', user.index);
+// app users
 app.get('/users', user.list);
 app.get('/price', function(req, res) {
 	res.render('price');

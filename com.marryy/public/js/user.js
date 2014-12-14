@@ -6,18 +6,18 @@
 		var group = $('div.form-group[atth=' + id + ']');
 		if (trueOrFalse) {
 			group.addClass('has-success').removeClass('has-error');
-			$('span.glyphicon', group).addClass('glyphicon-ok').removeClass(
-					'glyphicon-remove').removeClass('hide');
-			$('span.sr-only', group).removeClass('hide');
+//			$('span.glyphicon', group).addClass('glyphicon-ok').removeClass(
+//					'glyphicon-remove').removeClass('hide');
+//			$('span.sr-only', group).removeClass('hide');
 			$('#message').text(message).removeClass('hide').removeClass(
-					'alert-warning').addClass('alert-success');
+					'alert-danger').addClass('alert-success');
 		} else {
 			group.addClass('has-error').removeClass('has-success');
-			$('span.glyphicon', group).removeClass('glyphicon-ok').addClass(
-					'glyphicon-remove').removeClass('hide');
-			$('span.sr-only', group).removeClass('hide');
+//			$('span.glyphicon', group).removeClass('glyphicon-ok').addClass(
+//					'glyphicon-remove').removeClass('hide');
+//			$('span.sr-only', group).removeClass('hide');
 			$('#message').text(message).removeClass('hide').addClass(
-					'alert-warning');
+					'alert-danger');
 		}
 	}
 

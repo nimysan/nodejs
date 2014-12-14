@@ -1,6 +1,36 @@
-//- signup.jade
-
-doctype html
-html
-  include ../head
-  include body
+extends ../layout.jade
+block content
+	div.container(class='container-body')
+		<div class="alert hide" role="alert" id="message"></div>
+		div.row
+			div.col-md-2
+			div.col-md-8
+				div(class="panel panel-info login_panel")
+					div.panel-heading
+						h2.panel-title 注册
+					div.panel-body
+						div(role='form') 
+							div.form-group(class='has-feedback', atth='user_name')
+								label.control-label(for='user_name') 用户名
+								input#user_name(type='text', class='form-control',placeholder='用户名字',aria-describedby='icon4name')
+								span(class='glyphicon form-control-feedback hide',aria-hidden='true')
+								span(id='icon4name',class='sr-only hide')
+								
+							div.form-group(class='has-feedback',atth='user_password')
+								label.control-label(for='user_password') 密码
+								input#user_password(type='password', class='form-control',placeholder='密码',aria-describedby='icon4pass')
+								span(class='glyphicon form-control-feedback hide',aria-hidden='true')
+								span(id='icon4pass',class='sr-only hide')
+								
+							div.form-group(class='has-feedback',atth='user_password_2')
+								label.control-label(for='user_password_2') 确认密码
+								input#user_password_2(type='password', class='form-control',placeholder='密码',aria-describedby='icon4pass')
+								span(class='glyphicon form-control-feedback',aria-hidden='true')
+								span(id='icon4pass',class='sr-only hide')
+							
+							button#create_user(type='button', class='btn btn-primary', style="width: 100%;") 创建
+								span(class='glyphicon glyphicon-user')
+							h3 已经有帐号，去  <a href="/user/login">登录</a>
+			div.col-md-2
+			
+		script(src='/js/user.js')
