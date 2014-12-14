@@ -1,6 +1,8 @@
 extends ../layout.jade
 block content
 	div.container(class='container-body')
+		<div class="alert hide" role="alert" id="message"></div>
+		<div class='hide'><input type='hidden' value='#{user}' id="metadata_user"></input></div>
 		div.row
 			div.col-md-2
 				ul(class="nav nav-pills nav-stacked")
@@ -12,21 +14,34 @@ block content
 						a#create_gallery(href='javascript:void(0);') 相册创建
 			div.col-md-10
 				block user_content
-					div(class="panel panel-info login_panel")
+					div(class="panel panel-info")
 						div.panel-heading
 							h2.panel-title 相册
 						div.panel-body
 							div(role='form', class="gallery_form") 
-								div.form-group(class='has-feedback', atth='user_name')
+								div.form-group(class='has-feedback')
 									div.input-group
 										span(class='glyphicon glyphicon-inbox input-group-addon')
 										input#g_title(type='text', class='form-control',placeholder='相册标题,会显示给别人')
 									
-								div.form-group(class='has-feedback',atth='user_password')
+								div.form-group(class='has-feedback')
 									div.input-group
 										span(class='glyphicon glyphicon-list-alt input-group-addon')
 										input#g_desc(type='text-area', class='form-control',placeholder='详细描述')
+								
+								div#links
+										
+								button#g_img_selector(type='button', class='btn btn-success') 选择图片
+									span(class='glyphicon glyphicon-cloud')
 									
 								button#g_create(type='button', class='btn btn-primary') 按下按钮创建
 									span(class='glyphicon glyphicon-cloud')
+									
+					div.row
+						div.col-md-12
+							div#gallery_list
+								h3 相册集合
+						div.col-md-0
+						
+					
 	script(src='/js/user.js')

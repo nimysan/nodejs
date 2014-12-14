@@ -21,18 +21,12 @@ $(function() {
 	$.ajax({
 		url : '/list/' + space,
 		dataType : 'json',
-	}).done(
-			function(result) {
-				var linksContainer = $('#links'), baseUrl;
-				// Add the demo images as links with thumbnails to the page:
-				$.each(result, function(index, photo) {
-					$('<a/>').append(
-							$('<img>').css('width', '100px').css('height',
-									'auto').prop('src', photo + '!100')).prop(
-							'href', photo + '!phone')
-							.prop('title', photo.title)
-							.attr('data-gallery', '').appendTo(linksContainer);
-				});
-			});
+	}).done(function(result) {
+		var linksContainer = $('#links'), baseUrl;
+		// Add the demo images as links with thumbnails to the page:
+		$.each(result, function(index, photo) {
+			$('<img>').css('width', '100px').css('height', 'auto').prop('src', photo + '!100').appendTo(linksContainer);
+		});
+	});
 
 });

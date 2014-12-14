@@ -25,6 +25,24 @@ GalleryDao.prototype = {
 			callback(err, data);
 		});
 	},
+	list : function(user, callback) {
+		this.model.find({
+			_creator : user._id
+		}).sort('-date').exec(function(err, data) {
+			callback(err, data);
+		});
+	},
+	remove : function(id, callback) {
+		this.model.findOneAndRemove({
+			_id : id
+		}, function(err, data) {
+			console.log('Remove -------');
+			console.log(err);
+			console.log(data);
+			console.log('Remove -------');
+			callback(err, data);
+		});
+	},
 	exists : function(username, fn) {
 		this.model.count({
 			'name' : username

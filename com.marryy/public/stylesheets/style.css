@@ -34,6 +34,10 @@
 	float: right;
 }
 
+.gallery-button{
+	margin-right: 6px;
+}
+
 #qr{
 	width: 200px;
 	height: 200px;
@@ -63,4 +67,31 @@ button#user_login{
 	width: 100%;
 }
 /* usre */
+
+/* image */
+.being_select{
+	margin: 3px;
+	opacity: 0.5;
+	filter: alpha(opacity: 50);
+}
+.mask {
+	background: #424242;
+	position: absolute;
+	z-index: 900;
+	/* opacity: 0.5; */
+	/* filter: alpha(opacity: 50); */
+	top: 0;
+	width: 100%;
+	height: 100%;
+	background: url(/img/thumb_up-64.png) no-repeat;
+}
+.imageChecked {
+	position: absolute;
+	right: 0;
+	bottom: 0;
+	width: 10px;
+	height: 16px;
+	z-index: 999;
+}
+/* image */
 

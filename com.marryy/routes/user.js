@@ -5,14 +5,19 @@
 var model_gallery = require('../models/gallery').gallery_dao;
 var model_user = require('../models/user').model_user;
 
-exports.list = function(req, res) {
-	res.send("respond with a resource");
-};
-
 exports.gallery = {
 	list : function(req, res) {
-		model_user.load('seanye', function(err, data) {
+		model_gallery.list(req.session.user, function(err, data) {
 			res.json(data);
+		});
+	},
+	remove : function(req, res) {
+		var id = req.params.id;
+		model_gallery.remove(id, function(err, data) {
+			res.json({
+				err : err,
+				data : data
+			});
 		});
 	},
 	create : function(req, res) {

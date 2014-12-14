@@ -75,7 +75,9 @@ app.get("/", routes.index, function(req, res, next) {
 // });
 
 app.get('/user/:user/index', function(req, res) {
-	res.render('user/index');
+	res.render('user/index',{
+		user : req.session.user.name
+	});
 });
 // app.get('/users', user.list);
 app.route('/user/:user/gallery').get(user.gallery.list).head(
@@ -83,6 +85,10 @@ app.route('/user/:user/gallery').get(user.gallery.list).head(
 			console.log(req.params);
 			res.render('user/gallery_create');
 		}).post(user.gallery.create);
+
+app.route('/user/:user/gallery/:id').delete(user.gallery.remove).get(function(req, res){
+	res.render('gallery/index',{user : req.session.user.name});
+});
 // app users
 app.get('/price', function(req, res) {
 	res.render('price');

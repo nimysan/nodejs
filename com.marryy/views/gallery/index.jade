@@ -1,0 +1,21 @@
+extends ../layout
+block content
+	div.metadata(class='hide')
+		li.metadata_base_path=basePath
+	div.container
+		div
+			div.header
+				h1.text-muted 故事
+					small 流年
+			div#blueimp-gallery.blueimp-gallery
+				div.slides
+				h3.title
+				a.prev 
+				a.next 
+				a.close
+				a.play-pause
+							
+			div#links
+	
+	script(src='//blueimp.github.io/Gallery/js/jquery.blueimp-gallery.min.js')
+	script(src='/js/startup.js')

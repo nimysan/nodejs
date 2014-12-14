@@ -16,10 +16,10 @@ var userSchema = new Schema({
 	desc : String,
 	body : String,
 	contact : String,
-	galleries : [{
+	galleries : [ {
 		type : Schema.Types.ObjectId,
 		ref : 'galleries'
-	}],
+	} ],
 	date : {
 		type : Date,
 		'default' : Date.now
@@ -41,6 +41,9 @@ var gallerySchema = new Schema({
 	desc : String,
 	user : String, // how to setup the foreign key to user?
 	isPrivate : Boolean,
+	images : [ {
+		type : String
+	} ],
 	date : {
 		type : Date,
 		'default' : Date.now
