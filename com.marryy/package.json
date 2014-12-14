@@ -17,7 +17,8 @@
     "serve-static": "*",
     "serve-favicon": "2.1.7",
     "errorhandler": "1.3.0",
-    "express-session": "1.9.3"
+    "express-session": "1.9.3",
+    "utils-merge": "1.0.0"
   },
   "subdomain": "marryy",
   "engines": {

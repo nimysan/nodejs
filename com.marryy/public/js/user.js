@@ -6,16 +6,16 @@
 		var group = $('div.form-group[atth=' + id + ']');
 		if (trueOrFalse) {
 			group.addClass('has-success').removeClass('has-error');
-//			$('span.glyphicon', group).addClass('glyphicon-ok').removeClass(
-//					'glyphicon-remove').removeClass('hide');
-//			$('span.sr-only', group).removeClass('hide');
+			// $('span.glyphicon', group).addClass('glyphicon-ok').removeClass(
+			// 'glyphicon-remove').removeClass('hide');
+			// $('span.sr-only', group).removeClass('hide');
 			$('#message').text(message).removeClass('hide').removeClass(
 					'alert-danger').addClass('alert-success');
 		} else {
 			group.addClass('has-error').removeClass('has-success');
-//			$('span.glyphicon', group).removeClass('glyphicon-ok').addClass(
-//					'glyphicon-remove').removeClass('hide');
-//			$('span.sr-only', group).removeClass('hide');
+			// $('span.glyphicon', group).removeClass('glyphicon-ok').addClass(
+			// 'glyphicon-remove').removeClass('hide');
+			// $('span.sr-only', group).removeClass('hide');
 			$('#message').text(message).removeClass('hide').addClass(
 					'alert-danger');
 		}
@@ -116,6 +116,30 @@
 				}
 			});
 		}
+	});
+
+	$('a#create_gallery').click(function() {
+		$.ajax({
+			url : '/user/seanye/gallery',
+			dataType : 'json',
+			type : 'head'
+		});
+	});
+
+	$('button#g_create').click(function() {
+		var title = $('#g_title').val();
+		var desc = $('#g_desc').val();
+		$.ajax({
+			url : '/user/seanye/gallery',
+			dataType : 'json',
+			type : 'post',
+			data : {
+				title : title,
+				desc : desc
+			}
+		}).done(function() {
+			console.log('------ ' + arguments);
+		});
 	});
 
 })(window, jQuery);

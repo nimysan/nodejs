@@ -1,37 +1,13 @@
 /**
  * User space information
  */
+var merge = require('utils-merge');
+var models = require('./schema').models;
+var db = models.db;
 
-var mongoose = require('mongoose');
-var Schema = mongoose.Schema;
-exports.db = {
-	Url : 'mongodb://marryy:marryy123@ds045057.mongolab.com:45057/marryy'
-}
-var db = mongoose.createConnection(exports.db.Url);
-
-var userSchema = new Schema({
-	userId : String,
-	name : String,
-	password : String,
-	salt : String,
-	hash : String,
-	email : String,
-	desc : String,
-	body : String,
-	contact : String,
-	date : {
-		type : Date,
-		'default' : Date.now
-	},
-	meta : {
-		votes : Number,
-		favs : Number
-	}
-});
-
-var UserDao = function(db) {
+var UserDao = function(db, model) {
 	this.db = db;
-	this.model = db.model('users', userSchema);
+	this.model = model;
 };
 
 UserDao.prototype = {
@@ -56,6 +32,16 @@ UserDao.prototype = {
 			fn(err, count);
 		})
 	},
+	load : function(name, callback) {
+		this.model.findOne({
+			'name' : name
+		}).populate('galleries').exec(function(err, user) {
+			console.log("--- test --- ");
+			console.log(user);
+			console.log(" =====  test ===== ");
+			callback(err, user);
+		});
+	},
 	authenticate : function(name, pass, callback) {
 		if (!module.parent) {
 			console.log('authenticating %s:%s', name, pass);
@@ -78,4 +64,6 @@ UserDao.prototype = {
 	}
 };
 
-exports.model_user = exports.user_dao = new UserDao(db);
+exports.model_user = exports.user_dao = new UserDao(db, models.user);
+console.log("------------")
+console.log(exports.model_user);

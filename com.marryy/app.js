@@ -41,7 +41,7 @@ var sess = session({
 if ('development' === app.get('env')) {
 	app.use(errorhandler());
 	app.locals.pretty = true;
-	app.locals.debug = true;
+	// app.locals.debug = true;
 } else if (app.get('env') === 'production') {
 	app.set('trust proxy', 1); // trust first proxy
 }
@@ -65,9 +65,25 @@ app.get("/", routes.index, function(req, res, next) {
 	next();
 });
 // app users
-app.get('/user/index', user.index);
+// protected all user url
+// app.all('/user/*', function(req, res, next) {
+// if (req.session != null && req.session.user != null) {
+// next();
+// } else {
+// res.render('user/login');
+// }
+// });
+
+app.get('/user/:user/index', function(req, res) {
+	res.render('user/index');
+});
+// app.get('/users', user.list);
+app.route('/user/:user/gallery').get(user.gallery.list).head(
+		function(req, res) {
+			console.log(req.params);
+			res.render('user/gallery_create');
+		}).post(user.gallery.create);
 // app users
-app.get('/users', user.list);
 app.get('/price', function(req, res) {
 	res.render('price');
 });
