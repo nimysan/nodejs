@@ -65,9 +65,23 @@ app.get("/", routes.index, function(req, res, next) {
 	next();
 });
 app.get('/users', user.list);
+app.get('/price', function(req, res) {
+	res.render('price');
+});
 
 // space entry point
-app.get('/space/:space', function(req, res) {
+app.get('/space/:space', function(req, res, next) {
+	// this space is public or not
+	function isAvailableForUser(req) {
+		return true;
+	}
+	if (isAvailableForUser(req)) {
+		next();
+	} else {
+		res.send('The space is not available for u');
+	}
+
+}, function(req, res) {
 	var unique_key = req.params.space; // unique key
 	var space = req.params.space;
 	model.nameExists(space, function(err, data) {
