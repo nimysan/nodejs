@@ -16,9 +16,16 @@ exports.gallery = {
 		model_gallery.load(galleryId, function(err, data) {
 			var gallery = data;
 			var user = (req.session && req.session.user) ? req.session.user.name : '';
-			res.render('gallery/index', {
-				user : user,
-				gallery : gallery
+			res.format({
+				'text/html' : function() {
+					res.render('gallery/index', {
+						user : user,
+						gallery : gallery
+					});
+				},
+				'application/json' : function() {
+					res.json(gallery);
+				}
 			});
 		});
 	},
@@ -35,6 +42,16 @@ exports.gallery = {
 		var user = req.session.user;
 		console.info(req.body);
 		model_gallery.create(req.session.user, req.body, function(err, data) {
+			res.json({
+				err : err,
+				data : data
+			});
+		});
+	},
+	update : function(req, res) {
+		var user = req.session.user;
+		var id = req.params.id;
+		model_gallery.update(req.session.user, id, req.body, function(err, data) {
 			res.json({
 				err : err,
 				data : data

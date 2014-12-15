@@ -29,7 +29,7 @@ app.use(cookieParser());
 app.use(methodOverride());
 app.use(morgan('combined'));
 app.use(express.static(path.join(__dirname, 'public')));
-//keep this before all routes that will use pagination
+// keep this before all routes that will use pagination
 app.use(paginate.middleware(5, 50));
 
 var sess = session({
@@ -89,8 +89,8 @@ app.route('/user/:user/gallery').get(user.gallery.list).head(
 			res.render('user/gallery_create');
 		}).post(user.gallery.create);
 
-app.route('/user/:user/gallery/:id').delete(user.gallery.remove).get(user.gallery.show);
-app.route('/gallery/:id').delete(user.gallery.remove).get(user.gallery.show);
+app.route('/user/:user/gallery/:id').delete(user.gallery.remove).get(user.gallery.show).put(user.gallery.update);
+app.route('/gallery/:id').delete(user.gallery.remove).get(user.gallery.show).put(user.gallery.update).post(user.gallery.create);
 
 // app users
 app.get('/price', function(req, res) {

@@ -12,6 +12,7 @@ var GalleryDao = function(db, model) {
 
 GalleryDao.prototype = {
 	create : function(user, options, callback) {
+		console.log('I am in create method');
 		console.log(user);
 		var doc = {
 			_creator : user._id
@@ -23,6 +24,24 @@ GalleryDao.prototype = {
 		this.model.create(doc, function(err, data) {
 			console.log(err);
 			callback(err, data);
+		});
+	},
+	update : function(user, id, options, callback) {
+		console.log(user);
+		var _model = this.model;
+		this.model.findOne({
+			'_id' : id
+		}).exec(function(err, gallery) {
+			console.log('Gallery before update .... ');
+			console.log(gallery);
+			console.log(options);
+			if (options) {
+				merge(gallery, options);
+			}
+			gallery.save(function(err, data) {
+				console.log(err);
+				callback(err, data);
+			});
 		});
 	},
 	load : function(id, callback) {

@@ -156,52 +156,111 @@
 		});
 	});
 
+	// create or update
 	$('button#g_create').click(function() {
 		var title = $('#g_title').val();
 		var desc = $('#g_desc').val();
+		var id = $('#g_form_id').val();
 		var images = [];
 		$('.imageChecked').each(function() {
 			images.push($(this).attr('src'));
 		});
-		$.ajax({
-			url : '/user/seanye/gallery',
-			dataType : 'json',
-			type : 'post',
-			data : {
-				title : title,
-				desc : desc,
-				images : images
-			}
-		}).done(function(data) {
-			if (data == null || data.err != null) {
-				showPageMessage('创建相册失败， 请重新试一下', false);
-			} else {
-				showPageMessage('创建相册成功，你可以刷新页面以查看你的相册', true);
-			}
-		});
+		if (id.length <= 0) {
+			$.ajax({
+				url : '/gallery',
+				dataType : 'json',
+				type : 'post',
+				data : {
+					title : title,
+					desc : desc,
+					images : images
+				}
+			}).done(function(data) {
+				clearGalleryForm();
+				selectedImages = [];
+				if (data == null || data.err != null) {
+					showPageMessage('创建相册失败， 请重新试一下', false);
+				} else {
+					showPageMessage('创建相册成功，你可以刷新页面以查看你的相册', true);
+				}
+			});
+		} else {
+			$.ajax({
+				url : '/gallery/' + id,
+				dataType : 'json',
+				type : 'put',
+				data : {
+					title : title,
+					desc : desc,
+					images : images
+				}
+			}).done(function(data) {
+				clearGalleryForm();
+				selectedImages = [];
+				if (data == null || data.err != null) {
+					showPageMessage('更新相册失败， 请重新试一下', false);
+				} else {
+					showPageMessage('更新相册成功，你可以刷新页面以查看你的相册', true);
+				}
+			});
+		}
+
 	});
 
+	var userPhotos = [];
 	$('button#g_img_selector').click(function() {
-		// modal page to select images
-		$('#img_grid_modal').modal('show');
-		var space = $('li.metadata_base_path').text().trim();
-		if ('' === space) {
-			space = 'test'; // default one
-		}
-		$.ajax({
-			url : '/list/' + space,
-			dataType : 'json',
-		}).done(function(result) {
-			var linksContainer = $('#links'), baseUrl;
-			// Add the demo images as links with thumbnails to the page:
-			$.each(result, function(index, photo) {
-				$('<img>').addClass('being_select').css('width', '100px').css('cursor', 'pointer').css('height', 'auto').prop('src', photo + '!100').attr('src', photo).click(function() {
-					console.log('Add mark' + $(this).attr('src'));
-					toogleMask($(this));
-				}).appendTo(linksContainer);
+		if (userPhotos.length > 0) {
+			$('#links').show();
+		} else {
+			// modal page to select images
+			$('#img_grid_modal').modal('show');
+			var space = $('li.metadata_base_path').text().trim();
+			if ('' === space) {
+				space = 'test'; // default one
+			}
+
+			$.ajax({
+				url : '/list/' + space,
+				dataType : 'json',
+			}).done(function(result) {
+				var linksContainer = $('#links');
+				// Add the demo images as links with thumbnails to the page:
+				$.each(result, function(index, photo) {
+					userPhotos = result;
+					var img = $('<img>').addClass('being_select').css('width', '100px').css('cursor', 'pointer').css('height', 'auto').prop('src', photo + '!100').attr('src', photo).click(function() {
+						toogleMask($(this));
+					});
+					img.appendTo(linksContainer);
+					if (selectedImages.length > 0 && selectedImages.indexOf(photo) >= 0) {
+						addMask(img);
+					}
+				});
 			});
-		});
+		}
 	});
+
+	function clearGalleryForm() {
+		$('#g_form_id').val('');
+		$('#g_title').val('');
+		$('#g_desc').val('');
+		$('div.imageChecked').remove(); // remove all masked.
+	}
+
+	var selectedImages = [];
+	function preFllGalleryForm(galleryId) {
+		clearGalleryForm();
+		$.ajax({
+			url : '/gallery/' + galleryId,
+			dataType : 'json',
+			type : 'get'
+		}).done(function(data) {
+			$('#g_form_id').val(data._id);
+			$('#g_title').val(data.title);
+			$('#g_desc').val(data.desc);
+			selectedImages = data.images;
+			$('button#g_img_selector').click()// click the button
+		});
+	}
 
 	$(document).ready(function() {
 		// load all gallery
@@ -252,8 +311,12 @@
 								}
 							});
 						});
-						var edit = $('<a href="#" class="btn btn-primary gallery-button" role="button">编辑</a>');
+						var edit = $('<a href="#" class="btn btn-primary gallery-button" role="button">编辑</a>').attr('gallery_id', value._id);
 						edit.appendTo(opertors);
+						$(edit).click(function() {
+							var galleryId = $(this).attr('gallery_id');
+							preFllGalleryForm(galleryId);
+						});
 
 						var preview = $('<a href="#" class="btn btn-primary gallery-button gallery-preview" role="button">查看效果</a>');
 						$(preview).click(function() {
