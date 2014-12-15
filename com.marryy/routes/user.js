@@ -11,6 +11,16 @@ exports.gallery = {
 			res.json(data);
 		});
 	},
+	show : function(req, res) {
+		var galleryId = req.params.id;
+		model_gallery.load(galleryId, function(err, data) {
+			var gallery = data;
+			res.render('gallery/index', {
+				user : req.session.user.name,
+				gallery : gallery
+			});
+		});
+	},
 	remove : function(req, res) {
 		var id = req.params.id;
 		model_gallery.remove(id, function(err, data) {

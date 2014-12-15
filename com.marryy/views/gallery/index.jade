@@ -1,12 +1,11 @@
 extends ../layout
 block content
-	div.metadata(class='hide')
-		li.metadata_base_path=basePath
-	div.container
+	//gallery images urls
+	ul.hide(id="gallery_images")
+		each item in gallery.images
+			li= item
+	div.container(class='container-body')
 		div
-			div.header
-				h1.text-muted 故事
-					small 流年
 			div#blueimp-gallery.blueimp-gallery
 				div.slides
 				h3.title

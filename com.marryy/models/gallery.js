@@ -25,6 +25,16 @@ GalleryDao.prototype = {
 			callback(err, data);
 		});
 	},
+	load : function(id, callback) {
+		this.model.findOne({
+			'_id' : id
+		}).exec(function(err, gallery) {
+			console.log("--- test gallery loading --- ");
+			console.log(gallery);
+			console.log(" =====  test gallery loading ===== ");
+			callback(err, gallery);
+		});
+	},
 	list : function(user, callback) {
 		this.model.find({
 			_creator : user._id

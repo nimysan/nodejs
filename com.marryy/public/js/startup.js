@@ -14,18 +14,15 @@
 
 $(function() {
 	'use strict';
-	var space = $('li.metadata_base_path').text().trim();
-	if ('' === space) {
-		space = 'test'; // default one
-	}
-	$.ajax({
-		url : '/list/' + space,
-		dataType : 'json',
-	}).done(function(result) {
-		var linksContainer = $('#links'), baseUrl;
+	$(document).ready(function() {
+		var images = $('ul#gallery_images li');
+		var linksContainer = $('#links');
 		// Add the demo images as links with thumbnails to the page:
-		$.each(result, function(index, photo) {
-			$('<img>').css('width', '100px').css('height', 'auto').prop('src', photo + '!100').appendTo(linksContainer);
+		$.each(images, function(index, li) {
+			var photo = $(li).text().trim();
+			$('<a/>').append($('<img>').css('width', '80px').css('height', 'auto').prop('src', photo)).prop('href', photo).prop('title', photo.title).attr('data-gallery', '').appendTo(linksContainer);
+			// $('<img>').css('width', '100px').css('height',
+			// 'auto').prop('src', photo + '!100').appendTo(linksContainer);
 		});
 	});
 
