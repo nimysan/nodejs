@@ -4,6 +4,7 @@
 
 var express = require('express'), routes = require('./routes'), user = require('./routes/user'), http = require('http'), path = require('path'), pig = require('./lib/photo_gateway.js');
 express.static = require('serve-static');
+var paginate = require('express-paginate');
 var favicon = require('serve-favicon');
 var morgan = require('morgan');
 var bodyParser = require('body-parser');
@@ -28,6 +29,8 @@ app.use(cookieParser());
 app.use(methodOverride());
 app.use(morgan('combined'));
 app.use(express.static(path.join(__dirname, 'public')));
+//keep this before all routes that will use pagination
+app.use(paginate.middleware(5, 50));
 
 var sess = session({
 	secret : 'com.marryy',
@@ -87,6 +90,8 @@ app.route('/user/:user/gallery').get(user.gallery.list).head(
 		}).post(user.gallery.create);
 
 app.route('/user/:user/gallery/:id').delete(user.gallery.remove).get(user.gallery.show);
+app.route('/gallery/:id').delete(user.gallery.remove).get(user.gallery.show);
+
 // app users
 app.get('/price', function(req, res) {
 	res.render('price');

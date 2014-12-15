@@ -4,6 +4,7 @@ exports.db = {
 var mongoose = require('mongoose');
 var db = mongoose.createConnection(exports.db.Url);
 var Schema = mongoose.Schema;
+var mongoosePaginate = require('mongoose-paginate');
 
 // user
 var userSchema = new Schema({
@@ -54,8 +55,11 @@ var gallerySchema = new Schema({
 	}
 });
 
+gallerySchema.plugin(mongoosePaginate);
+var gallery_model = db.model('galleries', gallerySchema);
+
 exports.models = {
-	gallery : db.model('galleries', gallerySchema),
+	gallery : gallery_model,
 	user : db.model('users', userSchema),
 	db : db
 };

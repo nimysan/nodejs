@@ -15,8 +15,9 @@ exports.gallery = {
 		var galleryId = req.params.id;
 		model_gallery.load(galleryId, function(err, data) {
 			var gallery = data;
+			var user = (req.session && req.session.user) ? req.session.user.name : '';
 			res.render('gallery/index', {
-				user : req.session.user.name,
+				user : user,
 				gallery : gallery
 			});
 		});

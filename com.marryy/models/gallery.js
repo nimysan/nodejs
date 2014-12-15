@@ -42,6 +42,24 @@ GalleryDao.prototype = {
 			callback(err, data);
 		});
 	},
+	listAll : function(page, perPage, callback) {
+		this.model.paginate({}, page, perPage, function(error, pageCount, paginatedResults, itemCount) {
+			console.log('Pageniation information ... ');
+			console.log('Current page: ' + page + ' Per page: ' + perPage);
+			if (error) {
+				console.error(error);
+			} else {
+				console.log('Pages:', pageCount);
+				console.log(paginatedResults);
+				callback(error, paginatedResults, pageCount, itemCount);
+			}
+		}, {
+			sortBy : {
+				date : -1
+			}
+		});
+
+	},
 	remove : function(id, callback) {
 		this.model.findOneAndRemove({
 			_id : id
