@@ -1,0 +1,24 @@
+/**
+ * Someone has the permission to edit the image path for specific user
+ */
+
+extends ../layout
+block content
+	//gallery images urls
+	ul.hide(id="gallery_images")
+		each item in gallery.images
+			li= item
+	div.container(class='container-body')
+		div
+			div#blueimp-gallery.blueimp-gallery
+				div.slides
+				h3.title
+				a.prev 
+				a.next 
+				a.close
+				a.play-pause
+							
+			div#links
+	
+	script(src='//blueimp.github.io/Gallery/js/jquery.blueimp-gallery.min.js')
+	script(src='/js/startup.js')

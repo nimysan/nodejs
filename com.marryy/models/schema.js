@@ -18,6 +18,10 @@ var userSchema = new Schema({
 	desc : String,
 	body : String,
 	contact : String,
+	roles : [ {
+		type : Schema.Types.ObjectId,
+		ref : 'roles'
+	} ],
 	galleries : [ {
 		type : Schema.Types.ObjectId,
 		ref : 'galleries'
@@ -29,6 +33,18 @@ var userSchema = new Schema({
 	meta : {
 		votes : Number,
 		favs : Number
+	}
+});
+
+var roleSchema = new Schema({
+	role : String,
+	desc : String,
+	date : {
+		type : Date,
+		'default' : Date.now
+	},
+	meta : {
+		votes : Number,
 	}
 });
 // gallery
@@ -63,5 +79,6 @@ var gallery_model = db.model('galleries', gallerySchema);
 exports.models = {
 	gallery : gallery_model,
 	user : db.model('users', userSchema),
+	role : db.model('roles', roleSchema),
 	db : db
 };

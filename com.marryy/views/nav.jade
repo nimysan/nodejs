@@ -20,7 +20,7 @@ block nav
 					ul(class="nav navbar-nav navbar-right")
 						- if (displayName)
 							li.active
-								a(href="/user/#{displayName}/index")= displayName
+								a(href="/user/#{loginId}/index")= displayName
 						- else
 							li.active <a href="/user/login">登录</a>
 							

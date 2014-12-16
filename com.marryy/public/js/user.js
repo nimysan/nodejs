@@ -256,7 +256,7 @@
 			$('#img_grid_modal').modal('show');
 			var space = $('li.metadata_base_path').text().trim();
 			if ('' === space) {
-				space = 'sample1'; // default one
+				space = 'sample2'; // default one
 			}
 
 			$.ajax({

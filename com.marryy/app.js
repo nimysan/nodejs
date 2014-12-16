@@ -15,7 +15,6 @@ var session = require('express-session');
 var app = express();
 
 // model
-var admin = require('./routes/admin');
 var cookieParser = require('cookie-parser');
 
 // all environments
@@ -63,7 +62,6 @@ app.use(function(req, res, next) {
 	next();
 });
 
-var model = require('./models/userspace').dao;
 app.get("/", routes.index, function(req, res, next) {
 	next();
 });
@@ -106,52 +104,6 @@ app.route('/gallery').post(user.gallery.create);
 app.get('/price', function(req, res) {
 	res.render('price');
 });
-
-// space entry point
-app.get('/space/:space', function(req, res, next) {
-	// this space is public or not
-	function isAvailableForUser(req) {
-		return true;
-	}
-	if (isAvailableForUser(req)) {
-		next();
-	} else {
-		res.send('The space is not available for u');
-	}
-
-}, function(req, res) {
-	var unique_key = req.params.space; // unique key
-	var space = req.params.space;
-	model.nameExists(space, function(err, data) {
-		if (data.length === 1) {
-			var upyun_path = data[0].upyun_path;
-			res.render('show', {
-				basePath : upyun_path
-			});
-		} else {
-			res.render('index', {
-				basePath : 'test'
-			});
-		}
-	});
-});
-// pictures list modules
-app.get('/list/:space', function(req, res) {
-	var unique_key = req.params.space; // unique key
-	console.log('The unique key is ' + unique_key);
-	var links = [];
-	pig.listPictures('/' + unique_key, function(files) {
-		for (var i = 0; i < files.length; i++) {
-			var file = files[i];
-			if ('file' === file.type) {
-				links.push('http://nimysan.b0.upaiyun.com' + '/' + unique_key
-						+ '/' + file.name);
-			}
-		}
-		res.json(links);
-	});
-
-}); // list the file under unique key
 
 // user management
 var user_dao = require('./models/user').user_dao;
@@ -257,6 +209,22 @@ app.post("/user/signup", function(req, res) {
 
 });
 // user management
+// pictures list modules
+app.get('/list/:space', function(req, res) {
+	var unique_key = req.params.space; // unique key
+	console.log('The unique key is ' + unique_key);
+	var links = [];
+	pig.listPictures('/' + unique_key, function(files) {
+		for (var i = 0; i < files.length; i++) {
+			var file = files[i];
+			if ('file' === file.type) {
+				links.push('http://nimysan.b0.upaiyun.com' + '/' + unique_key+ '/' + file.name);
+			}
+		}
+		res.json(links);
+	});
+
+}); // list the file under unique key
 
 http.createServer(app).listen(app.get('port'), function() {
 	console.log('Express server listening on port ' + app.get('port'));
