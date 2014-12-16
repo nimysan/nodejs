@@ -339,8 +339,10 @@
 			type : 'get'
 		}).done(function(data) {
 			if (data && data.length > 0) {
+				$('#no_gallery').remove();
 				$(data).each(function(index, value) {
 					if (value) {
+						
 						// fill
 						// gallery
 						var overview = $('<div class="thumbnail">');
@@ -400,7 +402,7 @@
 					}
 				});
 			} else {
-				$('<h2>你还没有任何相册</h2>').appendTo($('#gallery_list'));
+				$('<h2 id="no_gallery">你还没有任何相册</h2>').appendTo($('#gallery_list'));
 			}
 		});
 	}

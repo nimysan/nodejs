@@ -100,6 +100,7 @@ app.route('/user/:user/gallery').get(user.gallery.list).head(
 
 app.route('/user/:user/gallery/:id').delete(user.gallery.remove).get(user.gallery.show).put(user.gallery.update);
 app.route('/gallery/:id').delete(user.gallery.remove).get(user.gallery.show).put(user.gallery.update).post(user.gallery.create);
+app.route('/gallery').post(user.gallery.create);
 
 // app users
 app.get('/price', function(req, res) {
@@ -170,6 +171,8 @@ app.put('/user/:userId', function(req, res){
 		return;
 	}
 	user_dao.update(req.params.userId, req.body, function(err, user){
+		req.session.user = user;
+		req.session.user.password = '';
 		res.json({
 			data : user
 		});
