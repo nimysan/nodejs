@@ -78,8 +78,17 @@ app.get("/", routes.index, function(req, res, next) {
 // });
 
 app.get('/user/:user/index', function(req, res) {
+	var displayName = req.session.user.displayName;
+	if(displayName === null || displayName === ''){
+		displayName = req.session.user.loginId;
+	}
+	console.log(' ----- usage main page ---');
+	console.log(req.session.user);
 	res.render('user/index',{
-		user : req.session.user.name
+		loginId : req.session.user.loginId,
+		displayName : displayName,
+		email : req.session.user.email,
+		phone : req.session.user.phone
 	});
 });
 // app.get('/users', user.list);
@@ -143,37 +152,6 @@ app.get('/list/:space', function(req, res) {
 
 }); // list the file under unique key
 
-// admin module
-app.get('/admin/space', function(req, res) {
-	res.render('admin/space', {});
-});
-app.get('/admin/space/:space', function(req, res) {
-	model.nameExists(req.params.space, function(err, result) {
-		if (result && result.length > 0) {
-			res.json(1);
-		} else {
-			res.json(0);
-		}
-	});
-});
-
-app.post('/admin/space/:space', function(req, res) {
-	model.nameExists(req.params.space, function(err, result) {
-		if (result && result.length > 0) {
-			res.json(1);
-		} else {
-			// create new one
-			model.createSpace(req.params.space, function(err, data) {
-				if (err) {
-					res.json(0);
-				} else {
-					res.json(1);
-				}
-			});
-		}
-	});
-});
-
 // user management
 var user_dao = require('./models/user').user_dao;
 app.get('/user/signup', function(req, res) {
@@ -183,6 +161,21 @@ app.get('/user/signup', function(req, res) {
 		res.render('user/signup');
 	}
 });
+
+app.put('/user/:userId', function(req, res){
+	if(req.params.userId !== req.session.user.loginId){
+		res.json({
+			err: '你试着去更改不属于你的信息'
+		});
+		return;
+	}
+	user_dao.update(req.params.userId, req.body, function(err, user){
+		res.json({
+			data : user
+		});
+	});
+});
+
 app.get("/user/login", function(req, res) {
 	res.render("user/login");
 });

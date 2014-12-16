@@ -8,12 +8,13 @@ var mongoosePaginate = require('mongoose-paginate');
 
 // user
 var userSchema = new Schema({
-	userId : String,
-	name : String,
+	loginId : String,
+	displayName : String,
 	password : String,
 	salt : String,
 	hash : String,
 	email : String,
+	phone : String,
 	desc : String,
 	body : String,
 	contact : String,
@@ -36,7 +37,6 @@ var gallerySchema = new Schema({
 		type : Schema.Types.ObjectId,
 		ref : 'users'
 	},
-	galleryId : String,
 	cover : String,
 	title : String,
 	desc : String,

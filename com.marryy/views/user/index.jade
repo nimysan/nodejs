@@ -2,19 +2,43 @@ extends ../layout.jade
 block content
 	div.container(class='container-body')
 		<div class="alert hide" role="alert" id="message"></div>
-		<div class='hide'><input type='hidden' value='#{user}' id="metadata_user"></input></div>
+		<div class='hide'><input type='hidden' value='#{loginId}' id="metadata_login_id"></input><input type='hidden' value='#{displayName}' id="metadata_display_name"></input></div>
 		div.row
 			div.col-md-2
-				ul(class="nav nav-pills nav-stacked")
+				ul(class="nav nav-pills nav-stacked", id='nav_items')
 					li.active
-						a(href='/user/profile') 用户设置
-					li
-						a(href='/user/gallery') 相册管理
-					li
-						a#create_gallery(href='javascript:void(0);') 相册创建
+						a#user(href='#',part='user_part') 用户信息
+					li(id='gallery')
+						a(href='#', part='gallery_part') 相册管理
+						
 			div.col-md-10
 				block user_content
-					div(class="panel panel-info")
+					div#user_part(class="panel panel-info")
+						div.panel-heading
+							h2.panel-title 用户信息更新 
+						div.panel-body
+							div(role='form', class="gallery_form")
+								div#g_form_id(type='hidden') 
+								div.form-group(class='has-feedback')
+									div.input-group
+										span(class='glyphicon glyphicon-user input-group-addon')
+										input#u_display_name(type='text', class='form-control',placeholder='用户名字，当你登录的时候显示的名字',value='#{displayName}')
+									
+								div.form-group(class='has-feedback')
+									div.input-group
+										span(class='glyphicon glyphicon-envelope input-group-addon')
+										input#u_mail(type='text', class='form-control',placeholder='电子邮件地址，用户发送信息以及重置密码',value='#{email}')
+										
+								div.form-group(class='has-feedback')
+									div.input-group
+										span(class='glyphicon glyphicon-phone input-group-addon')
+										input#u_phone(type='text', class='form-control',placeholder='最好填写手机号码，非必需',value='#{phone}')
+								
+								button#u_update(type='button', class='btn btn-primary') 提交数据
+									span(class='glyphicon glyphicon-ok-sign')
+											
+											
+					div#gallery_part(class="panel panel-info hide")
 						div.panel-heading
 							h2.panel-title 相册
 						div.panel-body
@@ -28,7 +52,7 @@ block content
 								div.form-group(class='has-feedback')
 									div.input-group
 										span(class='glyphicon glyphicon-list-alt input-group-addon')
-										input#g_desc(type='text-area', class='form-control',placeholder='详细描述')
+										textarea#g_desc(type='text', class='form-control',placeholder='详细描述')
 								
 								div.form-group
 									div.input-group
@@ -54,11 +78,9 @@ block content
 								button#g_create(type='button', class='btn btn-primary') 按下按钮创建
 									span(class='glyphicon glyphicon-cloud')
 									
-					div.row
-						div.col-md-12
-							div#gallery_list
-								h3 相册集合
-						div.col-md-0
+						div#gallery_list
+							h3 相册集合
+							div.row(id='gallery_list_row')
 						
 					
 	script(src='/js/user.js')

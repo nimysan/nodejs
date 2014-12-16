@@ -18,9 +18,9 @@ block nav
 						button(type="submit", class="btn btn-primary") 搜索
 					
 					ul(class="nav navbar-nav navbar-right")
-						- if (user)
+						- if (displayName)
 							li.active
-								a(href="/user/#{user}/index")= user
+								a(href="/user/#{displayName}/index")= displayName
 						- else
 							li.active <a href="/user/login">登录</a>
 							

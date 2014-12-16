@@ -4,7 +4,6 @@
 
 var model_gallery = require('../models/gallery').gallery_dao;
 var model_user = require('../models/user').model_user;
-
 exports.gallery = {
 	list : function(req, res) {
 		model_gallery.list(req.session.user, function(err, data) {

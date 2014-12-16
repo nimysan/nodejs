@@ -102,6 +102,15 @@
 		showMessage('user_password_2', '两次输入的密码必须一致', $('#user_password').val() == $(this).val());
 	});
 
+	$('#nav_items a').click(function() {
+		var part = $(this).attr('part');
+		$('div.panel').addClass('hide');
+		$('#' + part).removeClass('hide');
+		$('#nav_items li').removeClass('active');
+		$(this).parent('li').addClass('active');
+
+	});
+
 	$('#create_user').click(function() {
 		if (validate()) {
 			var username = $('#user_name').val().trim();
@@ -123,6 +132,26 @@
 				}
 			});
 		}
+	});
+
+	$('#u_update').click(function() {
+		var userId = $('#metadata_login_id').val().trim();
+		$.ajax({
+			url : '/user/' + userId,
+			dataType : 'json',
+			type : 'put',
+			data : {
+				displayName : $('#u_display_name').val(),
+				email : $('#u_mail').val(),
+				phone : $('#u_phone').val()
+			}
+		}).done(function(result) {
+			if (result && result.err) {
+				showPageMessage('更新用户信息失败， 请重试. ' + result.err, false);
+			} else {
+				showPageMessage('更新用户信息成功', true);
+			}
+		});
 	});
 
 	$('#user_login').click(function() {
@@ -187,6 +216,7 @@
 				if (data == null || data.err != null) {
 					showPageMessage('创建相册失败， 请重新试一下', false);
 				} else {
+					listGalleries();
 					showPageMessage('创建相册成功，你可以刷新页面以查看你的相册', true);
 				}
 			});
@@ -209,6 +239,7 @@
 				if (data == null || data.err != null) {
 					showPageMessage('更新相册失败， 请重新试一下', false);
 				} else {
+					listGalleries();
 					showPageMessage('更新相册成功，你可以刷新页面以查看你的相册', true);
 				}
 			});
@@ -225,7 +256,7 @@
 			$('#img_grid_modal').modal('show');
 			var space = $('li.metadata_base_path').text().trim();
 			if ('' === space) {
-				space = 'test'; // default one
+				space = 'sample1'; // default one
 			}
 
 			$.ajax({
@@ -298,10 +329,9 @@
 			}
 		});
 	}
-	//
 
-	$(document).ready(function() {
-		startSwitch();
+	function listGalleries() {
+		$('#gallery_list_row').empty();
 		// load all gallery
 		$.ajax({
 			url : '/user/seanye/gallery',
@@ -313,7 +343,7 @@
 					if (value) {
 						// fill
 						// gallery
-						var overview = $('<div class="thumbnail">')
+						var overview = $('<div class="thumbnail">');
 						overview.attr('gallery-id', value._id);
 						var coverSrc = 'http://nimysan.b0.upaiyun.com/sample1/li4J5yZUDtPg.jpg!phone'; // default
 						if (value.images && value.images.length > 0) {
@@ -331,14 +361,14 @@
 							var _this = this;
 							$(this).parents('div.thumbnail').each(function() {
 								var galleryId = $(this).attr('gallery-id');
-								if (typeof galleryId == 'string') {
+								if (typeof galleryId === 'string') {
 									$.ajax({
 										url : '/user/seanye/gallery/' + galleryId,
 										dataType : 'json',
 										type : 'delete'
 									}).done(function(data) {
 										console.log(data);
-										if (data == null || data.err != null) {
+										if (data === null || data.err !== null) {
 											// failed to delete gallery
 											showPageMessage('因为某些原因，这个相册不能被删除', false);
 										} else {
@@ -364,12 +394,20 @@
 						preview.appendTo(opertors);
 
 						opertors.appendTo(caption);
-						$('#gallery_list').append(overview);
+						var layout = $('<div>').addClass('col-md-6').addClass('col-xs-12');
+						layout.append(overview);
+						$('#gallery_list_row').append(layout);
 					}
 				});
 			} else {
 				$('<h2>你还没有任何相册</h2>').appendTo($('#gallery_list'));
 			}
 		});
+	}
+	//
+
+	$(document).ready(function() {
+		startSwitch();
+		listGalleries();
 	});
 })(window, jQuery);

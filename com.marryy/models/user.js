@@ -12,16 +12,37 @@ var UserDao = function(db, model) {
 
 UserDao.prototype = {
 	create : function(name, password, options, callback) {
-		console
-				.log('Create user with name ' + name + ' - password '
-						+ password);
+		console.log('Create user with name ' + name + ' - password ' + password);
 		var doc = {
-			name : name,
+			loginId : name,
 			password : password
 		};
+		if (options) {
+			merge(doc, options);
+		}
 		this.model.create(doc, function(err, data) {
 			console.log(err);
 			callback(err, data);
+		});
+	},
+	update : function(userId, options, callback) {
+		console.log(userId);
+		var _model = this.model;
+		this.model.findOne({
+			'loginId' : userId
+		}).exec(function(err, user) {
+			console.log(user);
+			console.log(options);
+			if (options) {
+				merge(user, options);
+			}
+			console.log(' Updated --- user---');
+			console.log(user);
+			console.log(' Updated --- user -- end');
+			user.save(function(err, data) {
+				console.log(err);
+				callback(err, data);
+			});
 		});
 	},
 	exists : function(username, fn) {
@@ -34,7 +55,7 @@ UserDao.prototype = {
 	},
 	load : function(name, callback) {
 		this.model.findOne({
-			'name' : name
+			'loginId' : name
 		}).populate('galleries').exec(function(err, user) {
 			console.log("--- test --- ");
 			console.log(user);
@@ -47,7 +68,7 @@ UserDao.prototype = {
 			console.log('authenticating %s:%s', name, pass);
 		}
 		this.model.findOne({
-			'name' : name
+			'loginId' : name
 		}, function(err, user) {
 			if (user) {
 				if (err) {
