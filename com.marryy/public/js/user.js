@@ -161,6 +161,9 @@
 		var title = $('#g_title').val();
 		var desc = $('#g_desc').val();
 		var id = $('#g_form_id').val();
+		var isPrivate = !$('#gallery_primate').bootstrapSwitch('state');
+		var question = $('#gq_desc').val();
+		var answer = $('#gq_answer').val();
 		var images = [];
 		$('.imageChecked').each(function() {
 			images.push($(this).attr('src'));
@@ -173,7 +176,10 @@
 				data : {
 					title : title,
 					desc : desc,
-					images : images
+					images : images,
+					isPrivate : isPrivate,
+					question : question,
+					answer : answer
 				}
 			}).done(function(data) {
 				clearGalleryForm();
@@ -192,7 +198,10 @@
 				data : {
 					title : title,
 					desc : desc,
-					images : images
+					images : images,
+					isPrivate : isPrivate,
+					question : question,
+					answer : answer
 				}
 			}).done(function(data) {
 				clearGalleryForm();
@@ -243,6 +252,9 @@
 		$('#g_form_id').val('');
 		$('#g_title').val('');
 		$('#g_desc').val('');
+		$('#gq_desc').val('');
+		$('#gq_answer').val('');
+		$('#gallery_primate').bootstrapSwitch('state', true);
 		$('div.imageChecked').remove(); // remove all masked.
 	}
 
@@ -257,12 +269,39 @@
 			$('#g_form_id').val(data._id);
 			$('#g_title').val(data.title);
 			$('#g_desc').val(data.desc);
+			$('#gallery_primate').bootstrapSwitch('state', !data.isPrivate);
+			if (data.isPrivate === true) {
+				$('#gallery_question').removeClass('hide');
+			} else {
+				$('#gallery_question').addClass('hide');
+			}
+
+			$('#gq_desc').val(data.question);
+			$('#gq_answer').val(data.answer);
+
 			selectedImages = data.images;
 			$('button#g_img_selector').click()// click the button
 		});
 	}
 
+	// page initialize
+	function startSwitch() {
+		var swi = $('#gallery_primate').bootstrapSwitch();
+		$('#gallery_primate').on('switchChange.bootstrapSwitch', function() {
+			var state = $(this).bootstrapSwitch('state');
+			if (state + '' === 'false') {
+				// show question area
+				$('#gallery_question').removeClass('hide');
+			} else {
+				// hide question area
+				$('#gallery_question').addClass('hide');
+			}
+		});
+	}
+	//
+
 	$(document).ready(function() {
+		startSwitch();
 		// load all gallery
 		$.ajax({
 			url : '/user/seanye/gallery',

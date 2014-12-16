@@ -38,6 +38,9 @@ GalleryDao.prototype = {
 			if (options) {
 				merge(gallery, options);
 			}
+			console.log(' Updated --- Gallery');
+			console.log(gallery);
+			console.log(' Updated --- Gallery -- end');
 			gallery.save(function(err, data) {
 				console.log(err);
 				callback(err, data);

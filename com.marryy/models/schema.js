@@ -42,6 +42,8 @@ var gallerySchema = new Schema({
 	desc : String,
 	user : String, // how to setup the foreign key to user?
 	isPrivate : Boolean,
+	question : String,
+	answer : String,
 	images : [ {
 		type : String
 	} ],

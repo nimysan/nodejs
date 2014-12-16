@@ -30,6 +30,22 @@ block content
 										span(class='glyphicon glyphicon-list-alt input-group-addon')
 										input#g_desc(type='text-area', class='form-control',placeholder='详细描述')
 								
+								div.form-group
+									div.input-group
+										label 相册是公开的还是私密的?
+										div.switch
+											input#gallery_primate(type="checkbox", data-on-text="公开",data-off-text="私密", checked=true)
+								div#gallery_question(class='hide')
+									div.form-group(class='has-feedback')
+										div.input-group
+											span(class='glyphicon glyphicon-question-sign input-group-addon')
+											input#gq_desc(type='text', class='form-control',placeholder='问题描述，你的访问者货看到这个问题')
+									
+									div.form-group(class='has-feedback')
+										div.input-group
+											span(class='glyphicon glyphicon-pencil input-group-addon')
+											input#gq_answer(type='text-area', class='form-control',placeholder='你给的答案，访问者给出精确答案才能允许访问')
+								
 								div#links
 										
 								button#g_img_selector(type='button', class='btn btn-success') 选择图片
@@ -46,3 +62,5 @@ block content
 						
 					
 	script(src='/js/user.js')
+	
+	
