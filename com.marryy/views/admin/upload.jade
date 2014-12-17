@@ -1,0 +1,28 @@
+extends ../layout
+
+block content
+	link(rel='stylesheet', href='/dropzone/css/basic.css')
+	link(rel='stylesheet', href='/dropzone/css/dropzone.css')
+	div.container
+		<div class="alert hide" role="alert" id="message"></div>
+		div#user_part(class="panel panel-info")
+			div.panel-heading
+				h2.panel-title 上传文件
+			div.panel-body
+				h2 把文件拖到浏览器里面上传
+				div#dropzone
+					form(class='dropzone dz-clickable',action='/admin/fileupload')
+						div(class='dz-default dz-message')
+							span Dorp files here to upload
+				
+				h2 form api for upyun
+				div.demoForm2
+					fieldset
+						legend demo2
+							<input name="file" type="file" id="file2">
+							<a id="submit2" class="submit">submit</a>
+	<script src="http://cdn.bootcss.com/crypto-js/3.1.2/components/core-min.js"></script>
+	script(src='http://cdn.bootcss.com/crypto-js/3.1.2/components/md5.js')				
+	script(src='/dropzone/dropzone.min.js')
+	script(src='/js/fileupload.js')
+			

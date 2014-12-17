@@ -203,6 +203,21 @@ console.log(typeof management.index);
 app.get('/admin/user', management.index);
 app.post('/admin/user/:userId', management.uesr.create);
 app.put('/admin/user/:userId', management.uesr.update);
+app.route('/admin/fileupload').get(function(req, res){
+	res.render('admin/upload');
+}).post(function(req, res){
+	console.log('file upload request');
+	console.log(req.files);
+	console.log(req.body);
+	res.json({msg: 'send succ'});
+});
+app.get('/admin/upyunsign', function(req, res){
+	console.log(' - -   ---             ---- ');
+	console.log(req.query.policy);
+	res.json({
+		sign: pig.getFromAPISign(req.query.policy)
+	});
+});
 // user admin
 
 // pictures list modules

@@ -5,6 +5,16 @@
  */
 
 var UPYUN = require('upyun');
+var crypto = require('crypto');
+function md5(text) {
+	return crypto.createHash('md5').update(text).digest('hex');
+}
+
+var config = {
+	api : 'http://v0.api.upyun.com/',
+	bucket : 'nimysan',
+	form_api_serect : 'naJhytuAR4Y41obzRPJrOhxlb7I='
+};
 // image client
 
 var PhotoGateway = function() {
@@ -24,35 +34,23 @@ PhotoGateway.prototype = {
 	_getCS : function() {
 		return this.iclient;
 	},
-	uploadFiles : function(localFiles) {
-		// TODO
-	},
-	/*
-	 * upyun api: uploadFile(remotePath, localFile, type, checksum, [opts],
-	 * callback)
-	 */
-	uploadFile : function(localFile) {
-		// TODO
-	},
 	listPictures : function(key, callback) {
-		this._getCS().listDir(
-				key,
-				null,
-				null,
-				null,
-				function(err, result) {
-					if (err) {
-						console.log('There is not any files for ' + key
-								+ 'with error detail: ' + err);
-						callback([]);
-					} else {
-						if (result && result.data.files) {
-							callback(result.data.files);
-							return; // avoid duplication return
-						}
-						callback([]);
-					}
-				});
+		this._getCS().listDir(key, null, null, null, function(err, result) {
+			if (err) {
+				console.log('There is not any files for ' + key + 'with error detail: ' + err);
+				callback([]);
+			} else {
+				if (result && result.data.files) {
+					callback(result.data.files);
+					return; // avoid duplication return
+				}
+				callback([]);
+			}
+		});
+	},
+	getFromAPISign : function(policyInBase64) {
+		console.log('md5 - ' + policyInBase64 + '&' + config.form_api_serect);
+		return md5(policyInBase64 + '&' + config.form_api_serect);
 	}
 };
 
