@@ -12,7 +12,6 @@ var GalleryDao = function(db, model) {
 
 GalleryDao.prototype = {
 	create : function(user, options, callback) {
-		console.log('I am in create method');
 		console.log(user);
 		var doc = {
 			_creator : user._id
@@ -86,10 +85,6 @@ GalleryDao.prototype = {
 		this.model.findOneAndRemove({
 			_id : id
 		}, function(err, data) {
-			console.log('Remove -------');
-			console.log(err);
-			console.log(data);
-			console.log('Remove -------');
 			callback(err, data);
 		});
 	},

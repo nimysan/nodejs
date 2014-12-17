@@ -1,24 +1,46 @@
-/**
- * Someone has the permission to edit the image path for specific user
- */
-
 extends ../layout
 block content
-	//gallery images urls
-	ul.hide(id="gallery_images")
-		each item in gallery.images
-			li= item
-	div.container(class='container-body')
-		div
-			div#blueimp-gallery.blueimp-gallery
-				div.slides
-				h3.title
-				a.prev 
-				a.next 
-				a.close
-				a.play-pause
-							
-			div#links
-	
-	script(src='//blueimp.github.io/Gallery/js/jquery.blueimp-gallery.min.js')
-	script(src='/js/startup.js')
+	div.container
+		<div class="alert hide" role="alert" id="message"></div>
+		div#user_part(class="panel panel-info")
+			div.panel-heading
+				h2.panel-title 用户创建和管理
+			div.panel-body
+				h2 新增用户
+				div(role='form', class="new_user_form")
+					div#g_form_id(type='hidden') 
+						div.form-group(class='has-feedback')
+							div.input-group
+								span(class='glyphicon glyphicon-user input-group-addon')
+								input#u_login_name(type='text', class='form-control',placeholder='给用户选择一个登录的名字，注意是登录名字',value='')
+						div.form-group(class='has-feedback')
+							div.input-group
+								span(class='glyphicon glyphicon-cloud input-group-addon')
+								input#u_image_path(type='text', class='form-control',placeholder='默认用用户登录名。用户在云空间拥有的路径，用户上传图片用',value='')
+								
+						button#u_create(type='button', class='btn btn-primary') 创建
+							span(class='glyphicon glyphicon-ok-sign')
+						button#u_create_manager(type='button', class='btn btn-danger') 创建管理者账户
+							span(class='glyphicon glyphicon-ok-sign')
+				
+				h2 所管理的用户
+				table(class='table table-bordered')
+					tr
+						td 用户名
+						td 用户类型
+						td 用户图片空间名字
+						td 用户创建时间
+						td 已付费
+					each item in users
+						tr.user_detail(user_id='#{item._id}')
+							td.u-login-id #{item.loginId}
+							- if (item.roles && item.roles.length == 1 && item.roles[0] == '54917369df4773fbf217e7cf')
+								td.u-role 管理员
+							- else
+								td.u-role 普通用户
+								
+							td.u-image-path #{item.imagePath}
+							td #{item.date.toDateString()}
+							td.u-payed #{item.payed}
+	script(src='/js/admin.js')
+			

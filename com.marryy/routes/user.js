@@ -56,6 +56,6 @@ exports.gallery = {
 				data : data
 			});
 		});
-	},
+	}
 
 };

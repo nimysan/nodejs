@@ -4,7 +4,7 @@
 var merge = require('utils-merge');
 var models = require('./schema').models;
 var db = models.db;
-
+var model_role = require('./role').model_role;
 var UserDao = function(db, model) {
 	this.db = db;
 	this.model = model;
@@ -12,18 +12,33 @@ var UserDao = function(db, model) {
 
 UserDao.prototype = {
 	create : function(name, password, options, callback) {
-		console.log('Create user with name ' + name + ' - password ' + password);
+		var _model = this.model;
 		var doc = {
 			loginId : name,
 			password : password
 		};
-		if (options) {
-			merge(doc, options);
+		// create uesr with role
+		if (options && options.role !== '') {
+			model_role.load(options.role, function(err, roleObj) {
+				if (options) {
+					delete options.role;
+					merge(doc, options);
+				}
+				doc.roles = [ roleObj ];
+				_model.create(doc, function(err, data) {
+					console.log(err);
+					callback(err, data);
+				});
+			});
+		} else {
+			if (options) {
+				merge(doc, options);
+			}
+			this.model.create(doc, function(err, data) {
+				console.log(err);
+				callback(err, data);
+			});
 		}
-		this.model.create(doc, function(err, data) {
-			console.log(err);
-			callback(err, data);
-		});
 	},
 	update : function(userId, options, callback) {
 		console.log(userId);
@@ -56,7 +71,7 @@ UserDao.prototype = {
 	load : function(name, callback) {
 		this.model.findOne({
 			'loginId' : name
-		}).populate('galleries').exec(function(err, user) {
+		}).populate('roles').populate('galleries').populate('directUsers').populate('directUsers roles').exec(function(err, user) {
 			console.log("--- test --- ");
 			console.log(user);
 			console.log(" =====  test ===== ");

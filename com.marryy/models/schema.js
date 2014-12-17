@@ -18,6 +18,15 @@ var userSchema = new Schema({
 	desc : String,
 	body : String,
 	contact : String,
+	imagePath : String,
+	directUsers : [ {
+		type : Schema.Types.ObjectId,
+		ref : 'users'
+	} ],
+	payed : {
+		'type' : Boolean,
+		'default' : false
+	},
 	roles : [ {
 		type : Schema.Types.ObjectId,
 		ref : 'roles'
@@ -37,7 +46,7 @@ var userSchema = new Schema({
 });
 
 var roleSchema = new Schema({
-	role : String,
+	name : String,
 	desc : String,
 	date : {
 		type : Date,

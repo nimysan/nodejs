@@ -1,5 +1,5 @@
 block nav
-	nav(class='navbar navbar-default navbar-fixed-top', role="navigation")
+	nav(class='navbar navbar-default', role="navigation")
 		<div id='announcement'><span class="glyphicon glyphicon glyphicon-volume-up" aria-hidden="true"></span> 【公告】2014年8月1日起，雅潼照片服务公司正式成立了! </div>
 		div.container
 			div.container-fluid
@@ -20,7 +20,11 @@ block nav
 					ul(class="nav navbar-nav navbar-right")
 						- if (displayName)
 							li.active
-								a(href="/user/#{loginId}/index")= displayName
+								- if (roles && roles.length > 0 && roles[0].name == 'manager')
+									a(href="/admin/user")= displayName
+									a= roles[0].name
+								- else
+									a(href="/user/#{loginId}/index")= displayName
 						- else
 							li.active <a href="/user/login">登录</a>
 							

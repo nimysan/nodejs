@@ -2,7 +2,7 @@
  * Module dependencies.
  */
 
-var express = require('express'), routes = require('./routes'), user = require('./routes/user'), http = require('http'), path = require('path'), pig = require('./lib/photo_gateway.js');
+var express = require('express'), routes = require('./routes'), user = require('./routes/user'), management = require('./routes/admin_route').management,http = require('http'), path = require('path'), pig = require('./lib/photo_gateway.js');
 express.static = require('serve-static');
 var paginate = require('express-paginate');
 var favicon = require('serve-favicon');
@@ -85,6 +85,7 @@ app.get('/user/:user/index', function(req, res) {
 	res.render('user/index',{
 		loginId : req.session.user.loginId,
 		displayName : displayName,
+		imagePath :  req.session.user.imagePath,
 		email : req.session.user.email,
 		phone : req.session.user.phone
 	});
@@ -150,28 +151,15 @@ app
 									req.body.username,
 									req.body.password,
 									function(err, user) {
-										console.log('Login result ' + err
-												+ ' - ' + user);
 										if (user) {
-											console
-													.log('user login successfully! '
-															+ user);
-											console.log('session '
-													+ req.session);
 											req.session
 													.regenerate(function() {
 														req.session.user = user;
-														req.session.success = 'Authenticated as '
-																+ user.username
-																+ ' click to <a href="/logout">logout</a>. '
-																+ ' You may now access <a href="/restricted">/restricted</a>.';
-														console
-																.log(req.session);
 														res.json(1);
 													});
 										} else {
 											res.json({
-												'error' : '登录失败。 用户名或密码错误'
+												'err' : '登录失败。 用户名或密码错误'
 											});
 										}
 									});
@@ -209,6 +197,14 @@ app.post("/user/signup", function(req, res) {
 
 });
 // user management
+// user admin
+console.log('management module');
+console.log(typeof management.index);
+app.get('/admin/user', management.index);
+app.post('/admin/user/:userId', management.uesr.create);
+app.put('/admin/user/:userId', management.uesr.update);
+// user admin
+
 // pictures list modules
 app.get('/list/:space', function(req, res) {
 	var unique_key = req.params.space; // unique key

@@ -5,33 +5,92 @@
 		$('div.form-group span').removeClass('hide');
 		$('label.control-label').text(text).removeClass('hide');
 		if (trueOrFalse) {
-			$('div.form-group span.glyphicon').addClass('glyphicon-ok')
-					.removeClass('glyphicon-remove');
-			$('div.form-group').removeClass('has-error')
-					.addClass('has-success');
+			$('div.form-group span.glyphicon').addClass('glyphicon-ok').removeClass('glyphicon-remove');
+			$('div.form-group').removeClass('has-error').addClass('has-success');
 		} else {
-			$('div.form-group span.glyphicon').addClass('glyphicon-remove')
-					.removeClass('glyphicon-ok');
-			$('div.form-group').removeClass('has-success')
-					.addClass('has-error');
+			$('div.form-group span.glyphicon').addClass('glyphicon-remove').removeClass('glyphicon-ok');
+			$('div.form-group').removeClass('has-success').addClass('has-error');
 		}
 
 	}
 
-	$('#space_name').change(function() {
-		var name = $(this).val();
-		$.ajax({
-			url : '/admin/space/' + name,
-			dataType : 'json',
-			type : 'get'
-		}).done(function(result) {
-			if (result && 1 === result) {
-				_showStatus('Space is not availale', false);
-			} else {
-				_showStatus('Space is availale', true);
-			}
-		});
+	function showPageMessage(message, trueOrFalse) {
+		if (trueOrFalse) {
+			$('#message').text(message).removeClass('hide').removeClass('alert-danger').addClass('alert-success');
+		} else {
+			$('#message').text(message).removeClass('hide').addClass('alert-danger');
+		}
+	}
+
+	$('#u_login_name').change(function() {
+		$('#u_image_path').val($(this).val());
 	});
+
+	$('#u_create, #u_create_manager').click(function() {
+		var isCreateManager = $(this).attr('id') === 'u_create_manager';
+		var name = $('#u_login_name').val();
+		var user_id = $('#g_form_id').attr('user_id');
+		if (user_id && user_id.length > 0) {
+			// update
+			$.ajax({
+				url : '/admin/user/' + name,
+				dataType : 'json',
+				type : 'put',
+				data : {
+					imagePath : $('#u_image_path').val(),
+					role : (isCreateManager ? 'manager' : 'customer')
+				}
+			}).done(function(result) {
+				if (result.user) {
+					showPageMessage('更新用户信息成功', true);
+					cleanUserForm();
+				}
+			});
+		} else {
+			// create
+			$.ajax({
+				url : '/admin/user/' + name,
+				dataType : 'json',
+				type : 'post',
+				data : {
+					imagePath : $('#u_image_path').val(),
+					role : (isCreateManager ? 'manager' : 'customer')
+				}
+			}).done(function(result) {
+				if (result.user) {
+					showPageMessage('新用户创建成功', true);
+					cleanUserForm();
+				}
+			});
+		}
+	});
+
+	function cleanUserForm() {
+		$('#u_login_name').val('');
+		$('#u_image_path').val('');
+		// user id
+		$('#g_form_id').attr('user_id', '');
+		$('#u_create').text('创建');
+		$('#u_login_name').attr('disabled', false);
+	}
+	// user table
+	$('tr.user_detail').click(function() {
+		if ($(this).hasClass('active')) {
+			$(this).removeClass('active');
+			cleanUserForm();
+
+		} else {
+			$('tr.user_detail').removeClass('active');
+			$(this).addClass('active');
+			$('#u_login_name').val($(this).find('td.u-login-id').text());
+			$('#u_image_path').val($(this).find('td.u-image-path').text());
+			// user id
+			$('#g_form_id').attr('user_id', $(this).attr('user_id'));
+			$('#u_create').text('更新');
+			$('#u_login_name').attr('disabled', true);
+		}
+	});
+	// user table
 
 	$('#create_space').click(function() {
 		var name = $('#space_name').val();

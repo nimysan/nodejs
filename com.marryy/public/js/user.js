@@ -253,12 +253,7 @@
 			$('#links').show();
 		} else {
 			// modal page to select images
-			$('#img_grid_modal').modal('show');
-			var space = $('li.metadata_base_path').text().trim();
-			if ('' === space) {
-				space = 'sample2'; // default one
-			}
-
+			var space = $('#metadata_image_path').val().trim();
 			$.ajax({
 				url : '/list/' + space,
 				dataType : 'json',
@@ -342,7 +337,7 @@
 				$('#no_gallery').remove();
 				$(data).each(function(index, value) {
 					if (value) {
-						
+
 						// fill
 						// gallery
 						var overview = $('<div class="thumbnail">');
