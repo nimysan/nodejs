@@ -262,7 +262,7 @@
 				// Add the demo images as links with thumbnails to the page:
 				$.each(result, function(index, photo) {
 					userPhotos = result;
-					var img = $('<img>').addClass('being_select').css('width', '100px').css('cursor', 'pointer').css('height', 'auto').prop('src', photo + '!100').attr('src', photo).click(function() {
+					var img = $('<img>').addClass('being_select').css('width', '100px').css('cursor', 'pointer').css('height', 'auto').prop('src', photo).click(function() {
 						toogleMask($(this));
 					});
 					img.appendTo(linksContainer);

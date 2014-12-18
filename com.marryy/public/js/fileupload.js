@@ -3,62 +3,72 @@
  */
 $(function() {
 	'use strict';
-
 	var config = {
 		api : 'http://v0.api.upyun.com/',
 		bucket : 'nimysan',
 	};
-
+	// Disable auto discover for all elements:
 	$(document).ready(function() {
-		$('#submit2').click(function() {
-			var file = document.getElementById('file2').files[0];
-			if (!file) {
-				console.log('no file is selected');
-				return;
-			}
-			// 计算 policy 和 signature 所需的参数
-			// 详情见： http://docs.upyun.com/api/form_api/#表单API接口简介
-			var options = {
-				bucket : config.bucket,
-				expiration : Math.floor(new Date().getTime() / 1000) + 86400,
-				'save-key' : '/test/' + file.name
-			};
-			var policy = window.btoa(JSON.stringify(options));
-			$.ajax({
-				url : '/admin/upyunsign',
-				dataType : 'json',
-				type : 'get',
-				data : {
-					policy : policy
-				}
-			}).done(function(result) {
-				if (result.sign) {
-					var signature = result.sign;
-					var data = new FormData();
-					data.append('policy', policy);
-					data.append('signature', signature);
-					data.append('file', file);
-					$.ajax({
-						type : 'POST',
-						url : config.api + options.bucket,
-						data : data,
-						/**
-						 * 必须false才会自动加上正确的Content-Type
-						 */
-						contentType : false,
-						/**
-						 * 必须false才会避开jQuery对 formdata 的默认处理 XMLHttpRequest会对
-						 * formdata 进行正确的处理
-						 */
-						processData : false
-					}).then(function() {
-						console.log('upload file successfully!');
-					}, function() {
-						// failCal
-					});
+		var upyunDropzone = null;
+		// http://www.dropzonejs.com/
+		Dropzone.options.upyunDropzone = {
+			paramName : "file",
+			method : "post",
+			action : config.api + config.bucket,
+			maxFilesize : 10, // MB
+			parallelUploads : 100, // one time you can upload 100 files
+			autoProcessQueue : false,
+			addRemoveLinks : true,
+			fallback : function() {
+				alert('你的浏览器不支持文件上传。 请专用chrome/firefox或升级IE到10以上版本。');
+			},
+			// only allow images
+			acceptedFiles : 'image/*',
+			// event listener
+			init : function() {
+				window.upyunDropzone = this;
+				this.on("addedfile", function(file) {
+					// console.log("Added file." + file.name);
+				});
 
-				}
-			});
+				this.on("sending", function(file, xhr, formData) {
+					var options = {
+						bucket : config.bucket,
+						expiration : Math.floor(new Date().getTime() / 1000) + 86400,
+						'save-key' : 'test/' + file.name
+					};
+					var policy = window.btoa(JSON.stringify(options));
+					formData.append('policy', policy);
+					// force to get the signature from back-end service
+					$.ajax({
+						url : '/admin/upyunsign',
+						dataType : 'json',
+						type : 'get',
+						data : {
+							policy : policy
+						},
+						async : false
+					}).done(function(result) {
+						formData.append('signature', result.sign);
+					});
+				});
+			},
+			// translate
+			dictDefaultMessage : ' 拖动文件到这里上传',
+			dictFallbackMessage : '你的浏览器不支持拖动文件上传',
+			dictFallbackText : 'Fallback text',
+			dictInvalidFileType : '不支持的文件类型',
+			dictFileTooBig : '文件太大了，单个图片最多支持10M',
+			dictResponseError : '文件上传错误，服务器有一些问题。请联系管理员或稍后重新试',
+			dictCancelUpload : '取消',
+			dictCancelUploadConfirmation : '确定取消吗？',
+			dictRemoveFile : '删除',
+			dictMaxFilesExceeded : '一次上传太多了。'
+		};
+
+		// page behavior
+		$('#uploadButton').click(function() {
+			window.upyunDropzone.processQueue();
 		});
 	});
 

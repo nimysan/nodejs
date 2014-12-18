@@ -10,19 +10,15 @@ block content
 				h2.panel-title 上传文件
 			div.panel-body
 				h2 把文件拖到浏览器里面上传
-				div#dropzone
-					form(class='dropzone dz-clickable',action='/admin/fileupload')
-						div(class='dz-default dz-message')
-							span Dorp files here to upload
+				div.well
+					button(type='submit', class='btn btn-danger', id='uploadButton') 点击这个按钮上传
+					
+				form#upyunDropzone(class='dropzone dz-clickable',action='http://v0.api.upyun.com/nimysan')
+					div(class='dz-default dz-message')
+						span 把文件拖入到这里上传
 				
-				h2 form api for upyun
-				div.demoForm2
-					fieldset
-						legend demo2
-							<input name="file" type="file" id="file2">
-							<a id="submit2" class="submit">submit</a>
 	<script src="http://cdn.bootcss.com/crypto-js/3.1.2/components/core-min.js"></script>
 	script(src='http://cdn.bootcss.com/crypto-js/3.1.2/components/md5.js')				
-	script(src='/dropzone/dropzone.min.js')
+	script(src='/dropzone/dropzone.upyun.min.js')
 	script(src='/js/fileupload.js')
 			
