@@ -17,7 +17,7 @@ exports.gallery = {
 			var user = (req.session && req.session.user) ? req.session.user.name : '';
 			res.format({
 				'text/html' : function() {
-					res.render('gallery/index', {
+					res.render('gallery/normal', {
 						user : user,
 						gallery : gallery
 					});
