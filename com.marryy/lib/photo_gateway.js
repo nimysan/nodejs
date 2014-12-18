@@ -49,7 +49,6 @@ PhotoGateway.prototype = {
 		});
 	},
 	getFromAPISign : function(policyInBase64) {
-		console.log('md5 - ' + policyInBase64 + '&' + config.form_api_serect);
 		return md5(policyInBase64 + '&' + config.form_api_serect);
 	}
 };

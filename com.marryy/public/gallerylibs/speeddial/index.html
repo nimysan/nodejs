@@ -1,0 +1,133 @@
+﻿<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="uft-8">
+<title>jQuery响应式图片画廊插件S Gallery演示_dowebok</title>
+<link rel="stylesheet" href="css/demo-styles.css">
+<link rel="stylesheet" href="css/styles.css">
+</head>
+
+<body>
+<h1 style="margin: 40px; font: 32px Microsoft Yahei; text-align: center;">jQuery响应式图片画廊插件S Gallery演示</h1>
+
+<div id="gallery-container">
+	<ul class="items--small">
+		<li class="item"><a href="#"><img src="images/small-1.png" alt="" /></a></li>
+		<li class="item"><a href="#"><img src="images/small-2.png" alt="" /></a></li>
+		<li class="item"><a href="#"><img src="images/small-3.png" alt="" /></a></li>
+		<li class="item"><a href="#"><img src="images/small-4.png" alt="" /></a></li>
+		<li class="item"><a href="#"><img src="images/small-5.png" alt="" /></a></li>
+		<li class="item"><a href="#"><img src="images/small-6.png" alt="" /></a></li>
+		<li class="item"><a href="#"><img src="images/small-7.png" alt="" /></a></li>
+		<li class="item"><a href="#"><img src="images/small-8.png" alt="" /></a></li>
+		<li class="item"><a href="#"><img src="images/small-9.png" alt="" /></a></li>
+		<li class="item"><a href="#"><img src="images/small-10.png" alt="" /></a></li>
+		<li class="item"><a href="#"><img src="images/small-11.png" alt="" /></a></li>
+		<li class="item"><a href="#"><img src="images/small-12.png" alt="" /></a></li>
+	</ul>
+	<ul class="items--big">
+		<li class="item--big"> <a href="http://www.dowebok.com/"  target="_blank">
+			<figure> <img src="images/big-1.jpg" alt="" />
+				<figcaption class="img-caption"> 标题标题 </figcaption>
+			</figure>
+			</a> </li>
+		<li class="item--big"> <a href="http://www.dowebok.com/48.html"  target="_blank">
+			<figure> <img src="images/big-2.jpg" alt="" />
+				<figcaption class="img-caption"> 标题标题 </figcaption>
+			</figure>
+			</a> </li>
+		<li class="item--big"> <a href="#">
+			<figure> <img src="images/big-3.jpg" alt="" />
+				<figcaption class="img-caption"> 标题标题 </figcaption>
+			</figure>
+			</a> </li>
+		<li class="item--big"> <a href="#">
+			<figure> <img src="images/big-4.jpg" alt="" />
+				<figcaption class="img-caption"> 标题标题 </figcaption>
+			</figure>
+			</a> </li>
+		<li class="item--big"> <a href="#">
+			<figure> <img src="images/big-5.jpg" alt="" />
+				<figcaption class="img-caption"> 标题标题 </figcaption>
+			</figure>
+			</a> </li>
+		<li class="item--big"> <a href="#">
+			<figure> <img src="images/big-6.jpg" alt="" />
+				<figcaption class="img-caption"> 标题标题 </figcaption>
+			</figure>
+			</a> </li>
+		<li class="item--big"> <a href="#">
+			<figure> <img src="images/big-7.jpg" alt="" />
+				<figcaption class="img-caption"> 标题标题 </figcaption>
+			</figure>
+			</a> </li>
+		<li class="item--big"> <a href="#">
+			<figure> <img src="images/big-8.jpg" alt="" />
+				<figcaption class="img-caption"> 标题标题 </figcaption>
+			</figure>
+			</a> </li>
+		<li class="item--big"> <a href="#">
+			<figure> <img src="images/big-9.jpg" alt="" />
+				<figcaption class="img-caption"> 标题标题 </figcaption>
+			</figure>
+			</a> </li>
+		<li class="item--big"> <a href="#">
+			<figure> <img src="images/big-10.jpg" alt="" />
+				<figcaption class="img-caption"> 标题标题 </figcaption>
+			</figure>
+			</a> </li>
+		<li class="item--big"> <a href="#">
+			<figure> <img src="images/big-11.jpg" alt="" />
+				<figcaption class="img-caption"> 标题标题 </figcaption>
+			</figure>
+			</a> </li>
+		<li class="item--big"> <a href="#">
+			<figure> <img src="images/big-12.jpg" alt="" />
+				<figcaption class="img-caption"> 标题标题 </figcaption>
+			</figure>
+			</a> </li>
+	</ul>
+	<div class="controls">
+		<span class="control icon-arrow-left" data-direction="previous"></span>
+		<span class="control icon-arrow-right" data-direction="next"></span>
+		<span class="grid icon-grid"></span>
+		<span class="fs-toggle icon-fullscreen"></span>
+	</div>
+</div>
+
+<script src="js/jquery-1.8.3.min.js"></script>
+<script src="js/plugins.js"></script>
+<script src="js/scripts.js"></script>
+<script>
+$(function(){
+	$('#gallery-container').sGallery({
+		fullScreenEnabled: true
+	});
+});
+</script>
+
+
+
+
+
+
+
+
+
+
+<!-- 以下是统计和广告，与演示无关，不必理会 -->
+<style>
+.vad { margin:50px 0 5px; font-family: arial,宋体,sans-serif; text-align:center;}
+.vad a { display:inline-block; height: 36px; line-height: 36px; margin:0 5px; padding:0 50px; font-size:14px; text-align:center; color:#eee; text-decoration:none; background-color:#222;}
+.vad a:hover { color:#fff; background-color:#000;}
+.thead { width: 728px; height: 90px; margin: 0 auto;}
+</style>
+
+<p class="vad">
+	<a href="http://www.dowebok.com/"  target="_blank">dowebok.com</a>
+	<a href="http://www.dowebok.com/48.html" target="_blank">说 明</a>
+	<a href="http://www.dowebok.com/48.html" target="_blank">下 载</a>
+</p>
+
+</body>
+</html>

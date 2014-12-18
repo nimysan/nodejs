@@ -1,20 +1,24 @@
 extends ../layout
 block content
 	//gallery images urls
-	ul.hide(id="gallery_images")
+	ul(id="gallery_images", style='display:none;')
 		each item in gallery.images
 			li= item
 	div.container(class='container-body')
-		div
-			div#blueimp-gallery.blueimp-gallery
-				div.slides
-				h3.title
-				a.prev 
-				a.next 
-				a.close
-				a.play-pause
-							
-			div#links
+		link(rel='stylesheet', href='/gallerylibs/speeddial/css/styles.css')
+		link(rel='stylesheet', href='/gallerylibs/speeddial/css/demo-styles.css')
+		div#gallery-container
+			ul.items-small
+			ul.items-big
+			div.controls
+				span(class="control icon-arrow-left", data-direction="previous")
+				span(class="control icon-arrow-right" data-direction="next")
+				span(class="grid icon-grid")
+				span(class="fs-toggle icon-fullscreen")
+			
 	
-	script(src='//blueimp.github.io/Gallery/js/jquery.blueimp-gallery.min.js')
-	script(src='/js/startup.js')
+	//script(src='//blueimp.github.io/Gallery/js/jquery.blueimp-gallery.min.js')
+	//script(src='//blueimp.github.io/Gallery/js/jquery.blueimp-gallery.min.js')
+	script(src='/gallerylibs/speeddial/js/plugins.js')
+	script(src='/gallerylibs/speeddial/js/scripts.js')
+	script(src='/js/gallery_render.js')

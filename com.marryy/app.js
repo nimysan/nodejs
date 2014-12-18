@@ -46,6 +46,7 @@ if ('development' === app.get('env')) {
 	// app.locals.debug = true;
 } else if (app.get('env') === 'production') {
 	app.set('trust proxy', 1); // trust first proxy
+	app.locals.pretty = true;
 }
 app.use(sess);
 
