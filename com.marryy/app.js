@@ -2,7 +2,7 @@
  * Module dependencies.
  */
 
-var express = require('express'), routes = require('./routes'), user = require('./routes/user'), management = require('./routes/admin_route').management,http = require('http'), path = require('path'), pig = require('./lib/photo_gateway.js');
+var express = require('express'), routes = require('./routes'), user = require('./routes/user'), management = require('./routes/admin_route').management, http = require('http'), path = require('path'), pig = require('./lib/photo_gateway.js');
 express.static = require('serve-static');
 var paginate = require('express-paginate');
 var favicon = require('serve-favicon');
@@ -49,7 +49,6 @@ if ('development' === app.get('env')) {
 	app.locals.pretty = true;
 }
 app.use(sess);
-
 app.use(function(req, res, next) {
 	var sess = req.session;
 	if (sess.views) {
@@ -57,46 +56,39 @@ app.use(function(req, res, next) {
 	} else {
 		sess.views = 1;
 	}
-	console.info('Session ' + sess);
-	console.info(sess);
-	console.info("-----------------");
+	console.log('%s %s %s', req.method, req.url, req.path);
+	console.log("===========================>");
+	console.log(req.session.user);
+	console.log("<==========================");
+	if (req.session.user) {
+		var displayName = req.session.user.displayName;
+		if (displayName === null || displayName === '') {
+			displayName = req.session.user.loginId;
+		}
+		res.locals.user = {
+			loginId : req.session.user.loginId,
+			displayName : displayName,
+			imagePath : req.session.user.imagePath,
+			email : req.session.user.email,
+			phone : req.session.user.phone,
+			roles : req.session.user.roles
+		};
+	}
 	next();
 });
 
 app.get("/", routes.index, function(req, res, next) {
 	next();
 });
-// app users
-// protected all user url
-// app.all('/user/*', function(req, res, next) {
-// if (req.session != null && req.session.user != null) {
-// next();
-// } else {
-// res.render('user/login');
-// }
-// });
 
 app.get('/user/:user/index', function(req, res) {
-	var displayName = req.session.user.displayName;
-	if(displayName === null || displayName === ''){
-		displayName = req.session.user.loginId;
-	}
-	console.log(' ----- usage main page ---');
-	console.log(req.session.user);
-	res.render('user/index',{
-		loginId : req.session.user.loginId,
-		displayName : displayName,
-		imagePath :  req.session.user.imagePath,
-		email : req.session.user.email,
-		phone : req.session.user.phone
-	});
+	res.render('user/index');
 });
 // app.get('/users', user.list);
-app.route('/user/:user/gallery').get(user.gallery.list).head(
-		function(req, res) {
-			console.log(req.params);
-			res.render('user/gallery_create');
-		}).post(user.gallery.create);
+app.route('/user/:user/gallery').get(user.gallery.list).head(function(req, res) {
+	console.log(req.params);
+	res.render('user/gallery_create');
+}).post(user.gallery.create);
 
 app.route('/user/:user/gallery/:id').delete(user.gallery.remove).get(user.gallery.show).put(user.gallery.update);
 app.route('/gallery/:id').delete(user.gallery.remove).get(user.gallery.show).put(user.gallery.update).post(user.gallery.create);
@@ -117,16 +109,18 @@ app.get('/user/signup', function(req, res) {
 	}
 });
 
-app.put('/user/:userId', function(req, res){
-	if(req.params.userId !== req.session.user.loginId){
+app.put('/user/:userId', function(req, res) {
+	if (req.params.userId !== req.session.user.loginId) {
 		res.json({
-			err: '你试着去更改不属于你的信息'
+			err : '你试着去更改不属于你的信息'
 		});
 		return;
 	}
-	user_dao.update(req.params.userId, req.body, function(err, user){
-		req.session.user = user;
-		req.session.user.password = '';
+	user_dao.update(req.params.userId, req.body, function(err, user) {
+		if (req.session.user && user.loginId === req.session.user.loginId) {
+			req.session.user = user;
+		}
+		delete user.password;
 		res.json({
 			data : user
 		});
@@ -143,28 +137,20 @@ app.get("/user/logout", function(req, res) {
 	res.redirect('/user/login');
 });
 
-app
-		.post(
-				"/user/login",
-				function(req, res) {
-					user_dao
-							.authenticate(
-									req.body.username,
-									req.body.password,
-									function(err, user) {
-										if (user) {
-											req.session
-													.regenerate(function() {
-														req.session.user = user;
-														res.json(1);
-													});
-										} else {
-											res.json({
-												'err' : '登录失败。 用户名或密码错误'
-											});
-										}
-									});
-				});
+app.post("/user/login", function(req, res) {
+	user_dao.authenticate(req.body.username, req.body.password, function(err, user) {
+		if (user) {
+			req.session.regenerate(function() {
+				req.session.user = user;
+				res.json(1);
+			});
+		} else {
+			res.json({
+				'err' : '登录失败。 用户名或密码错误'
+			});
+		}
+	});
+});
 
 app.post("/user/signup", function(req, res) {
 	var password = req.body.password;
@@ -190,7 +176,7 @@ app.post("/user/signup", function(req, res) {
 				});
 			} else {
 				res.json({
-					'error' : '用户已经存在了'
+					'err' : '用户已经存在了'
 				});
 			}
 		}
@@ -199,24 +185,15 @@ app.post("/user/signup", function(req, res) {
 });
 // user management
 // user admin
-console.log('management module');
-console.log(typeof management.index);
 app.get('/admin/user', management.index);
 app.post('/admin/user/:userId', management.uesr.create);
 app.put('/admin/user/:userId', management.uesr.update);
-app.route('/admin/fileupload').get(function(req, res){
+app.route('/admin/fileupload').get(function(req, res) {
 	res.render('admin/upload');
-}).post(function(req, res){
-	console.log('file upload request');
-	console.log(req.files);
-	console.log(req.body);
-	res.json({msg: 'send succ'});
 });
-app.get('/admin/upyunsign', function(req, res){
-	console.log(' - -   ---             ---- ');
-	console.log(req.query.policy);
+app.get('/admin/upyunsign', function(req, res) {
 	res.json({
-		sign: pig.getFromAPISign(req.query.policy)
+		sign : pig.getFromAPISign(req.query.policy)
 	});
 });
 // user admin
@@ -224,13 +201,12 @@ app.get('/admin/upyunsign', function(req, res){
 // pictures list modules
 app.get('/list/:space', function(req, res) {
 	var unique_key = req.params.space; // unique key
-	console.log('The unique key is ' + unique_key);
 	var links = [];
 	pig.listPictures('/' + unique_key, function(files) {
 		for (var i = 0; i < files.length; i++) {
 			var file = files[i];
 			if ('file' === file.type) {
-				links.push('http://nimysan.b0.upaiyun.com' + '/' + unique_key+ '/' + file.name);
+				links.push('http://nimysan.b0.upaiyun.com' + '/' + unique_key + '/' + file.name);
 			}
 		}
 		res.json(links);

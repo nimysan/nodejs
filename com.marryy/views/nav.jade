@@ -18,13 +18,14 @@ block nav
 						button(type="submit", class="btn btn-primary") 搜索
 					
 					ul(class="nav navbar-nav navbar-right")
-						- if (displayName)
+						- if (user && (user.displayName || user.loginId))
+							- var name = user.displayName || user.loginId;
 							li.active
-								- if (roles && roles.length > 0 && roles[0].name == 'manager')
-									a(href="/admin/user")= displayName
-									a= roles[0].name
+								- if (user.roles && user.roles.length > 0 && user.roles[0] == '54917369df4773fbf217e7cf')
+									a(href="/admin/user")= name
 								- else
-									a(href="/user/#{loginId}/index")= displayName
+									a(href="/user/#{user.loginId}/index")= name
+								li.active <a href="/user/logout">退出</a>
 						- else
 							li.active <a href="/user/login">登录</a>
 							

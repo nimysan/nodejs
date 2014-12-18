@@ -35,7 +35,7 @@ $(function() {
 					var options = {
 						bucket : config.bucket,
 						expiration : Math.floor(new Date().getTime() / 1000) + 86400,
-						'save-key' : 'test/' + file.name
+						'save-key' : $('#u_image_path').val() + '/' + file.name
 					};
 					var policy = window.btoa(JSON.stringify(options));
 					formData.append('policy', policy);

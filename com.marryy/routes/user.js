@@ -18,7 +18,6 @@ exports.gallery = {
 			res.format({
 				'text/html' : function() {
 					res.render('gallery/normal', {
-						user : user,
 						gallery : gallery
 					});
 				},

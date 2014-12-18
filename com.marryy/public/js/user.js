@@ -179,7 +179,7 @@
 
 	$('a#create_gallery').click(function() {
 		$.ajax({
-			url : '/user/seanye/gallery',
+			url : '/user/' + $('#metadata_login_id').val() + '/gallery',
 			dataType : 'json',
 			type : 'head'
 		});
@@ -329,7 +329,7 @@
 		$('#gallery_list_row').empty();
 		// load all gallery
 		$.ajax({
-			url : '/user/seanye/gallery',
+			url : '/user/' + $('#metadata_login_id').val() + '/gallery',
 			dataType : 'json',
 			type : 'get'
 		}).done(function(data) {
@@ -360,11 +360,10 @@
 								var galleryId = $(this).attr('gallery-id');
 								if (typeof galleryId === 'string') {
 									$.ajax({
-										url : '/user/seanye/gallery/' + galleryId,
+										url : '/user/' + $('#metadata_login_id').val() + '/gallery/' + galleryId,
 										dataType : 'json',
 										type : 'delete'
 									}).done(function(data) {
-										console.log(data);
 										if (data === null || data.err !== null) {
 											// failed to delete gallery
 											showPageMessage('因为某些原因，这个相册不能被删除', false);
