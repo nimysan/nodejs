@@ -6,9 +6,9 @@ $(function() {
 		var pswpElement = document.querySelectorAll('.pswp')[0];
 		images.each(function(index, li) {
 			items.push({
-				src : $(li).text().trim()+'!phone',
-				w : 800,
-				h : 700
+				src : $(li).text().trim() + '!phone',
+				w : 600,
+				h : 500
 			})
 		});
 		// define options (if needed)

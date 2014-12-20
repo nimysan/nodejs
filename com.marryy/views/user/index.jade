@@ -70,7 +70,6 @@ block content
 											span(class='glyphicon glyphicon-pencil input-group-addon')
 											input#gq_answer(type='text-area', class='form-control',placeholder='你给的答案，访问者给出精确答案才能允许访问')
 								
-								div#links
 										
 								button#g_img_selector(type='button', class='btn btn-success') 选择图片
 									span(class='glyphicon glyphicon-cloud')
@@ -79,6 +78,7 @@ block content
 									
 								button#g_create(type='button', class='btn btn-primary') 按下按钮创建
 									span(class='glyphicon glyphicon-cloud')
+								div#links
 									
 						div#gallery_list
 							h3 相册集合
@@ -93,12 +93,28 @@ block content
 											span.sr-only Close
 										h2.modal-title 选择你要的相册风格
 									div.modal-body
-										button(type='button', class='btn btn-danger', id='uploadButton', style='margin-bottom:6px;width: 100%;font-weight: bold;height: 4em;') 点击这个按钮上传
-											span(class='glyphicon glyphicon-ok-upload')
-										
-										form#upyunDropzone(class='dropzone dz-clickable',action='http://v0.api.upyun.com/nimysan')
-											div(class='dz-default dz-message')
-												span 把文件拖入到这里上传
+										div.row
+											div(class="col-xs-6 col-md-4")
+												div.thumbnail
+													a(href='#')
+														img(src='/img/speedial.jpg')
+													div.caption
+														button(type='button', class='btn btn-warning', gstyle='speedial',style='width:100%') 九宫格
+																
+											div(class="col-xs-6 col-md-4")
+												div.thumbnail
+													a(href='#')
+														img(src='/img/photoswipe.jpg')
+													div.caption
+														button(type='button', class='btn btn-warning',gstyle='photoswipe',style='width:100%') 左右滑动
+																
+											div(class="col-xs-6 col-md-4")
+												div.thumbnail
+													a(href='#')
+														img(src='/img/galleryview.jpg')
+													div.caption
+														button(type='button', class='btn btn-warning',gstyle='galleryview',style='width:100%') 平铺
+																
 						
 					
 	script(src='/js/user.js')

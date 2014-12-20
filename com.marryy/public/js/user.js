@@ -208,7 +208,8 @@
 					images : images,
 					isPrivate : isPrivate,
 					question : question,
-					answer : answer
+					answer : answer,
+					galleryStyle : gstyle
 				}
 			}).done(function(data) {
 				clearGalleryForm();
@@ -231,7 +232,8 @@
 					images : images,
 					isPrivate : isPrivate,
 					question : question,
-					answer : answer
+					answer : answer,
+					galleryStyle : gstyle
 				}
 			}).done(function(data) {
 				clearGalleryForm();
@@ -283,6 +285,7 @@
 		$('#gq_answer').val('');
 		$('#gallery_primate').bootstrapSwitch('state', true);
 		$('div.imageChecked').remove(); // remove all masked.
+		$('#g_style_part button').removeClass('btn-danger');
 	}
 
 	var selectedImages = [];
@@ -305,7 +308,7 @@
 
 			$('#gq_desc').val(data.question);
 			$('#gq_answer').val(data.answer);
-
+			$('#g_style_part button[gstyle="' + data.galleryStyle + '"]').addClass('btn-danger');
 			selectedImages = data.images;
 			$('button#g_img_selector').click()// click the button
 		});
@@ -402,6 +405,18 @@
 		});
 	}
 	//
+
+	$('#g_style_selector').click(function() {
+		$('#g_style_part').modal('show');
+	});
+
+	var gstyle = 'galleryview';
+	$('#g_style_part button').click(function() {
+		$('#g_style_part button').removeClass('btn-danger');
+		$(this).addClass('btn-danger');
+		gstyle = $(this).attr('gstyle');
+		$('#g_style_part').modal('hide');
+	});
 
 	$(document).ready(function() {
 		startSwitch();
