@@ -74,6 +74,8 @@ block content
 										
 								button#g_img_selector(type='button', class='btn btn-success') 选择图片
 									span(class='glyphicon glyphicon-cloud')
+								button#g_style_selector(type='button', class='btn btn-danger') 选择相册显示风格
+									span(class='glyphicon glyphicon-cloud')
 									
 								button#g_create(type='button', class='btn btn-primary') 按下按钮创建
 									span(class='glyphicon glyphicon-cloud')
@@ -81,6 +83,22 @@ block content
 						div#gallery_list
 							h3 相册集合
 							div.row(id='gallery_list_row')
+							
+						div#g_style_part(class="modal fade",role="dialog")
+							div.modal-dialog
+								div.modal-content
+									div.modal-header
+										button(type="button" ,class="close" , data-dismiss="modal")
+											span(aria-hidden="true")&times;
+											span.sr-only Close
+										h2.modal-title 选择你要的相册风格
+									div.modal-body
+										button(type='button', class='btn btn-danger', id='uploadButton', style='margin-bottom:6px;width: 100%;font-weight: bold;height: 4em;') 点击这个按钮上传
+											span(class='glyphicon glyphicon-ok-upload')
+										
+										form#upyunDropzone(class='dropzone dz-clickable',action='http://v0.api.upyun.com/nimysan')
+											div(class='dz-default dz-message')
+												span 把文件拖入到这里上传
 						
 					
 	script(src='/js/user.js')

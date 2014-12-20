@@ -1,0 +1,41 @@
+//gallery images urls
+<!-- Core CSS file -->
+<link rel="stylesheet" href="/gallerylibs/photoswipe/photoswipe.css"> 
+<link rel="stylesheet" href="/gallerylibs/photoswipe/default-skin/default-skin.css"> 
+
+<!-- Core JS file -->
+<script src="/gallerylibs/photoswipe/photoswipe.min.js"></script> 
+script(src='/jquery/jquery-1.11.0.js')
+<!-- UI JS file -->
+<script src="/gallerylibs/photoswipe/photoswipe-ui-default.min.js"></script> 
+ul(id="gallery_images",style='display:none;')
+	each item in gallery.images
+		li= item
+body
+	div.pswp(tabindex="-1", role="dialog", aria-hidden="true")
+		div.pswp__bg
+		div.pswp__scroll-wrap
+			div.pswp__container
+				div.pswp__item
+				div.pswp__item
+				div.pswp__item
+			div(class='pswp__ui pswp__ui--hidden')
+				div.pswp__top-bar
+					div.pswp__counter
+					button(class="pswp__button pswp__button--close", title="Close (Esc)")
+					button(class="pswp__button pswp__button--share", title="Share")
+					button(class="pswp__button pswp__button--fs", title="Toggle fullscreen")
+					button(class="pswp__button pswp__button--zoom", title="Zoom in/out")
+					div.pswp__preloader
+						div.pswp__preloader__icn
+							div.pswp__preloader__cut
+								div.pswp__preloader__donut
+				div(class="pswp__share-modal pswp__share-modal--hidden pswp__single-tap")
+					div.pswp__share-tooltip
+				button(class="pswp__button pswp__button--arrow--left", title="Previous (arrow left)")
+				button(class="pswp__button pswp__button--arrow--right", title="Next (arrow right)")
+				div.pswp__caption
+					div.pswp__caption__center
+	
+	link(rel='stylesheet', href='/stylesheets/yt_gallery.css')
+	script(src='/js/gallery/photoswipe.js')

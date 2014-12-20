@@ -35,15 +35,20 @@ exports.gallery = {
 					gallery.images[i] = yt_utils.getImageLink(gallery.images[i], gallery._creator.imagePath);
 				}
 			}
-
 			var galleryStyle = req.query.style;
 			if (galleryStyle) {
-				if ([ 'galleryview', 'speedial', 'blueimp' ].indexOf(galleryStyle) <= 0)
-					galleryStyle = 'galleryview'; // set as default value
+				if ([ 'galleryview', 'speedial', 'blueimp', 'photoswipe' ].indexOf(galleryStyle) <= 0) {
+					// set as default value if given style is not supported
+					// yet
+					galleryStyle = 'galleryview';
+				}
 			} else {
-				galleryStyle = 'index';
+				galleryStyle = gallery.galleryStyle;
 			}
-			console.log('===>Gallery style  = ' + galleryStyle);
+			if (galleryStyle === null || galleryStyle === '') {
+				galleryStyle = 'galleryview';
+			}
+
 			res.format({
 				'text/html' : function() {
 					res.render('gallery/' + galleryStyle, {

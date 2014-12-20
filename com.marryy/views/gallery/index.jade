@@ -2,5 +2,5 @@ extends ../layout
 block content
 	//use iframe to display the gallery view to avoid style pollution
 	div.container(style='text-align: center;')
-		iframe(src='/gallery/#{gallery._id}?style=speedial',name='gallery_show_window',frameborder="0",scrolling="no",allowtransparency="true",style="background-color=transparent",width='86%')
+		iframe(src='/gallery/#{gallery._id}?style=photoswipe&pr=1',name='gallery_show_window',frameborder="0",scrolling="no",allowtransparency="true",style="background-color=transparent",width='86%',height='800px')
 	script(src='/js/gallery_portal.js')

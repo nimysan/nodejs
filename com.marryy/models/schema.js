@@ -69,6 +69,11 @@ var gallerySchema = new Schema({
 	isPrivate : Boolean,
 	question : String,
 	answer : String,
+	galleryStyle : {
+		type : String,
+		'default' : 'galleryview'
+	},
+	galleryOptions : String,
 	images : [ {
 		type : String
 	} ],
