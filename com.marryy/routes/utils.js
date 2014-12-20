@@ -9,6 +9,9 @@ exports.utils = {
 		return file;
 	},
 	getImageLink : function(imageName, imagePath) {
+		if (imageName != null && imageName.indexOf('http') == 0) {
+			return imageName;
+		}
 		return yt.ImageCloud.domain + '/' + imagePath + '/' + imageName;
 	}
 };

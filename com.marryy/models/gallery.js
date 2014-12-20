@@ -30,15 +30,9 @@ GalleryDao.prototype = {
 		this.model.findOne({
 			'_id' : id
 		}).exec(function(err, gallery) {
-			console.log('Gallery before update .... ');
-			console.log(gallery);
-			console.log(options);
 			if (options) {
 				merge(gallery, options);
 			}
-			console.log(' Updated --- Gallery');
-			console.log(gallery);
-			console.log(' Updated --- Gallery -- end');
 			gallery.save(function(err, data) {
 				console.log(err);
 				callback(err, data);
@@ -49,9 +43,6 @@ GalleryDao.prototype = {
 		this.model.findOne({
 			'_id' : id
 		}).populate('_creator').exec(function(err, gallery) {
-			console.log("--- test gallery loading --- ");
-			console.log(gallery);
-			console.log(" =====  test gallery loading ===== ");
 			callback(err, gallery);
 		});
 	},
@@ -64,8 +55,6 @@ GalleryDao.prototype = {
 	},
 	listAll : function(page, perPage, callback) {
 		this.model.paginate({}, page, perPage, function(error, pageCount, paginatedResults, itemCount) {
-			console.log('Pageniation information ... ');
-			console.log('Current page: ' + page + ' Per page: ' + perPage);
 			if (error) {
 				console.error(error);
 			} else {
@@ -75,8 +64,9 @@ GalleryDao.prototype = {
 			}
 		}, {
 			sortBy : {
-				date : -1
-			}
+				date : -1,
+			},
+			populate : '_creator'
 		});
 
 	},

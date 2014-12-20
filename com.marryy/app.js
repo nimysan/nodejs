@@ -29,7 +29,7 @@ app.use(methodOverride());
 app.use(morgan('combined'));
 app.use(express.static(path.join(__dirname, 'public')));
 // keep this before all routes that will use pagination
-app.use(paginate.middleware(5, 50));
+app.use(paginate.middleware(4, 50));
 
 var sess = session({
 	secret : 'com.marryy',
