@@ -19,7 +19,6 @@ GalleryDao.prototype = {
 		if (options) {
 			merge(doc, options);
 		}
-
 		this.model.create(doc, function(err, data) {
 			console.log(err);
 			callback(err, data);
@@ -49,7 +48,7 @@ GalleryDao.prototype = {
 	load : function(id, callback) {
 		this.model.findOne({
 			'_id' : id
-		}).exec(function(err, gallery) {
+		}).populate('_creator').exec(function(err, gallery) {
 			console.log("--- test gallery loading --- ");
 			console.log(gallery);
 			console.log(" =====  test gallery loading ===== ");

@@ -260,9 +260,10 @@
 			}).done(function(result) {
 				var linksContainer = $('#links');
 				// Add the demo images as links with thumbnails to the page:
+				userPhotos = result;
 				$.each(result, function(index, photo) {
-					userPhotos = result;
-					var img = $('<img>').addClass('being_select').css('width', '100px').css('cursor', 'pointer').css('height', 'auto').prop('src', photo).click(function() {
+					var photoUrl = photo + '!100'; // use thumbnail
+					var img = $('<img>').addClass('being_select').css('width', '100px').css('cursor', 'pointer').css('height', 'auto').prop('src', photoUrl).click(function() {
 						toogleMask($(this));
 					});
 					img.appendTo(linksContainer);
