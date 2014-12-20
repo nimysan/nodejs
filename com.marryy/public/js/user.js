@@ -361,7 +361,7 @@
 								var galleryId = $(this).attr('gallery-id');
 								if (typeof galleryId === 'string') {
 									$.ajax({
-										url : '/user/' + $('#metadata_login_id').val() + '/gallery/' + galleryId,
+										url : '/gallery/' + galleryId,
 										dataType : 'json',
 										type : 'delete'
 									}).done(function(data) {
@@ -386,7 +386,7 @@
 
 						var preview = $('<a href="#" class="btn btn-primary gallery-button gallery-preview" role="button">查看效果</a>');
 						$(preview).click(function() {
-							window.open(window.location.origin + '/user/' + user + '/gallery/' + value._id, '_blank');
+							window.open(window.location.origin + '/gallery/' + value._id, '_blank');
 						});
 						preview.appendTo(opertors);
 

@@ -1,0 +1,19 @@
+//gallery images urls
+div(class='gallery-view-container')
+	div.gallery-view-content
+		ul(id="gallery_view",style='display:none;')
+			each item in gallery.images
+				li(attr='#{item}')
+					img(src='#{item}!phone', alt='...')
+
+link(rel='stylesheet', href='/stylesheets/yt_gallery.css')
+script(src='/jquery/jquery-1.11.0.js')
+<script src="http://cdn.bootcss.com/jqueryui/1.11.2/jquery-ui.min.js"></script>
+<!-- Second, add the Timer and Easing plugins -->
+<script type="text/javascript" src="/gallerylibs/galleryview/js/jquery.timers-1.2.js"></script>
+<script type="text/javascript" src="/gallerylibs/galleryview/js/jquery.easing.1.3.js"></script>
+
+<!-- Third, add the GalleryView Javascript and CSS files -->
+<script type="text/javascript" src="/gallerylibs/galleryview/js/jquery.galleryview-3.0-dev.js"></script>
+<link type="text/css" rel="stylesheet" href="/gallerylibs/galleryview/css/jquery.galleryview-3.0-dev.css" />
+script(src='/js/blueimp.js')
