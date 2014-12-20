@@ -38,7 +38,7 @@ exports.gallery = {
 
 			var galleryStyle = req.query.style;
 			if (galleryStyle) {
-				if ([ 'galleryview', 'todo1', 'todo2' ].indexOf(galleryStyle) <= 0)
+				if ([ 'galleryview', 'speedial', 'blueimp' ].indexOf(galleryStyle) <= 0)
 					galleryStyle = 'galleryview'; // set as default value
 			} else {
 				galleryStyle = 'index';

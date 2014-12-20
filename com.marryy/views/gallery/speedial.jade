@@ -1,0 +1,18 @@
+//gallery images urls
+<link rel="stylesheet" href="/gallerylibs/speeddial/css/demo-styles.css">
+<link rel="stylesheet" href="/gallerylibs/speeddial/css/styles.css">
+
+div(class='gallery-view-container')
+	div.gallery-view-content
+		ul(id="gallery_images",style='display:none;')
+			each item in gallery.images
+				li= item
+		div#gallery-container
+			ul.items-small
+			ul.items-big
+
+link(rel='stylesheet', href='/stylesheets/yt_gallery.css')
+<script src="/gallerylibs/speeddial/js/jquery-1.8.3.min.js"></script>
+<script src="/gallerylibs/speeddial/js/plugins.js"></script>
+<script src="/gallerylibs/speeddial/js/scripts.js"></script>
+script(src='/js/gallery/speedial.js')
