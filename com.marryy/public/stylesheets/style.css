@@ -71,27 +71,17 @@ button#user_login{
 /* image */
 .being_select{
 	margin: 3px;
-	opacity: 0.5;
-	filter: alpha(opacity: 50);
 }
-.mask {
-	background: #424242;
-	position: absolute;
-	z-index: 900;
-	/* opacity: 0.5; */
-	/* filter: alpha(opacity: 50); */
-	top: 0;
-	width: 100%;
-	height: 100%;
-	background: url(/img/thumb_up-64.png) no-repeat;
+
+.images-selector {
+	height: 500px;
+	overflow : scroll;
 }
-.imageChecked {
-	position: absolute;
-	right: 0;
-	bottom: 0;
-	width: 10px;
-	height: 16px;
-	z-index: 999;
+
+.image-be-checked {
+	border-width: 3px;
+	border-color: royalblue;
+	border-style: outset;
 }
 /* image */
 

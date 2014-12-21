@@ -24,7 +24,6 @@ exports.gallery = {
 	verify : function(req, res) {
 		var galleryId = req.params.id;
 		var answer = req.body.answer;
-		console.log('answer is ' + answer);
 		model_gallery.load(galleryId, function(err, data) {
 			var gallery = data;
 			if (data.answer === answer) {
@@ -98,13 +97,13 @@ exports.gallery = {
 				if ([ 'galleryview', 'speedial', 'blueimp', 'photoswipe' ].indexOf(galleryStyle) <= 0) {
 					// set as default value if given style is not supported
 					// yet
-					galleryStyle = 'galleryview';
+					galleryStyle = 'photoswipe';
 				}
 			} else {
 				galleryStyle = gallery.galleryStyle;
 			}
 			if (galleryStyle === null || galleryStyle === '') {
-				galleryStyle = 'galleryview';
+				galleryStyle = 'photoswipe';
 			}
 
 			res.format({

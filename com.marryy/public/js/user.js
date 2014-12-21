@@ -7,14 +7,8 @@
 		var group = $('div.form-group[atth=' + id + ']');
 		if (trueOrFalse) {
 			group.addClass('has-success').removeClass('has-error');
-			// $('span.glyphicon', group).addClass('glyphicon-ok').removeClass(
-			// 'glyphicon-remove').removeClass('hide');
-			// $('span.sr-only', group).removeClass('hide');
 		} else {
 			group.addClass('has-error').removeClass('has-success');
-			// $('span.glyphicon', group).removeClass('glyphicon-ok').addClass(
-			// 'glyphicon-remove').removeClass('hide');
-			// $('span.sr-only', group).removeClass('hide');
 		}
 		showPageMessage(message, trueOrFalse);
 	}
@@ -193,10 +187,6 @@
 		var isPrivate = !$('#gallery_primate').bootstrapSwitch('state');
 		var question = $('#gq_desc').val();
 		var answer = $('#gq_answer').val();
-		var images = [];
-		$('.imageChecked').each(function() {
-			images.push($(this).attr('src'));
-		});
 		if (id.length <= 0) {
 			$.ajax({
 				url : '/gallery',
@@ -205,7 +195,7 @@
 				data : {
 					title : title,
 					desc : desc,
-					images : images,
+					images : selectedImages,
 					isPrivate : isPrivate,
 					question : question,
 					answer : answer,
@@ -229,7 +219,7 @@
 				data : {
 					title : title,
 					desc : desc,
-					images : images,
+					images : selectedImages,
 					isPrivate : isPrivate,
 					question : question,
 					answer : answer,
@@ -250,11 +240,35 @@
 	});
 
 	var userPhotos = [];
+
+	$('#selector_select_all').click(function() {
+		$('img.being_select').addClass('image-be-checked');
+		$('.image-be-checked').each(function() {
+			selectedImages.push($(this).attr('origUrl'));
+		});
+	});
+	$('#selector_unselect_all').click(function() {
+		$('img.being_select').removeClass('image-be-checked');
+		selectedImages = [];
+	});
+
+	$('#selector_save').click(function() {
+		selectedImages = [];
+		$('.image-be-checked').each(function() {
+			selectedImages.push($(this).attr('origUrl'));
+		});
+		$('#g_all_images_part').modal('hide');
+	});
 	$('button#g_img_selector').click(function() {
-		if (userPhotos.length > 0) {
-			$('#links').show();
-		} else {
-			// modal page to select images
+		$('#g_all_images_part').modal('show');
+
+		function flagSelected() {
+			$('.being_select').removeClass('image-be-checked');
+			$(selectedImages).each(function(index, url) {
+				$('.being_select[origUrl="' + url + '"]').addClass('image-be-checked');
+			});
+		}
+		if (userPhotos.length <= 0) {
 			var space = $('#metadata_image_path').val().trim();
 			$.ajax({
 				url : '/list/' + space,
@@ -263,17 +277,22 @@
 				var linksContainer = $('#links');
 				// Add the demo images as links with thumbnails to the page:
 				userPhotos = result;
+
 				$.each(result, function(index, photo) {
 					var photoUrl = photo + '!100'; // use thumbnail
-					var img = $('<img>').addClass('being_select').css('width', '100px').css('cursor', 'pointer').css('height', 'auto').prop('src', photoUrl).click(function() {
-						toogleMask($(this));
+					var img = $('<img>').addClass('being_select').css('width', '100px').css('cursor', 'pointer').css('height', 'auto').attr('origUrl', photo).prop('src', photoUrl).click(function() {
+						if ($(this).hasClass('image-be-checked')) {
+							$(this).removeClass('image-be-checked');
+						} else {
+							$(this).addClass('image-be-checked');
+						}
 					});
 					img.appendTo(linksContainer);
-					if (selectedImages.length > 0 && selectedImages.indexOf(photo) >= 0) {
-						addMask(img);
-					}
 				});
+				flagSelected();
 			});
+		} else {
+			flagSelected();
 		}
 	});
 
@@ -308,9 +327,10 @@
 
 			$('#gq_desc').val(data.question);
 			$('#gq_answer').val(data.answer);
-			$('#g_style_part button[gstyle="' + data.galleryStyle + '"]').addClass('btn-danger');
+			gstyle = data.galleryStyle;
+			$('#g_style_part button[gstyle="' + gstyle + '"]').addClass('btn-danger');
 			selectedImages = data.images;
-			$('button#g_img_selector').click()// click the button
+			// $('button#g_img_selector').click()// click the button
 		});
 	}
 
@@ -329,6 +349,22 @@
 		});
 	}
 
+	function confirmDelete(closeCallback) {
+		$.messager.model = {
+			ok : {
+				text : "确认",
+				classed : 'btn-danger'
+			},
+			cancel : {
+				text : "取消",
+				classed : 'btn-default'
+			}
+		};
+		$.messager.confirm("删除相册", "你确定需要删除这个相册吗？删除之后不能恢复!", function() {
+			closeCallback();
+		});
+	}
+
 	function listGalleries() {
 		$('#gallery_list_row').empty();
 		// load all gallery
@@ -339,6 +375,7 @@
 		}).done(function(data) {
 			if (data && data.length > 0) {
 				$('#no_gallery').remove();
+				$('#gallery_list_row').empty();
 				$(data).each(function(index, value) {
 					if (value) {
 
@@ -353,31 +390,32 @@
 						var img = $('<img src="' + coverSrc + '" alt="...">').appendTo(overview);
 						var caption = $('<div class="caption">');
 						caption.appendTo(overview);
-						$('<h3>').text(value.title).appendTo(caption);
-						$('<p>').text(value.desc).appendTo(caption);
 						var opertors = $('<p>');
-						var deleteButton = $('<a href="#" class="btn btn-primary gallery-button" role="button">删除</a>');
+						var deleteButton = $('<a href="#" class="btn btn-danger gallery-button" role="button">删除</a>').attr('gallery_id', value._id);
 						deleteButton.appendTo(opertors);
 						$(deleteButton).click(function() {
 							var _this = this;
-							$(this).parents('div.thumbnail').each(function() {
-								var galleryId = $(this).attr('gallery-id');
-								if (typeof galleryId === 'string') {
-									$.ajax({
-										url : '/gallery/' + galleryId,
-										dataType : 'json',
-										type : 'delete'
-									}).done(function(data) {
-										if (data === null || data.err !== null) {
-											// failed to delete gallery
-											showPageMessage('因为某些原因，这个相册不能被删除', false);
-										} else {
-											// removed successfully
-											$('div[gallery-id="' + galleryId + '"]').remove();
-											showPageMessage('相册删除成功', true);
-										}
-									});
-								}
+							confirmDelete(function() {
+								$(_this).parents('div.thumbnail').each(function() {
+									var galleryId = $(this).attr('gallery-id');
+									if (typeof galleryId === 'string') {
+										$.ajax({
+											url : '/gallery/' + galleryId,
+											dataType : 'json',
+											type : 'delete'
+										}).done(function(data) {
+											if (data === null || data.err !== null) {
+												// failed to delete gallery
+												showPageMessage('因为某些原因，这个相册不能被删除', false);
+											} else {
+												// removed successfully
+												$('div[gallery-id="' + galleryId + '"]').remove();
+												showPageMessage('相册删除成功', true);
+												listGalleries();
+											}
+										});
+									}
+								});
 							});
 						});
 						var edit = $('<a href="#" class="btn btn-primary gallery-button" role="button">编辑</a>').attr('gallery_id', value._id);
@@ -387,14 +425,18 @@
 							preFllGalleryForm(galleryId);
 						});
 
-						var preview = $('<a href="#" class="btn btn-primary gallery-button gallery-preview" role="button">查看效果</a>');
+						var preview = $('<a href="#" class="btn btn-info gallery-button gallery-preview" role="button">查看效果</a>');
 						$(preview).click(function() {
 							window.open(window.location.origin + '/gallery/' + value._id, '_blank');
 						});
 						preview.appendTo(opertors);
 
 						opertors.appendTo(caption);
-						var layout = $('<div>').addClass('col-md-6').addClass('col-xs-12');
+
+						$('<h3>').text(value.title).appendTo(caption);
+						$('<p>').text(value.desc).appendTo(caption);
+
+						var layout = $('<div>').addClass('col-md-4').addClass('col-xs-12');
 						layout.append(overview);
 						$('#gallery_list_row').append(layout);
 					}
@@ -410,7 +452,7 @@
 		$('#g_style_part').modal('show');
 	});
 
-	var gstyle = 'galleryview';
+	var gstyle = 'photoswipe';
 	$('#g_style_part button').click(function() {
 		$('#g_style_part button').removeClass('btn-danger');
 		$(this).addClass('btn-danger');
