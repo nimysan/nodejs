@@ -54,7 +54,9 @@ GalleryDao.prototype = {
 		});
 	},
 	listAll : function(page, perPage, callback) {
-		this.model.paginate({}, page, perPage, function(error, pageCount, paginatedResults, itemCount) {
+		this.model.paginate({
+			isPrivate : false
+		}, page, perPage, function(error, pageCount, paginatedResults, itemCount) {
 			if (error) {
 				console.error(error);
 			} else {

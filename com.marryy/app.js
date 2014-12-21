@@ -56,10 +56,11 @@ app.use(function(req, res, next) {
 	} else {
 		sess.views = 1;
 	}
-	console.log('%s %s %s', req.method, req.url, req.path);
-	console.log("===========================>");
-	console.log(req.session.user);
-	console.log("<==========================");
+	
+	console.log("=============Session ==============>");
+	console.log(req.session);
+	console.log("<=============Session ==============");
+	
 	if (req.session.user) {
 		var displayName = req.session.user.displayName;
 		if (displayName === null || displayName === '') {
@@ -90,7 +91,9 @@ app.route('/user/:user/gallery').get(user.gallery.list).head(function(req, res) 
 	res.render('user/gallery_create');
 }).post(user.gallery.create);
 
-app.route('/user/:user/gallery/:id').delete(user.gallery.remove).get(user.gallery.show).put(user.gallery.update);
+// app.route('/user/:user/gallery/:id').delete(user.gallery.remove).get(user.gallery.show).put(user.gallery.update);
+app.post('/gallery/verify/:id', user.gallery.verify);
+
 app.route('/gallery/:id').delete(user.gallery.remove).get(user.gallery.show).put(user.gallery.update).post(user.gallery.create);
 app.route('/gallery').post(user.gallery.create);
 

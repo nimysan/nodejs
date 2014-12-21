@@ -9,8 +9,6 @@ var yt_utils = require('./utils').utils;
 exports.gallery = {
 	list : function(req, res) {
 		model_gallery.list(req.session.user, function(err, data) {
-			console.log('data ');
-			console.log(data);
 			for (var j = 0; j < data.length; j++) {
 				var gallery = data[j];
 				if (gallery && gallery.images) {
@@ -19,16 +17,76 @@ exports.gallery = {
 					}
 				}
 			}
-			console.log('after data ');
-			console.log(data);
 			res.json(data);
 		});
 	},
-	show : function(req, res) {
+
+	verify : function(req, res) {
+		var galleryId = req.params.id;
+		var answer = req.body.answer;
+		console.log('answer is ' + answer);
+		model_gallery.load(galleryId, function(err, data) {
+			var gallery = data;
+			if (data.answer === answer) {
+				var authedGalleries = req.session.auth_galleries == null ? [] : req.session.auth_galleries;
+				authedGalleries.push(galleryId);
+				req.session.auth_galleries = authedGalleries;
+				// save the answer to session
+				res.json({
+					success : true
+				});
+			} else {
+				res.json({
+					err : '回答錯誤. 你的答案是 ' + answer
+				});
+			}
+		});
+	},
+
+	_authentication : function(req, res, gallery) {
+		var galleryId = req.params.id;
+		var authedGalleries = req.session.auth_galleries == null ? [] : req.session.auth_galleries;
+		if (authedGalleries.indexOf(gallery._id + '') >= 0) {
+			return true;
+		} else {
+			res.format({
+				'text/html' : function() {
+					res.render('gallery/authentication', {
+						'question' : gallery.question,
+						'galleryId' : gallery._id
+					});
+				},
+				'application/json' : function() {
+					res.json({
+						err : '你在访问一个私密相册'
+					});
+				}
+			});
+			return false;
+		}
+	},
+	show : function(req, res, next) {
 		var galleryId = req.params.id;
 		model_gallery.load(galleryId, function(err, data) {
 			var gallery = data;
-			var user = (req.session && req.session.user) ? req.session.user.name : '';
+			var user = (req.session && req.session.user) ? req.session.user : null;
+
+			if (gallery.isPrivate == true) {
+				if (user == null) {
+					if (exports.gallery._authentication(req, res, gallery) == false) {
+						return;
+					}
+				} else {
+					if (gallery._creator._id == user._id) {
+						// login user is the gallery owner, view gallery
+						// directly
+					} else {
+						if (exports.gallery._authentication(req, res, gallery) == false) {
+							return;
+						}
+					}
+				}
+			}
 
 			if (gallery && gallery.images) {
 				for (var i = 0; i < gallery.images.length; i++) {

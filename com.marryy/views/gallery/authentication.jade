@@ -1,0 +1,18 @@
+extends ../layout
+block content
+	//use iframe to display the gallery view to avoid style pollution
+	div.container
+		input(type='hidden',id='galleryId',value='#{galleryId}')
+		<div class="alert hide" role="alert" id="message"></div>
+		div(class="alert alert-warning ", role="alert")
+			h3 相册已被设置为私密级别，你需要回答问题。如果回答正确，你就能够访问这个相册
+		div.row
+			h3 问题是：
+			h1= question
+			h3 答案是：
+			div.input-group
+				input.form-control(type='text',id='gallery_answer')
+			div.input-group
+				button#submit_answer(type='submit', class='btn btn-success',style='margin-top:20px;') 提交答案
+			
+		script(src='/js/gallery_portal.js')

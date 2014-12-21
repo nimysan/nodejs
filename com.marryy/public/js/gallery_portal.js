@@ -40,38 +40,39 @@ function getPhotoVersion() {
 		return 'phone';
 	}
 }
+/** function definition * */
+function registerAnswerSubmit() {
+	$('#submit_answer').click(function() {
+		var galleryId = $('#galleryId').val();
+		var answer = $.trim($('#gallery_answer').val());
+		$.ajax({
+			url : '/gallery/verify/' + galleryId,
+			dataType : 'json',
+			type : 'post',
+			data : {
+				answer : answer
+			}
+		}).done(function(data) {
+			if (data.err && data.err != '') {
+				showPageMessage(data.err, false);
+			} else {
+				// show gallery
+				showPageMessage('回答正确，请您欣赏相册', true);
+				window.location.href = window.location.origin + '/gallery/' + galleryId;
+			}
+		});
+	});
+};
 
+function showPageMessage(message, trueOrFalse) {
+	if (trueOrFalse) {
+		$('#message').text(message).removeClass('hide').removeClass('alert-danger').addClass('alert-success');
+	} else {
+		$('#message').text(message).removeClass('hide').addClass('alert-danger');
+	}
+}
 (function($) {
-	$.extend({
-		documentMask : function(options) {
-			// 扩展参数
-			var op = $.extend({
-				opacity : 0.8,
-				z : 10000,
-				bgcolor : '#000'
-			}, options);
-
-			// 创建一个 Mask 层，追加到 document.body
-			$('<div class="jquery_addmask"> </div>').appendTo(document.body).css({
-				position : 'absolute',
-				top : '0px',
-				left : '0px',
-				'z-index' : op.z,
-				width : $(document).width(),
-				height : $(document).height(),
-				'background-color' : op.bgcolor,
-				opacity : 0
-			}).fadeIn('slow', function() {
-				// 淡入淡出效果
-				$(this).fadeTo('slow', op.opacity);
-			}).click(function() {
-				// 单击事件，Mask 被销毁
-				$(this).fadeTo('slow', 0, function() {
-					$(this).remove();
-				});
-			});
-
-			return this;
-		}
+	$(document).ready(function() {
+		registerAnswerSubmit();
 	});
 })(jQuery);
