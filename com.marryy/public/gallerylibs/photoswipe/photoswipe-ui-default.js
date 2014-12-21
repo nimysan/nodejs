@@ -43,7 +43,8 @@ var PhotoSwipeUI_Default =
 
 		_options = {
 			barsSize: {top:44, bottom:'auto'},
-			closeElClasses: ['item', 'caption', 'zoom-wrap', 'ui', 'top-bar'], 
+			//closeElClasses: ['item', 'caption', 'zoom-wrap', 'ui', 'top-bar'], 
+			closeElClasses: ['top-bar'], 
 			timeToIdle: 4000, 
 			timeToIdleOutside: 1000,
 			loadingIndicatorDelay: 1000, // 2s
@@ -61,19 +62,19 @@ var PhotoSwipeUI_Default =
 			captionEl: true,
 			fullscreenEl: true,
 			zoomEl: true,
-			shareEl: true,
+			shareEl: false,
 			counterEl: true,
 			arrowEl: true,
 			preloaderEl: true,
 
 			tapToClose: false,
-			tapToToggleControls: true,
+			tapToToggleControls: false,
 
 			shareButtons: [
-				{id:'facebook', label:'Share on Facebook', url:'https://www.facebook.com/sharer/sharer.php?u={{url}}'},
-				{id:'twitter', label:'Tweet', url:'https://twitter.com/intent/tweet?text={{text}}&url={{url}}'},
-				{id:'pinterest', label:'Pin it', url:'http://www.pinterest.com/pin/create/button/?url={{url}}&media={{image_url}}&description={{text}}'},
-				{id:'download', label:'Download image', url:'{{raw_image_url}}', download:true}
+//				{id:'facebook', label:'Share on Facebook', url:'https://www.facebook.com/sharer/sharer.php?u={{url}}'},
+//				{id:'twitter', label:'Tweet', url:'https://twitter.com/intent/tweet?text={{text}}&url={{url}}'},
+//				{id:'pinterest', label:'Pin it', url:'http://www.pinterest.com/pin/create/button/?url={{url}}&media={{image_url}}&description={{text}}'},
+//				{id:'download', label:'Download image', url:'{{raw_image_url}}', download:true}
 			],
 			indexIndicatorSep: ' / '
 
