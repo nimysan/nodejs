@@ -15,6 +15,8 @@ var userSchema = new Schema({
 	hash : String,
 	email : String,
 	phone : String,
+	wechat : String,
+	qr : String, // qr code path
 	desc : String,
 	body : String,
 	contact : String,
@@ -62,6 +64,10 @@ var gallerySchema = new Schema({
 		type : Schema.Types.ObjectId,
 		ref : 'users'
 	},
+	_from : {
+		type : Schema.Types.ObjectId,
+		ref : 'studios'
+	},
 	cover : String,
 	title : String,
 	desc : String,
@@ -83,16 +89,37 @@ var gallerySchema = new Schema({
 	},
 	meta : {
 		votes : Number,
-		favs : Number
+		favs : Number,
+		accesses : Number
+	}
+});
+
+// studio - the photos from studio - information for AD in future
+var studioSchema = new Schema({
+	name : String,
+	desc : String,
+	link : String, // how to setup the foreign key to user?
+	phone : String,
+	email : String,
+	wechat : String,
+	qr : String,
+	date : {
+		type : Date,
+		'default' : Date.now
+	},
+	meta : {
+		votes : Number,
+		favs : Number,
+		users : Number
 	}
 });
 
 gallerySchema.plugin(mongoosePaginate);
 var gallery_model = db.model('galleries', gallerySchema);
-
 exports.models = {
 	gallery : gallery_model,
 	user : db.model('users', userSchema),
 	role : db.model('roles', roleSchema),
+	studio : db.model('studios', studioSchema),
 	db : db
 };

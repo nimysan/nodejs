@@ -1,6 +1,6 @@
 {
   "name": "com.marryy",
-  "version": "0.0.1-18",
+  "version": "0.0.1-19",
   "private": true,
   "scripts": {
     "start": "node app.js"

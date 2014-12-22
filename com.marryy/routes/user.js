@@ -67,6 +67,25 @@ exports.gallery = {
 	show : function(req, res, next) {
 		var galleryId = req.params.id;
 		model_gallery.load(galleryId, function(err, data) {
+			var meta = data.meta;
+			if (meta == null) {
+				meta = {};
+				meta.accesses = 0;
+			} else {
+				if (meta.accesses == null) {
+					meta.accesses = 0;
+				}
+				meta.accesses = meta.accesses + 1;
+			}
+			model_gallery.update(req.session.user, galleryId, {
+				meta : {
+					accesses : meta.accesses
+				}
+			}, function(err, data) {
+				if (err) {
+					console.error('save - meta data');
+				}
+			});
 			var gallery = data;
 			var user = (req.session && req.session.user) ? req.session.user : null;
 

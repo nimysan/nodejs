@@ -34,9 +34,9 @@
 }
 
 .gallary_qr_code {
-	width: 120px;
-	height: 120px;
-	float: right;
+	width: 100px;
+	height: 100px;
+	float: left;
 }
 
 .gallery-button{

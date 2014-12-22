@@ -25,7 +25,6 @@ GalleryDao.prototype = {
 		});
 	},
 	update : function(user, id, options, callback) {
-		console.log(user);
 		var _model = this.model;
 		this.model.findOne({
 			'_id' : id
@@ -33,6 +32,8 @@ GalleryDao.prototype = {
 			if (options) {
 				merge(gallery, options);
 			}
+			console.log(gallery);
+			console.log(gallery.save);
 			gallery.save(function(err, data) {
 				console.log(err);
 				callback(err, data);
