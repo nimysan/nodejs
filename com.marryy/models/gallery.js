@@ -67,7 +67,7 @@ GalleryDao.prototype = {
 			}
 		}, {
 			sortBy : {
-				date : -1,
+				'meta.accesses' : -1,
 			},
 			populate : '_creator'
 		});
