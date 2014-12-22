@@ -1,6 +1,6 @@
 block nav
-	nav(class='navbar navbar-default', role="navigation")
-		<div id='announcement'><span class="glyphicon glyphicon glyphicon-volume-up" aria-hidden="true"></span> 【公告】2014年8月1日起，雅潼照片服务公司正式成立了! </div>
+	nav(class='navbar navbar-default yt-navbar', role="navigation")
+		<div id='announcement'><span class="glyphicon glyphicon glyphicon-volume-up" aria-hidden="true"></span>【公告】2014年12月31日起，雅潼画社对外服务</div>
 		div.container
 			div.container-fluid
 				div.navbar-header
@@ -11,11 +11,6 @@ block nav
 					ul(class="nav navbar-nav")
 						li.active(role="presentation") <a href="/"><span class="glyphicon glyphicon glyphicon glyphicon-home" aria-hidden="true"></span>主页</a>
 						li(role="presentation") <a href="/price">产品价格</a>
-					
-					form(class="navbar-form navbar-left", role="search")
-						div.form-group
-							input(type="text",class="form-control",placeholder="输入风格 如 海边")
-						button(type="submit", class="btn btn-primary") 搜索
 					
 					ul(class="nav navbar-nav navbar-right")
 						- if (user && (user.displayName || user.loginId))

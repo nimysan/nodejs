@@ -10,6 +10,11 @@
 	text-align: center;
 }
 
+.yt-navbar {
+	margin-bottom: 0px;
+	background-color: white;
+}
+
 .container-body{
 	/* margin-top: 100px; */
 }

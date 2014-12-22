@@ -1,6 +1,29 @@
 //- index.jade
 //- This file defines the view of this app.
 extends layout
+block banner
+	div#carousel-banner(class="carousel slide", data-ride="carousel")
+		ol(class="carousel-indicators")
+			li(data-target="#carousel-banner", data-slide-to="0", class="active")
+			li(data-target="#carousel-banner", data-slide-to="1")
+			li(data-target="#carousel-banner", data-slide-to="2")
+		div(class="carousel-inner", role="listbox")
+			div(class='item active')
+				img(src='/img/banner/union.png', alt='...')
+				div(class='carousel-caption')
+			div(class='item')
+				img(src='/img/banner/banner.jpg', alt='...')
+				div(class='carousel-caption')
+			div(class='item')
+				img(src='/img/banner/cdn_banner.jpg', alt='...')
+				div(class='carousel-caption')
+		a(class="left carousel-control", href="#carousel-banner", role="button", data-slide="prev")
+			span(class="glyphicon glyphicon-chevron-left", aria-hidden="true")
+			span.sr-only Previous
+		a(class="right carousel-control", href="#carousel-banner", role="button", data-slide="next")
+			span(class="glyphicon glyphicon-chevron-right", aria-hidden="true")
+			span.sr-only Next
+			
 block content
 	div.container(class='container-body')
 		if paginate.hasPreviousPages || paginate.hasNextPages(pageCount)
@@ -30,5 +53,5 @@ block content
 									p= item.desc
 								div(class='cos-sm-6 col-md-3')
 									img(src='http://qr.liantu.com/api.php?bg=ffffff&fg=000000&text=http://www.marryy.com/gallery/#{item._id}', class='gallary_qr_code')
-
+script(src='/js/yt_portal.js')
 
