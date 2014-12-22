@@ -1,15 +1,19 @@
 $(function() {
 	'use strict';
 
-	var openPSWP = function(items) {
+	var openPSWP = function(items, index) {
+		var ki = index;
+		if (ki < 0 || ki >= items.length) {
+			ki = 0;
+		}
 		var pswpElement = $('.pswp').get(0);
 		// define options (if needed)
 		var options = {
 			// optionName: 'option value'
 			// for example:
-			index : 0,
+			index : ki,
 			history : false,
-			escKey : false,
+			escKey : true,
 			focus : true,
 			pinchToClose : true
 		// start at first slide
@@ -23,6 +27,10 @@ $(function() {
 	window.updateProgressBar = function(progress) {
 		var bar = $('#gallery_progressbar div[role="progressbar"]');
 		bar.attr('aria-valuenow', progress).css('width', progress + '%').text(progress + '%').attr('aria-valuemax', '100');
+		if (progress >= 100) {
+			$('#gallery_progressbar').hide();
+			$('#gallery_page_title').hide();
+		}
 	}
 
 	$(document).ready(function() {
@@ -47,19 +55,20 @@ $(function() {
 						h : data.height * (phoneVersionWidth / data.width)
 					};
 					items.push(imgItem);
-					// if (index < 8) {
-					// var img = $('<img>').addClass('pic').addClass('pic' +
-					// index);
-					// img.css('width', imgItem.w * 0.3).css('height', imgItem.h
-					// * 0.3);
-					// img.prop('src', imgItem.src);
-					// photoWall.append(img);
-					// $(img).click(function() {
-					// console.log('img click');
-					// openPSWP(items);
-					// });
-					// }
+					var img = $('<img>').addClass('pic').addClass('pic' + (Math.round(Math.random() * 15) + 1));
+					img.attr('index', index);
+					img.css('width', imgItem.w * 0.3).css('height', imgItem.h * 0.3);
+					img.prop('src', imgItem.src);
+					photoWall.append(img);
+					$(img).fadeIn('normal');
+					$(img).click(function() {
+						var ik = $(this).attr('index');
+						openPSWP(items, parseInt(ik));
+					});
 					progress = progress + progressPart;
+					if (progress > 100) {
+						progress = 100;
+					}
 					updateProgressBar(progress);
 					$(document).dequeue("ajaxRequests");
 				});
@@ -69,7 +78,7 @@ $(function() {
 		$(document).queue('ajaxRequests', function() {
 			progress = 100;
 			updateProgressBar(progress);
-			openPSWP(items);
+			openPSWP(items, 0);
 		}); // done function
 
 		// kick off

@@ -79,9 +79,9 @@ button#user_login{
 }
 
 .image-be-checked {
-	border-width: 3px;
-	border-color: royalblue;
-	border-style: outset;
+	border-width: 6px;
+	border-color: red;
+	border-style: double;
 }
 /* image */
 

@@ -13,12 +13,12 @@ block content
 	ul(id="gallery_images",style='display:none;')
 		each item in gallery.images
 			li= item
-	div.container
-		h2 我们正在努力为你创建相册
+	div.container(style='margin: 60px auto')
+		h2#gallery_page_title 我们正在努力为你创建相册
 		div.progress(id="gallery_progressbar")
 			div(class="progress-bar progress-bar-striped active", role="progressbar",aria-valuenow="0", aria-valuemin="0", aria-valuemax="100", style="width: 100%") 完成
 		
-		div.photo-wall(class='hide')
+		div.photo-wall
 			h1.title= gallery.title
 		div.pswp(tabindex="-1", role="dialog", aria-hidden="true")
 			div.pswp__bg
