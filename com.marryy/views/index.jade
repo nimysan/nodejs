@@ -65,10 +65,13 @@ block content
 											h6  创建时间 #{item.date.getFullYear()+'/'+(item.date.getMonth()+1)+'/'+item.date.getDate()}
 											
 											div
-												button(class='btn btn-success')
+												button(class='btn btn-success thumbs-up', gallery_id='#{item._id}')
 													span(class='glyphicon glyphicon-thumbs-up')
-												button(class='btn btn-danger')
-													span(class='glyphicon glyphicon-thumbs-down')
+													-if (item.meta && item.meta.votes > 0)
+														span.up-vote-number #{item.meta.votes}
+													-else
+														span.up-vote-number 0
+												
 										div(class='cos-sm-4 col-md-2')
 											h4 扫一扫
 											div.row(style='text-align:left;')

@@ -93,6 +93,8 @@ app.route('/user/:user/gallery').get(user.gallery.list).head(function(req, res) 
 
 // app.route('/user/:user/gallery/:id').delete(user.gallery.remove).get(user.gallery.show).put(user.gallery.update);
 app.post('/gallery/verify/:id', user.gallery.verify);
+app.post('/vote/gallery/:id', user.gallery.vote);
+
 
 app.route('/gallery/:id').delete(user.gallery.remove).get(user.gallery.show).put(user.gallery.update).post(user.gallery.create);
 app.route('/gallery').post(user.gallery.create);

@@ -81,5 +81,20 @@ function showPageMessage(message, trueOrFalse) {
 			var src = 'http://qr.liantu.com/api.php?bg=ffffff&fg=000000&text=http://' + window.location.host + '/gallery/' + $qrImg.attr('gallery_id');
 			$qrImg.prop('src', src);
 		});
+
+		$('button.thumbs-up').click(function() {
+			var galleryId = $(this).attr('gallery_id');
+			var _button = this;
+			$.ajax({
+				url : '/vote/gallery/' + galleryId,
+				dataType : 'json',
+				type : 'post'
+			}).done(function(data) {
+				if (data.votes && data.votes > 0) {
+					$(_button).find('.up-vote-number').text(data.votes);
+				}
+			});
+
+		})
 	});
 })(jQuery);

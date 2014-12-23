@@ -32,10 +32,31 @@ GalleryDao.prototype = {
 			if (options) {
 				merge(gallery, options);
 			}
-			console.log(gallery);
-			console.log(gallery.save);
 			gallery.save(function(err, data) {
 				console.log(err);
+				callback(err, data);
+			});
+		});
+	},
+	vote : function(id, callback) {
+		var _model = this.model;
+		this.model.findOne({
+			'_id' : id
+		}).exec(function(err, gallery) {
+			// increment meta votes
+			if (gallery.meta == null) {
+				gallery.meta = {
+					votes : 1
+				}
+			} else {
+				if (gallery.meta.votes == null) {
+					gallery.meta.votes = 1;
+				} else {
+					gallery.meta.votes += 1;
+				}
+			}
+
+			gallery.save(function(err, data) {
 				callback(err, data);
 			});
 		});

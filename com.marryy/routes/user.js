@@ -146,6 +146,15 @@ exports.gallery = {
 			});
 		});
 	},
+	vote : function(req, res) {
+		var galleryId = req.params.id;
+		model_gallery.vote(galleryId, function(err, data) {
+			res.json({
+				err : err,
+				votes : data.meta.votes
+			});
+		});
+	},
 	create : function(req, res) {
 		var user = req.session.user;
 		if (req.body.images && req.body.images.length > 0) {

@@ -88,5 +88,11 @@ button#user_login{
 	border-color: red;
 	border-style: double;
 }
+
+.up-vote-number{
+	margin-left: 3px;
+	color: white;
+	font-weight: bold;
+}
 /* image */
 
