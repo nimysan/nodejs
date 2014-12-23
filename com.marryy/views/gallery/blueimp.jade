@@ -1,0 +1,26 @@
+extends ../layout
+block content
+	//gallery images urls
+	div.container
+		div.row(id='links')
+			each item in gallery.images
+				div(class='col-sm-12 col-md-3 cos-xd-2',style='margin:2px;')
+					a(href='#{item}!phone')
+						img(src='#{item}!thumbnail', alt='...')
+				
+		div.container
+			div#blueimp-gallery(class='blueimp-gallery')
+				div.slides
+				h3.title
+				a.prev
+				a.next
+				a.close
+				a.play-pause
+				ol.indicator
+			
+	link(rel='stylesheet', href='/stylesheets/yt_gallery.css')
+	link(rel='stylesheet', href="/gallerylibs/blueimp/css/blueimp-gallery.min.css")
+	script(src='/jquery/jquery-1.11.0.js')
+	script(src="/gallerylibs/blueimp/js/blueimp-gallery.min.js")
+	script(src='/js/gallery_portal.js')
+	script(src='/js/gallery/blueimp.js')

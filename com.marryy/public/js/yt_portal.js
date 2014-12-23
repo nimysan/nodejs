@@ -76,5 +76,10 @@ function showPageMessage(message, trueOrFalse) {
 		$('#carousel-banner').carousel({
 			interval : 2000
 		});
+		$('img.qr').each(function(index, qrImg) {
+			var $qrImg = $(qrImg);
+			var src = 'http://qr.liantu.com/api.php?bg=ffffff&fg=000000&text=http://' + window.location.host + '/gallery/' + $qrImg.attr('gallery_id');
+			$qrImg.prop('src', src);
+		});
 	});
 })(jQuery);

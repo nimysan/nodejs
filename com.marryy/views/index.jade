@@ -72,7 +72,7 @@ block content
 										div(class='cos-sm-4 col-md-2')
 											h4 扫一扫
 											div.row(style='text-align:left;')
-												img(src='http://qr.liantu.com/api.php?bg=ffffff&fg=000000&text=http://marryy.nodejitsu.com/gallery/#{item._id}', class='gallary_qr_code')
+												img.qr(gallery_id = '#{item._id}', class='gallary_qr_code')
 
-script(src='/js/yt_portal.js')
+		script(src='/js/yt_portal.js')
 
