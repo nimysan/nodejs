@@ -65,7 +65,7 @@ GalleryDao.prototype = {
 		this.model.findOne({
 			'_id' : id
 		}).populate('_creator').exec(function(err, gallery) {
-			model_user.load(gallery._creator, function(uerr, creator) {
+			model_user.load(gallery._creator.loginId, function(uerr, creator) {
 				gallery._creator = creator;
 				callback(err, gallery);
 			});
