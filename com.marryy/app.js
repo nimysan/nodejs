@@ -2,7 +2,7 @@
  * Module dependencies.
  */
 
-var express = require('express'), routes = require('./routes'), user = require('./routes/user'), management = require('./routes/admin_route').management, http = require('http'), path = require('path'), pig = require('./lib/photo_gateway.js');
+var express = require('express'), routes = require('./routes'), user = require('./routes/user'),studio=require('./routes/studio').studio, management = require('./routes/admin_route').management, http = require('http'), path = require('path'), pig = require('./lib/photo_gateway.js');
 express.static = require('serve-static');
 var paginate = require('express-paginate');
 var favicon = require('serve-favicon');
@@ -201,6 +201,9 @@ app.get('/admin/upyunsign', function(req, res) {
 		sign : pig.getFromAPISign(req.query.policy)
 	});
 });
+
+app.post('/studio', studio.create);
+app.put('/studio/:id', studio.update);
 // user admin
 
 // pictures list modules

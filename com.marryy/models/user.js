@@ -51,9 +51,6 @@ UserDao.prototype = {
 			if (options) {
 				merge(user, options);
 			}
-			console.log(' Updated --- user---');
-			console.log(user);
-			console.log(' Updated --- user -- end');
 			user.save(function(err, data) {
 				console.log(err);
 				callback(err, data);
@@ -71,10 +68,8 @@ UserDao.prototype = {
 	load : function(name, callback) {
 		this.model.findOne({
 			'loginId' : name
-		}).populate('roles').populate('galleries').populate('directUsers').populate('directUsers roles').exec(function(err, user) {
-			console.log("--- test --- ");
+		}).populate('roles').populate('galleries').populate('studios').populate('directUsers').populate('directUsers roles').exec(function(err, user) {
 			console.log(user);
-			console.log(" =====  test ===== ");
 			callback(err, user);
 		});
 	},

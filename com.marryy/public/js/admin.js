@@ -115,4 +115,25 @@
 		});
 	});
 
+	// stuido
+	$('#studio_submit').click(function() {
+		var form = $('#studio_form');
+		var data = {};
+		form.find('input').each(function(index, input) {
+			var $i = $(input);
+			data[$i.attr('id')] = $.trim($i.val());
+		});
+		var studioId = null;
+		var method = studioId == null ? 'post' : 'put';
+		var url = studioId == null ? '/studio' : '/studio/' + studioId;
+		$.ajax({
+			url : url,
+			dataType : 'json',
+			type : method,
+			data : data
+		}).done(function(result) {
+			console.log(result);
+		});
+	});
+
 })(window, jQuery);

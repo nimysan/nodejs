@@ -21,7 +21,34 @@ block content
 						form#upyunDropzone(class='dropzone dz-clickable',action='http://v0.api.upyun.com/nimysan')
 							div(class='dz-default dz-message')
 								span 把文件拖入到这里上传
-						
+		
+		div#studio_part(class="panel panel-info")
+			div.panel-heading
+				h2.panel-title 影楼信息更新
+			div.panel-body
+				h2 在这里管理影楼的信息
+				div(role='form', id='studio_form')
+					div.input-group
+						label(for='name',style='display:inline;') 影楼名称
+						input.form-control(id='name', type='text')
+					div.input-group
+						label(for='link') 影楼网址
+						input.form-control(id='link', type='text')
+					div.input-group
+						label(for='address') 影楼地址
+						input.form-control(id='address', type='text')
+					div.input-group
+						label(for='contactName') 影楼联系人
+						input.form-control(id='contactName', type='text')
+					div.input-group
+						label(for='contactDeskPhone') 影楼联系电话
+						input.form-control(id='contactDeskPhone', type='text')
+					div.input-group
+						label(for='contactMobilePhone') 影楼联系电话(手机)
+						input.form-control(id='contactMobilePhone', type='text')
+					div.input-group
+						button(class='btn btn-info',style='margin-top:6px',id='studio_submit', type='submit') 提交
+							
 		div#user_part(class="panel panel-info")
 			div.panel-heading
 				h2.panel-title 用户创建和管理

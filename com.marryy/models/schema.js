@@ -33,6 +33,10 @@ var userSchema = new Schema({
 		type : Schema.Types.ObjectId,
 		ref : 'roles'
 	} ],
+	studios : [ {
+		type : Schema.Types.ObjectId,
+		ref : 'studios'
+	} ],
 	galleries : [ {
 		type : Schema.Types.ObjectId,
 		ref : 'galleries'
