@@ -56,12 +56,13 @@ block content
 											p 被欣赏 
 												span(class="label label-success") #{item.meta.accesses == null ? 0  : item.meta.accesses}
 											p= item.desc
-											-if (item._from)	
+											-if (item._creator.studios && item._creator.studios.length > 0)
+												- var studio=item._creator.studios[0]
 												h5 来自 
-													a(href='#{item._from.link}') #{item._from.name}
+													a(href='#{studio.link}',target="_blank") #{studio.name}
 											-else
-												h5 来自 
-													a(href='a}') 深圳天长地久婚纱摄影
+												h5  没有提供影楼信息
+												
 											h6  创建时间 #{item.date.getFullYear()+'/'+(item.date.getMonth()+1)+'/'+item.date.getDate()}
 											
 											div

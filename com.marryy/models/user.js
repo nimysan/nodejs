@@ -3,21 +3,29 @@
  */
 var merge = require('utils-merge');
 var models = require('./schema').models;
+var mongoose = require('mongoose');
+var Schema = mongoose.Schema;
 var db = models.db;
 var model_role = require('./role').model_role;
+var model_studio = require('./studio').model_studio;
 var UserDao = function(db, model) {
 	this.db = db;
 	this.model = model;
 };
 
 UserDao.prototype = {
+	queryByIds : function(ids, callback) {
+		var query = this.model.find({});
+		query.where('_id').in(ids).populate('roles').populate('studios').exec(function(err, data) {
+			callback(err, data);
+		});
+	},
 	create : function(name, password, options, callback) {
 		var _model = this.model;
 		var doc = {
 			loginId : name,
 			password : password
 		};
-		// create uesr with role
 		if (options && options.role !== '') {
 			model_role.load(options.role, function(err, roleObj) {
 				if (options) {
@@ -96,5 +104,3 @@ UserDao.prototype = {
 };
 
 exports.model_user = exports.user_dao = new UserDao(db, models.user);
-console.log("------------")
-console.log(exports.model_user);

@@ -38,6 +38,8 @@
 		var isCreateManager = $(this).attr('id') === 'u_create_manager';
 		var name = $('#u_login_name').val();
 		var user_id = $('#g_form_id').attr('user_id');
+		var studio_id = $('button.studio-button.active').attr('studio_id');
+		var studio_val = 'ObjectId("' + studio_id + '")';
 		if (user_id && user_id.length > 0) {
 			// update
 			$.ajax({
@@ -46,7 +48,8 @@
 				type : 'put',
 				data : {
 					imagePath : $('#u_image_path').val(),
-					role : (isCreateManager ? 'manager' : 'customer')
+					role : (isCreateManager ? 'manager' : 'customer'),
+					studios : [ studio_id ]
 				}
 			}).done(function(result) {
 				if (result.user) {
@@ -62,7 +65,8 @@
 				type : 'post',
 				data : {
 					imagePath : $('#u_image_path').val(),
-					role : (isCreateManager ? 'manager' : 'customer')
+					role : (isCreateManager ? 'manager' : 'customer'),
+					studios : [ studio_id ]
 				}
 			}).done(function(result) {
 				if (result.user) {

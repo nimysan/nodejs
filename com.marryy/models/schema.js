@@ -103,8 +103,9 @@ var studioSchema = new Schema({
 	name : String,
 	desc : String,
 	link : String, // how to setup the foreign key to user?
-	phone : String,
-	email : String,
+	contactName : String,
+	contactDeskPhone : String,
+	contactMobilePhone : String,
 	wechat : String,
 	qr : String,
 	date : {

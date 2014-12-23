@@ -4,7 +4,7 @@
 var merge = require('utils-merge');
 var models = require('./schema').models;
 var db = models.db;
-
+var model_user = require('./user').model_user;
 var GalleryDao = function(db, model) {
 	this.db = db;
 	this.model = model;
@@ -65,7 +65,10 @@ GalleryDao.prototype = {
 		this.model.findOne({
 			'_id' : id
 		}).populate('_creator').exec(function(err, gallery) {
-			callback(err, gallery);
+			model_user.load(gallery._creator, function(uerr, creator) {
+				gallery._creator = creator;
+				callback(err, gallery);
+			});
 		});
 	},
 	list : function(user, callback) {
@@ -79,13 +82,26 @@ GalleryDao.prototype = {
 		this.model.paginate({
 			isPrivate : false
 		}, page, perPage, function(error, pageCount, paginatedResults, itemCount) {
-			if (error) {
-				console.error(error);
-			} else {
-				console.log('Pages:', pageCount);
-				console.log(paginatedResults);
-				callback(error, paginatedResults, pageCount, itemCount);
+			var userList = [];
+			for (var i = 0; i < paginatedResults.length; i++) {
+				var gallery = paginatedResults[i];
+				if (gallery._creator) {
+					userList.push(gallery._creator._id);
+				}
 			}
+			model_user.queryByIds(userList, function(uerr, users) {
+				for (var i = 0; i < paginatedResults.length; i++) {
+					var gallery = paginatedResults[i];
+					for (var j = 0; j < users.length; j++) {
+						var user = users[j];
+						if (gallery._creator._id + '' == user._id + '') {
+							gallery._creator = user;
+
+						}
+					}
+				}
+				callback(error, paginatedResults, pageCount, itemCount);
+			});
 		}, {
 			sortBy : {
 				'meta.accesses' : -1,

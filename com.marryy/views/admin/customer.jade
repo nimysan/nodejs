@@ -15,6 +15,8 @@ block content
 							span.sr-only Close
 						h2.modal-title 把文件拖到浏览器里面上传
 					div.modal-body
+						div(class="btn-group",data-toggle="buttons")
+							
 						button(type='button', class='btn btn-danger', id='uploadButton', style='margin-bottom:6px;width: 100%;font-weight: bold;height: 4em;') 点击这个按钮上传
 							span(class='glyphicon glyphicon-ok-upload')
 						
@@ -26,7 +28,24 @@ block content
 			div.panel-heading
 				h2.panel-title 影楼信息更新
 			div.panel-body
-				h2 在这里管理影楼的信息
+				h2 维护的影楼信息
+				table(class='table table-bordered')
+					tr
+						th 影楼名称
+						th 影楼网址
+						th 影楼地址
+						th 影楼联系人
+						th 影楼联系电话
+						th 影楼联系电话(手机)
+					each studio in studios
+						tr.studio-detail(studio_id='#{studio._id}')
+							td.studio-name= studio.name
+							td.studio-link= studio.link
+							td= studio.address
+							td= studio.contactName
+							td= studio.contactDeskPhone
+							td= studio.contactMobilePhone
+								
 				div(role='form', id='studio_form')
 					div.input-group
 						label(for='name',style='display:inline;') 影楼名称
@@ -64,6 +83,10 @@ block content
 							div.input-group
 								span(class='glyphicon glyphicon-cloud input-group-addon')
 								input#u_image_path(type='text', class='form-control',placeholder='默认用用户登录名。用户在云空间拥有的路径，用户上传图片用',value='')
+								
+						div.form-group(class='has-feedback')
+							each studio in studios
+								button(data-toggle="button", class="btn btn-small btn-warn studio-button", studio_id = '#{studio._id}', style='margin:5px 20px;') #{studio.name}
 								
 						button#u_create(type='button', class='btn btn-primary') 创建
 							span(class='glyphicon glyphicon-ok-sign')

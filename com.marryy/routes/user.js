@@ -16,6 +16,9 @@ exports.gallery = {
 						gallery.images[i] = yt_utils.getImageLink(gallery.images[i], req.session.user.imagePath);
 					}
 				}
+				if (req.session.user.studios && req.session.user.studios.length > 0) {
+					gallery.studio = req.session.user.studios[0];
+				}
 			}
 			res.json(data);
 		});
@@ -111,12 +114,15 @@ exports.gallery = {
 					gallery.images[i] = yt_utils.getImageLink(gallery.images[i], gallery._creator.imagePath);
 				}
 			}
+			if (gallery._creator.studios && gallery._creator.studios.length > 0) {
+				gallery.studio = gallery._creator.studios[0];
+			}
 			var galleryStyle = req.query.style;
 			if (galleryStyle) {
-				if ([ 'galleryview', 'speedial', 'blueimp', 'photoswipe' ].indexOf(galleryStyle) <= 0) {
+				if ([ 'speedial', 'blueimp', 'photoswipe' ].indexOf(galleryStyle) <= 0) {
 					// set as default value if given style is not supported
 					// yet
-					galleryStyle = 'photoswipe';
+					galleryStyle = 'blueimp';
 				}
 			} else {
 				galleryStyle = gallery.galleryStyle;

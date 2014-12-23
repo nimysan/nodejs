@@ -13,7 +13,8 @@ exports.management = {
 	index : function(req, res) {
 		model_user.load(req.session.user.loginId, function(err, data) {
 			res.render('admin/customer', {
-				users : data.directUsers
+				users : data.directUsers,
+				studios : data.studios
 			});
 			return;
 		});
@@ -23,7 +24,8 @@ exports.management = {
 			model_user.load(req.session.user.loginId, function(err, manager) {
 				model_user.create(req.params.userId, '123456', {
 					imagePath : req.body.imagePath,
-					role : req.body.role
+					role : req.body.role,
+					studios : req.body.studios
 				}, function(err, data) {
 					if (manager.directUsers == null) {
 						manager.directUsers = [];

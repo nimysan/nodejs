@@ -15,7 +15,11 @@ exports.index = function(req, res) {
 					gallery.images[i] = yt_utils.getImageLink(gallery.images[i], gallery._creator.imagePath);
 				}
 			}
+			if (gallery._creator.studios && gallery._creator.studios.length > 0) {
+				gallery.studio = gallery._creator.studios[0];
+			}
 		}
+		
 		res.render('index', {
 			loginId : loginId,
 			displayName : displayName,

@@ -72,7 +72,8 @@ app.use(function(req, res, next) {
 			imagePath : req.session.user.imagePath,
 			email : req.session.user.email,
 			phone : req.session.user.phone,
-			roles : req.session.user.roles
+			roles : req.session.user.roles,
+			studios : req.session.user.studios
 		};
 	}
 	next();
