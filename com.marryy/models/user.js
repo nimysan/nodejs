@@ -93,9 +93,7 @@ UserDao.prototype = {
 		});
 	},
 	authenticate : function(name, pass, callback) {
-		if (!module.parent) {
-			console.log('authenticating %s:%s', name, pass);
-		}
+		console.log('authenticating %s:%s', name, pass);
 		var _that = this;
 		this.model.findOne({
 			'loginId' : name
@@ -105,7 +103,13 @@ UserDao.prototype = {
 					return callback(new Error("Can't find user"));
 				}
 				var hashPassword = _that._hashPassword(user.salt, pass);
-				if (user.password == hashPassword) {
+				console.log('============================================');
+				console.log(user.password);
+				console.log(hashPassword+'');
+				var matched = user.password == (hashPassword+'');
+				console.log(' - - - - ' +  matched);
+				if (matched) {
+					console.log('call back --- ');
 					callback(null, user);
 				}
 			} else {

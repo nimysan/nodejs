@@ -161,23 +161,22 @@
 					password : pass
 				}
 			}).done(function(result) {
-				if (result && result.error) {
-					showMessage('user_name', result.error, false);
-				} else {
-					showMessage('user_name', '登录成功', true);
-					window.location.href = '/';
-				}
+				console.log('------------ ' + result);
+				showMessage('user_name', '登录成功', true);
+				window.location.href = '/';
+			}).always(function(XMLHttpRequest) {
+				console.log('-------------->' + arguments);
 			});
 		}
 	});
 
-	$('a#create_gallery').click(function() {
-		$.ajax({
-			url : '/user/' + $('#metadata_login_id').val() + '/gallery',
-			dataType : 'json',
-			type : 'head'
-		});
-	});
+//	$('a#create_gallery').click(function() {
+//		$.ajax({
+//			url : '/user/' + $('#metadata_login_id').val() + '/gallery',
+//			dataType : 'json',
+//			type : 'head'
+//		});
+//	});
 
 	// create or update
 	$('button#g_create').click(function() {
@@ -462,6 +461,6 @@
 
 	$(document).ready(function() {
 		startSwitch();
-		listGalleries();
+		//listGalleries();
 	});
 })(window, jQuery);

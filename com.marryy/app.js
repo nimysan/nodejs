@@ -2,7 +2,15 @@
  * Module dependencies.
  */
 
-var express = require('express'), routes = require('./routes'), user = require('./routes/user'),studio=require('./routes/studio').studio, management = require('./routes/admin_route').management, http = require('http'), path = require('path'), pig = require('./lib/photo_gateway.js');
+var express = require('express'), 
+	routes = require('./routes'), 
+	user = require('./routes/user'),
+	studio = require('./routes/studio').studio, 
+	management = require('./routes/admin_route').management, 
+	http = require('http'), 
+	path = require('path'), 
+	pig = require('./lib/photo_gateway.js'),
+	session = require('express-session');
 express.static = require('serve-static');
 var paginate = require('express-paginate');
 var favicon = require('serve-favicon');
@@ -10,34 +18,50 @@ var morgan = require('morgan');
 var bodyParser = require('body-parser');
 var methodOverride = require('method-override');
 var errorhandler = require('errorhandler');
-var session = require('express-session');
+var MongoStore = require('express-session-mongo');
 
 var app = express();
 
 // model
-var cookieParser = require('cookie-parser');
+// var cookieParser = require('cookie-parser');
 
 // all environments
 app.set('port', process.env.PORT || 3000);
 app.set('views', __dirname + '/views');
 app.set('view engine', 'jade');
-app.use(favicon(__dirname + '/public/favicon.ico'));
+// app.use(favicon(__dirname + '/public/favicon.ico'));
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
-app.use(cookieParser());
+// app.use(cookieParser());
 app.use(methodOverride());
 app.use(morgan('combined'));
-app.use(express.static(path.join(__dirname, 'public')));
+
 // keep this before all routes that will use pagination
 app.use(paginate.middleware(3, 50));
 
-var sess = session({
-	secret : 'com.marryy',
-	resave : true,
-	cookie : {
-		secure : false
-	}
-});
+var sessionOption = {
+// secret : 'sean_marryy',
+		key : 'com.marryy',
+		secret : 'com.marryy',
+		resave : false,
+		cookie : {
+			secure : false,
+			maxAge: 6000000
+		},
+		saveUninitialized  : true,
+		store  : new MongoStore({
+			db : 'marryy',
+			ip: 'ds045057.mongolab.com',
+			port : '45057',
+			collection : 'sessions',
+			username:'marryy',
+			password: 'marryy123',
+			authenciated  : function(err){
+				console.log( '--- Session Store ---');
+				console.log(arguments);
+			}
+		})
+	};
 
 // development only
 if ('development' === app.get('env')) {
@@ -46,9 +70,11 @@ if ('development' === app.get('env')) {
 	// app.locals.debug = true;
 } else if (app.get('env') === 'production') {
 	app.set('trust proxy', 1); // trust first proxy
-	app.locals.pretty = true;
+	app.locals.pretty = false;
 }
-app.use(sess);
+app.use(session(sessionOption));
+app.use(express.static(path.join(__dirname, 'public')));
+
 app.use(function(req, res, next) {
 	var sess = req.session;
 	if (sess.views) {
@@ -61,22 +87,27 @@ app.use(function(req, res, next) {
 	console.log(req.session);
 	console.log("<=============Session ==============");
 	
-	if (req.session.user) {
-		var displayName = req.session.user.displayName;
-		if (displayName === null || displayName === '') {
-			displayName = req.session.user.loginId;
-		}
-		res.locals.user = {
-			loginId : req.session.user.loginId,
-			displayName : displayName,
-			imagePath : req.session.user.imagePath,
-			email : req.session.user.email,
-			phone : req.session.user.phone,
-			roles : req.session.user.roles,
-			studios : req.session.user.studios
-		};
+	if (req.session.user_name) {
+		user_dao.load(req.session.user_name , function(err, user){
+			var displayName = user.displayName;
+			if (displayName === null || displayName === '') {
+				displayName = user.loginId;
+			}
+			res.locals.user = {
+				loginId : user.loginId,
+				displayName : displayName,
+				imagePath : user.imagePath,
+				email : user.email,
+				phone : user.phone,
+				roles : user.roles,
+				studios : user.studios
+			};
+			next();
+		});
+		
+	}else{
+		next();
 	}
-	next();
 });
 
 app.get("/", routes.index, function(req, res, next) {
@@ -138,7 +169,7 @@ app.get("/user/login", function(req, res) {
 });
 app.get("/user/logout", function(req, res) {
 	req.session.destroy(function(err) {
-		// cannot access session here
+		console.log('Err ' + err);
 	});
 	res.redirect('/user/login');
 });
@@ -146,10 +177,9 @@ app.get("/user/logout", function(req, res) {
 app.post("/user/login", function(req, res) {
 	user_dao.authenticate(req.body.username, req.body.password, function(err, user) {
 		if (user) {
-			req.session.regenerate(function() {
-				req.session.user = user;
-				res.json(1);
-			});
+			req.session.user_name = user.loginId;
+			// req.session.user = user;
+			res.json({a:1});
 		} else {
 			res.json({
 				'err' : '登录失败。 用户名或密码错误'
