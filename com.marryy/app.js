@@ -161,17 +161,13 @@ app.post("/user/login", function(req, res) {
 app.post("/user/signup", function(req, res) {
 	var password = req.body.password;
 	var username = req.body.username;
-	console.log('sign up user - ' + username + ' - password ' + password);
-	var salt = '1234'; // TODO
-	var hash_password = password; // TODO need to find a good library
-	console.log('salt - ' + salt);
 	user_dao.exists(username, function(err, count) {
 		if (err !== null) {
 			console.log(err + " goto error!");
 			res.json(err);
 		} else {
 			if (count <= 0) {
-				user_dao.create(username, password, {}, function(err, user) {
+				user_dao.create(username, password, req.body, function(err, user) {
 					console.log('create user result ' + err + ' - ' + user);
 					if (err !== null) {
 						console.log(err + " goto error 1!");
