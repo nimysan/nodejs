@@ -4,12 +4,11 @@
 
 var express = require('express'), 
 	routes = require('./routes'), 
-	route_gallery = require('./routes/gallery').gallery,
+	route_gallery = require('./routes/gallery').gallery, 
 	studio = require('./routes/studio').studio, 
 	management = require('./routes/admin_route').management, 
-	http = require('http'), 
-	path = require('path'), 
-	pig = require('./lib/photo_gateway.js'),
+	http = require('http'), path = require('path'), 
+	pig = require('./lib/photo_gateway.js'), 
 	session = require('express-session');
 express.static = require('serve-static');
 var paginate = require('express-paginate');
@@ -29,8 +28,10 @@ var app = express();
 app.set('port', process.env.PORT || 3000);
 app.set('views', __dirname + '/views');
 app.set('view engine', 'jade');
- app.use(favicon(__dirname + '/public/favicon.ico'));
-app.use(bodyParser.urlencoded({ extended: true }));
+app.use(favicon(__dirname + '/public/favicon.ico'));
+app.use(bodyParser.urlencoded({
+	extended : true
+}));
 app.use(bodyParser.json());
 // app.use(cookieParser());
 app.use(methodOverride());
@@ -40,27 +41,27 @@ app.use(morgan('combined'));
 app.use(paginate.middleware(3, 50));
 
 var sessionOption = {
-// secret : 'sean_marryy',
-		key : 'com.marryy',
-		secret : 'com.marryy',
-		resave : false,
-		cookie : {
-			secure : false,
-			maxAge: 6000000
-		},
-		saveUninitialized  : true,
-		store  : new MongoStore({
-			db : 'marryy',
-			ip: 'ds045057.mongolab.com',
-			port : '45057',
-			collection : 'sessions',
-			username:'marryy',
-			password: 'marryy123',
-			authenciated  : function(err){
-				console.log( '--- Session Store is not connected! ---');
-			}
-		})
-	};
+	// secret : 'sean_marryy',
+	key : 'com.marryy',
+	secret : 'com.marryy',
+	resave : false,
+	cookie : {
+		secure : false,
+		maxAge : 6000000
+	},
+	saveUninitialized : true,
+	store : new MongoStore({
+		db : 'marryy',
+		ip : 'ds045057.mongolab.com',
+		port : '45057',
+		collection : 'sessions',
+		username : 'marryy',
+		password : 'marryy123',
+		authenciated : function(err) {
+			console.log('--- Session Store is not connected! ---');
+		}
+	})
+};
 
 // development only
 if ('development' === app.get('env')) {
@@ -81,30 +82,26 @@ app.use(function(req, res, next) {
 	} else {
 		sess.views = 1;
 	}
-	
-	console.log("=============Session ==============>");
-	console.log(req.session);
-	console.log("<=============Session ==============");
-	
 	if (req.session.user_name) {
-		user_dao.load(req.session.user_name , function(err, user){
+		user_dao.load(req.session.user_name, function(err, user) {
 			var displayName = user.displayName;
 			if (displayName === null || displayName === '') {
 				displayName = user.loginId;
 			}
-			res.locals.user = {
-				loginId : user.loginId,
-				displayName : displayName,
-				imagePath : user.imagePath,
-				email : user.email,
-				phone : user.phone,
-				roles : user.roles,
-				studios : user.studios
-			};
+			var eu = {};
+			for(var a in user){
+				if('string' === typeof user[a]){
+					if(['password', 'hashPassword', 'salt'].indexOf(a) <0){
+						eu[a] = user[a];
+					}
+				}
+			}
+			res.locals.user = eu;
 			next();
 		});
-		
-	}else{
+
+	} else {
+		res.locals.user = {};
 		next();
 	}
 });
@@ -121,7 +118,7 @@ app.route('/user/:user/gallery').get(route_gallery.list).head(function(req, res)
 	res.render('user/gallery_create');
 }).post(route_gallery.create);
 
-app.post('/gallery/verify/:id',route_gallery.verify);
+app.post('/gallery/verify/:id', route_gallery.verify);
 app.post('/vote/gallery/:id', route_gallery.vote);
 app.route('/gallery/:id').delete(route_gallery.remove).get(route_gallery.show).put(route_gallery.update).post(route_gallery.create);
 app.route('/gallery').post(route_gallery.create);
@@ -141,14 +138,16 @@ app.get('/user/signup', function(req, res) {
 	}
 });
 
-/*
- * app.put('/user/:userId', function(req, res) { if (req.params.userId !==
- * req.session.user_name) { res.json({ err : '你试着去更改不属于你的信息' }); return; }
- * user_dao.update(req.params.userId, req.body, function(err, user) { if
- * (req.session.user && user.loginId === req.session.user.loginId) {
- * req.session.user = user; } delete user.password; res.json({ data : user });
- * }); });
- */
+app.put('/user/:userId',function(req, res, next) {
+	if (req.params.userId !== req.session.user_name) {
+		res.json({
+			err : '你试着去更改不属于你的信息'
+		});
+	}else{
+		next();
+	}
+},management.user.update);
+
 app.put('/user/password', management.user.passwordUpdate);
 app.get("/user/login", function(req, res) {
 	res.render("user/login");
@@ -165,7 +164,9 @@ app.post("/user/login", function(req, res) {
 		if (user) {
 			req.session.user_name = user.loginId;
 			// req.session.user = user;
-			res.json({a:1});
+			res.json({
+				a : 1
+			});
 		} else {
 			res.json({
 				'err' : '登录失败。 用户名或密码错误'

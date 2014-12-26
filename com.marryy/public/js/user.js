@@ -445,7 +445,42 @@
 			}
 		});
 	}
-	//
+	// -----------------------------
+	function initUserInfoForm() {
+		$('#user_info_part').yt({
+			submitText : '提交',
+			url : '/user/' + page_info.user.loginId,
+			method : 'put',
+			data : page_info.user,
+			doneFn : function() {
+				$.fn.yt.tooltip({
+					'messageType' : 'success',
+					msg : '用户信息更改成功.'
+				});
+			},
+			forms : [ {
+				type : 'text',
+				placeHolder : '用户名字，当你登录的时候显示的名字',
+				id : 'displayName'
+			}, {
+				type : 'text',
+				placeHolder : '电子邮件地址，用户发送信息以及重置密码',
+				id : 'email'
+			}, {
+				type : 'text',
+				placeHolder : '最好填写手机号码，非必需',
+				id : 'phone'
+			}, {
+				type : 'text',
+				placeHolder : '微信号。 用于我们向你推送一些优惠和活动信息',
+				id : 'wechat'
+			}, {
+				type : 'textarea',
+				placeHolder : '你的个人详细描述',
+				id : 'desc'
+			} ]
+		});
+	}
 
 	$('#g_style_selector').click(function() {
 		$('#g_style_part').modal('show');
@@ -460,6 +495,7 @@
 	});
 
 	$(document).ready(function() {
+		initUserInfoForm();
 		startSwitch();
 		listGalleries();
 	});

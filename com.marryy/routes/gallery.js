@@ -9,6 +9,8 @@ var yt_utils = require('./utils').utils;
 exports.gallery = {
 	list : function(req, res) {
 		model_user.load(req.session.user_name, function(err, user) {
+			console.log('user information ');
+			console.log(user);
 			model_gallery.list(user, function(err, data) {
 				for (var j = 0; j < data.length; j++) {
 					var gallery = data[j];

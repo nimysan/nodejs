@@ -20,11 +20,18 @@
 	$.fn.yt = function(options) {
 		var ele = $(this);
 		ele.empty();
+		var data = options.data || {};
 		$(options.forms).each(function(index, formE) {
 			var formDiv = $('<div>').addClass('form-group');
 			var div = $('<div>').addClass('input-group');
-			var input = $('<input data-id="' + formE.id + '", type="' + formE.type + '" class="form-control" placeholder="' + formE.placeHolder + '" aria-describedby="basic-addon1">');
+			var input = null;
+			if (formE.type === 'textarea') {
+				input = $('<textarea data-id="' + formE.id + '", type="' + formE.type + '" class="form-control" placeholder="' + formE.placeHolder + '" aria-describedby="basic-addon1">');
+			} else {
+				input = $('<input data-id="' + formE.id + '", type="' + formE.type + '" class="form-control" placeholder="' + formE.placeHolder + '" aria-describedby="basic-addon1">');
+			}
 			input.appendTo(div);
+			input.val(data[formE.id]);
 			div.appendTo(formDiv);
 			formDiv.appendTo(ele);
 		});
@@ -34,7 +41,7 @@
 
 		$(submitButton).click(function() {
 			var jsonFrom = {};
-			$(ele).find('input').each(function() {
+			$(ele).find('input,textarea').each(function() {
 				jsonFrom[$(this).attr('data-id')] = $(this).val();
 				// validate
 			});
@@ -42,11 +49,16 @@
 			if (typeof fn == 'function') {
 				fn(ele);
 			} else {
+				//loading plugin - http://hekigan.github.io/is-loading/
 				$.ajax({
 					url : options.urlFn || options.url,
 					dataType : options.dataType || 'json',
 					type : options.method || 'get',
 					data : jsonFrom
+				}).then(function() {
+					$(ele).isLoading({
+						text : "努力加载中"
+					});
 				}).done(function(result) {
 					if (result && result.err) {
 						if ($.isFunction(options.doneErrFn)) {
@@ -66,6 +78,7 @@
 					if ($.isFunction(options.alwaysFn)) {
 						options.alwaysFn(arguments);
 					}
+					$(ele).isLoading('hide');
 				});
 			}
 		});
@@ -97,5 +110,18 @@
 	$.fn.yt.defaults = {
 		messageType : 'success'
 	};
+
+	$(document).ready(function() {
+		var meta = $.trim($('#metadata_user').val());
+		if (meta === '') {
+			meta = {};
+		} else {
+			meta = $.parseJSON(meta);
+		}
+
+		window.page_info = {
+			'user' : meta
+		}
+	});
 	// 闭包结束
 })(jQuery);

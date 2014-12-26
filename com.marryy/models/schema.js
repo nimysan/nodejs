@@ -18,7 +18,6 @@ var userSchema = new Schema({
 	wechat : String,
 	qr : String, // qr code path
 	desc : String,
-	body : String,
 	contact : String,
 	imagePath : String,
 	directUsers : [ {

@@ -4,6 +4,7 @@ html
 	// title= title
 	include head
 	body
+		input(type='hidden', value='#{JSON.stringify(user)}', id='metadata_user')
 		include nav
 		block banner
 		block content
