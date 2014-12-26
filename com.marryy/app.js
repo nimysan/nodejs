@@ -4,7 +4,7 @@
 
 var express = require('express'), 
 	routes = require('./routes'), 
-	user = require('./routes/user'),
+	route_gallery = require('./routes/gallery').gallery,
 	studio = require('./routes/studio').studio, 
 	management = require('./routes/admin_route').management, 
 	http = require('http'), 
@@ -118,18 +118,15 @@ app.get('/user/:user/index', function(req, res) {
 	res.render('user/index');
 });
 // app.get('/users', user.list);
-app.route('/user/:user/gallery').get(user.gallery.list).head(function(req, res) {
+app.route('/user/:user/gallery').get(route_gallery.list).head(function(req, res) {
 	console.log(req.params);
 	res.render('user/gallery_create');
-}).post(user.gallery.create);
+}).post(route_gallery.create);
 
-// app.route('/user/:user/gallery/:id').delete(user.gallery.remove).get(user.gallery.show).put(user.gallery.update);
-app.post('/gallery/verify/:id', user.gallery.verify);
-app.post('/vote/gallery/:id', user.gallery.vote);
-
-
-app.route('/gallery/:id').delete(user.gallery.remove).get(user.gallery.show).put(user.gallery.update).post(user.gallery.create);
-app.route('/gallery').post(user.gallery.create);
+app.post('/gallery/verify/:id',route_gallery.verify);
+app.post('/vote/gallery/:id', route_gallery.vote);
+app.route('/gallery/:id').delete(route_gallery.remove).get(route_gallery.show).put(route_gallery.update).post(route_gallery.create);
+app.route('/gallery').post(route_gallery.create);
 
 // app users
 app.get('/price', function(req, res) {
@@ -163,7 +160,7 @@ app.put('/user/:userId', function(req, res) {
 		});
 	});
 });
-
+app.put('/user/password', user.passowrd.update);
 app.get("/user/login", function(req, res) {
 	res.render("user/login");
 });

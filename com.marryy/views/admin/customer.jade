@@ -1,11 +1,19 @@
 extends ../layout
 block content
-	div.container
+	div.container(class='container-body')
 		<div class="alert hide" role="alert" id="message"></div>
 		
 		link(rel='stylesheet', href='/dropzone/css/basic.css')
 		link(rel='stylesheet', href='/dropzone/css/dropzone.css')
 	
+		div#user_passpord_part(class="panel panel-info")
+			div.panel-heading
+				h2.panel-title 用户信息更新
+			div.panel-body
+				h2 更改用户密码
+				div#user_password_form
+				
+			
 		div#file_upload_part(class="modal fade",role="dialog")
 			div.modal-dialog
 				div.modal-content

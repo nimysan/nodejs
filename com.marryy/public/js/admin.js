@@ -140,4 +140,18 @@
 		});
 	});
 
+	// page initialize
+	$('#user_password_form').yt({
+		submitText : '提交',
+		url : '/user/password',
+		method : 'put',
+		forms : [ {
+			type : 'text',
+			placeHolder : 'username'
+		}, {
+			type : 'password',
+			placeHolder : 'password'
+		} ]
+	});
+
 })(window, jQuery);

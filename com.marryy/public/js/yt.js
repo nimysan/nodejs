@@ -1,24 +1,58 @@
-// 创建一个闭包  
+/**
+ * options.fn
+ * 
+ * options.urlFn
+ * 
+ * options.url
+ * 
+ * options.dataType
+ * 
+ * options.method
+ * 
+ * options.doneFn
+ * 
+ * options.alwaysFn
+ * 
+ * @param $
+ */
 (function($) {
 	// 插件的定义
 	$.fn.yt = function(options) {
-		debug(this);
-		// build main options before element iteration
-		var opts = $.extend({}, $.fn.hilight.defaults, options);
-		// iterate and reformat each matched element
-		return this.each(function() {
-			$this = $(this);
-			// build element specific options
-			var o = $.meta ? $.extend({}, opts, $this.data()) : opts;
-			// update element styles
-			$this.css({
-				backgroundColor : o.background,
-				color : o.foreground
+		var ele = $(this);
+		ele.empty();
+		$(options.forms).each(function(index, formE) {
+			var formDiv = $('<div>').addClass('form-group');
+			var div = $('<div>').addClass('input-group');
+			var input = $('<input data-id="' + formE.id + '", type="' + formE.type + '" class="form-control" placeholder="' + formE.placeHolder + '" aria-describedby="basic-addon1">');
+			input.appendTo(div);
+			div.appendTo(formDiv);
+			formDiv.appendTo(ele);
+		});
+
+		var submitButton = $('<button type="submit" class="btn btn-primary">').text(options.submitText);
+		submitButton.appendTo(ele);
+
+		$(submitButton).click(function() {
+			var jsonFrom = {};
+			$(ele).find('input').each(function() {
+				jsonFrom[$(this).attr('data-id')] = $(this).val();
+				// validate
 			});
-			var markup = $this.html();
-			// call our format function
-			markup = $.fn.hilight.format(markup);
-			$this.html(markup);
+			var fn = options.fn;
+			if (typeof fn == 'function') {
+				fn(ele);
+			} else {
+				$.ajax({
+					url : options.urlFn || options.url,
+					dataType : options.dataType || 'json',
+					type : options.method || 'get',
+					data : jsonFrom
+				}).done(function(result) {
+					options.doneFn(result);
+				}).always(function() {
+					options.alwaysFn(arguments);
+				});
+			}
 		});
 	};
 	// 私有函数：debugging
@@ -26,15 +60,27 @@
 		if (window.console && window.console.log)
 			window.console.log('hilight selection count: ' + $obj.size());
 	}
-	;
 	// 定义暴露form函数
 	$.fn.yt.form = function(txt) {
 		return '<strong>' + txt + '</strong>';
 	};
+
+	$.fn.yt.tooltip = function(options) {
+		var _options = {};
+		if (typeof options === 'string') {
+			_options = $.extend($.fn.yt.defaults, {});
+			_options.msg = options;
+		} else {
+			_options = $.extend($.fn.yt.defaults, options);
+
+		}
+		$('div.app-message').remove();
+		var msg = $('<div class="app-message">').prependTo('body>.container');
+		msg.attr('role', 'alert').addClass('alert').addClass('alert-' + _options.messageType).text(_options.msg);
+	};
 	// 插件的defaults
-	$.fn.hilight.defaults = {
-		foreground : 'red',
-		background : 'yellow'
+	$.fn.yt.defaults = {
+		messageType : 'success'
 	};
 	// 闭包结束
 })(jQuery);

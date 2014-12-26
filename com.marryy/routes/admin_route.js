@@ -11,7 +11,7 @@ var model_user = require('../models/user').model_user;
 var model_role = require('../models/role').model_role;
 exports.management = {
 	index : function(req, res) {
-		model_user.load(req.session.user.loginId, function(err, data) {
+		model_user.load(req.session.user_name, function(err, data) {
 			res.render('admin/customer', {
 				users : data.directUsers,
 				studios : data.studios
@@ -21,7 +21,7 @@ exports.management = {
 	},
 	uesr : {
 		create : function(req, res) {
-			model_user.load(req.session.user.loginId, function(err, manager) {
+			model_user.load(req.session.user_name, function(err, manager) {
 				model_user.create(req.params.userId, '123456', {
 					imagePath : req.body.imagePath,
 					role : req.body.role,
