@@ -170,13 +170,13 @@
 		}
 	});
 
-//	$('a#create_gallery').click(function() {
-//		$.ajax({
-//			url : '/user/' + $('#metadata_login_id').val() + '/gallery',
-//			dataType : 'json',
-//			type : 'head'
-//		});
-//	});
+	// $('a#create_gallery').click(function() {
+	// $.ajax({
+	// url : '/user/' + $('#metadata_login_id').val() + '/gallery',
+	// dataType : 'json',
+	// type : 'head'
+	// });
+	// });
 
 	// create or update
 	$('button#g_create').click(function() {
@@ -461,6 +461,6 @@
 
 	$(document).ready(function() {
 		startSwitch();
-		//listGalleries();
+		listGalleries();
 	});
 })(window, jQuery);

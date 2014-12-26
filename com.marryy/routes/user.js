@@ -119,7 +119,7 @@ exports.gallery = {
 			}
 			var galleryStyle = req.query.style;
 			if (galleryStyle) {
-				if ([ 'speedial', 'blueimp', 'photoswipe' ].indexOf(galleryStyle) <= 0) {
+				if ([ 'speedial', 'blueimp', 'photoswipe', 'imgeaccordion' ].indexOf(galleryStyle) <= 0) {
 					// set as default value if given style is not supported
 					// yet
 					galleryStyle = 'blueimp';
@@ -133,7 +133,8 @@ exports.gallery = {
 
 			res.format({
 				'text/html' : function() {
-					res.render('gallery/' + galleryStyle, {
+					//test
+					res.render('gallery/' + 'imgeaccordion', {
 						gallery : gallery
 					});
 				},

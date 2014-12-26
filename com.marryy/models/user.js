@@ -103,13 +103,8 @@ UserDao.prototype = {
 					return callback(new Error("Can't find user"));
 				}
 				var hashPassword = _that._hashPassword(user.salt, pass);
-				console.log('============================================');
-				console.log(user.password);
-				console.log(hashPassword+'');
 				var matched = user.password == (hashPassword+'');
-				console.log(' - - - - ' +  matched);
 				if (matched) {
-					console.log('call back --- ');
 					callback(null, user);
 				}
 			} else {
