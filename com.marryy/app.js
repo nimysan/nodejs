@@ -29,8 +29,8 @@ var app = express();
 app.set('port', process.env.PORT || 3000);
 app.set('views', __dirname + '/views');
 app.set('view engine', 'jade');
-// app.use(favicon(__dirname + '/public/favicon.ico'));
-app.use(bodyParser.urlencoded({ extended: false }));
+ app.use(favicon(__dirname + '/public/favicon.ico'));
+app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
 // app.use(cookieParser());
 app.use(methodOverride());
@@ -57,8 +57,7 @@ var sessionOption = {
 			username:'marryy',
 			password: 'marryy123',
 			authenciated  : function(err){
-				console.log( '--- Session Store ---');
-				console.log(arguments);
+				console.log( '--- Session Store is not connected! ---');
 			}
 		})
 	};
@@ -119,7 +118,6 @@ app.get('/user/:user/index', function(req, res) {
 });
 // app.get('/users', user.list);
 app.route('/user/:user/gallery').get(route_gallery.list).head(function(req, res) {
-	console.log(req.params);
 	res.render('user/gallery_create');
 }).post(route_gallery.create);
 
@@ -143,24 +141,15 @@ app.get('/user/signup', function(req, res) {
 	}
 });
 
-app.put('/user/:userId', function(req, res) {
-	if (req.params.userId !== req.session.user.loginId) {
-		res.json({
-			err : '你试着去更改不属于你的信息'
-		});
-		return;
-	}
-	user_dao.update(req.params.userId, req.body, function(err, user) {
-		if (req.session.user && user.loginId === req.session.user.loginId) {
-			req.session.user = user;
-		}
-		delete user.password;
-		res.json({
-			data : user
-		});
-	});
-});
-app.put('/user/password', user.passowrd.update);
+/*
+ * app.put('/user/:userId', function(req, res) { if (req.params.userId !==
+ * req.session.user_name) { res.json({ err : '你试着去更改不属于你的信息' }); return; }
+ * user_dao.update(req.params.userId, req.body, function(err, user) { if
+ * (req.session.user && user.loginId === req.session.user.loginId) {
+ * req.session.user = user; } delete user.password; res.json({ data : user });
+ * }); });
+ */
+app.put('/user/password', management.user.passwordUpdate);
 app.get("/user/login", function(req, res) {
 	res.render("user/login");
 });
@@ -190,14 +179,11 @@ app.post("/user/signup", function(req, res) {
 	var username = req.body.username;
 	user_dao.exists(username, function(err, count) {
 		if (err !== null) {
-			console.log(err + " goto error!");
 			res.json(err);
 		} else {
 			if (count <= 0) {
 				user_dao.create(username, password, req.body, function(err, user) {
-					console.log('create user result ' + err + ' - ' + user);
 					if (err !== null) {
-						console.log(err + " goto error 1!");
 						res.json(err);
 					} else {
 						res.json(1);
@@ -215,8 +201,8 @@ app.post("/user/signup", function(req, res) {
 // user management
 // user admin
 app.get('/admin/user', management.index);
-app.post('/admin/user/:userId', management.uesr.create);
-app.put('/admin/user/:userId', management.uesr.update);
+app.post('/admin/user/:userId', management.user.create);
+app.put('/admin/user/:userId', management.user.update);
 app.route('/admin/fileupload').get(function(req, res) {
 	res.render('admin/upload');
 });

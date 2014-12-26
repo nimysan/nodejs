@@ -10,7 +10,7 @@ var mongoosePaginate = require('mongoose-paginate');
 var userSchema = new Schema({
 	loginId : String,
 	displayName : String,
-	password : String,
+	hashPassword : String,
 	salt : String,
 	hash : String,
 	email : String,

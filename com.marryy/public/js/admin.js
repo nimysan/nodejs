@@ -145,12 +145,20 @@
 		submitText : '提交',
 		url : '/user/password',
 		method : 'put',
+		doneFn : function() {
+			$.fn.yt.tooltip({
+				'messageType' : 'success',
+				msg : '密码修改成功'
+			});
+		},
 		forms : [ {
 			type : 'text',
-			placeHolder : 'username'
+			placeHolder : 'username',
+			id : 'loginId'
 		}, {
 			type : 'password',
-			placeHolder : 'password'
+			placeHolder : 'password',
+			id : 'password'
 		} ]
 	});
 

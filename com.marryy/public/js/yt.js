@@ -48,9 +48,24 @@
 					type : options.method || 'get',
 					data : jsonFrom
 				}).done(function(result) {
-					options.doneFn(result);
+					if (result && result.err) {
+						if ($.isFunction(options.doneErrFn)) {
+							options.doneErrFn(result);
+						} else {
+							$.fn.yt.tooltip({
+								'messageType' : 'danger',
+								msg : result.err
+							});
+						}
+					} else {
+						if ($.isFunction(options.doneFn)) {
+							options.doneFn(result);
+						}
+					}
 				}).always(function() {
-					options.alwaysFn(arguments);
+					if ($.isFunction(options.alwaysFn)) {
+						options.alwaysFn(arguments);
+					}
 				});
 			}
 		});

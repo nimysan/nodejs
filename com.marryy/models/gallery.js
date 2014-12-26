@@ -12,7 +12,6 @@ var GalleryDao = function(db, model) {
 
 GalleryDao.prototype = {
 	create : function(user, options, callback) {
-		console.log(user);
 		var doc = {
 			_creator : user._id
 		};
@@ -32,6 +31,10 @@ GalleryDao.prototype = {
 			if (options) {
 				merge(gallery, options);
 			}
+			console.log(' ------------ final gallery ---------------');
+			console.log(gallery);
+			console.log(options);
+			console.log(' ------------ final gallery ---------------');
 			gallery.save(function(err, data) {
 				console.log(err);
 				callback(err, data);

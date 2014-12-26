@@ -8,19 +8,22 @@ var yt_utils = require('./utils').utils;
 
 exports.gallery = {
 	list : function(req, res) {
-		model_gallery.list(req.session.user, function(err, data) {
-			for (var j = 0; j < data.length; j++) {
-				var gallery = data[j];
-				if (gallery && gallery.images) {
-					for (var i = 0; i < gallery.images.length; i++) {
-						gallery.images[i] = yt_utils.getImageLink(gallery.images[i], req.session.user.imagePath);
+		model_user.load(req.session.user_name, function(err, user) {
+			model_gallery.list(user, function(err, data) {
+				for (var j = 0; j < data.length; j++) {
+					var gallery = data[j];
+					if (gallery && gallery.images) {
+						for (var i = 0; i < gallery.images.length; i++) {
+							gallery.images[i] = yt_utils.getImageLink(gallery.images[i], user.imagePath);
+						}
+					}
+					if (user.studios && user.studios.length > 0) {
+						gallery.studio = user.studios[0];
 					}
 				}
-				if (req.session.user.studios && req.session.user.studios.length > 0) {
-					gallery.studio = req.session.user.studios[0];
-				}
-			}
-			res.json(data);
+				res.json(data);
+			});
+
 		});
 	},
 
@@ -128,13 +131,13 @@ exports.gallery = {
 				galleryStyle = gallery.galleryStyle;
 			}
 			if (galleryStyle === null || galleryStyle === '') {
-				galleryStyle = 'photoswipe';
+				galleryStyle = 'blueimp';
 			}
 
 			res.format({
 				'text/html' : function() {
-					//test
-					res.render('gallery/' + 'imgeaccordion', {
+					// test
+					res.render('gallery/' + galleryStyle, {
 						gallery : gallery
 					});
 				},
@@ -163,31 +166,33 @@ exports.gallery = {
 		});
 	},
 	create : function(req, res) {
-		var user = req.session.user;
 		if (req.body.images && req.body.images.length > 0) {
 			for (var i = 0; i < req.body.images.length; i++) {
 				req.body.images[i] = yt_utils.getImageName(req.body.images[i]);
 			}
 		}
-		model_gallery.create(req.session.user, req.body, function(err, data) {
-			res.json({
-				err : err,
-				data : data
+		model_user.load(req.session.user_name, function(err, user) {
+			model_gallery.create(user, req.body, function(err, data) {
+				res.json({
+					err : err,
+					data : data
+				});
 			});
 		});
 	},
 	update : function(req, res) {
-		var user = req.session.user;
 		var id = req.params.id;
 		if (req.body.images && req.body.images.length > 0) {
 			for (var i = 0; i < req.body.images.length; i++) {
 				req.body.images[i] = yt_utils.getImageName(req.body.images[i]);
 			}
 		}
-		model_gallery.update(req.session.user, id, req.body, function(err, data) {
-			res.json({
-				err : err,
-				data : data
+		model_user.load(req.session.user_name, function(err, user) {
+			model_gallery.update(user, id, req.body, function(err, data) {
+				res.json({
+					err : err,
+					data : data
+				});
 			});
 		});
 	}

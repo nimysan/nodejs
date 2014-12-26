@@ -19,7 +19,7 @@ exports.management = {
 			return;
 		});
 	},
-	uesr : {
+	user : {
 		create : function(req, res) {
 			model_user.load(req.session.user_name, function(err, manager) {
 				model_user.create(req.params.userId, '123456', {
@@ -32,6 +32,9 @@ exports.management = {
 					}
 					manager.directUsers.push(data);
 					manager.save(function(err, updateManager) {
+						delete data.salt;
+						delete data.password;
+						delete data.hashPassword;
 						res.json({
 							user : data
 						});
@@ -43,6 +46,21 @@ exports.management = {
 		update : function(req, res) {
 			var userId = req.params.userId;
 			model_user.update(userId, req.body, function(err, data) {
+				delete data.salt;
+				delete data.password;
+				delete data.hashPassword;
+				res.json({
+					err : err,
+					user : data
+				});
+			});
+		},
+		passwordUpdate : function(req, res) {
+			var userId = req.body.loginId;
+			model_user.update(userId, req.body, function(err, data) {
+				delete data.salt;
+				delete data.password;
+				delete data.hashPassword;
 				res.json({
 					err : err,
 					user : data

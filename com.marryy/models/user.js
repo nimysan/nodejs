@@ -61,18 +61,19 @@ UserDao.prototype = {
 		}
 	},
 	update : function(userId, options, callback) {
-		console.log(userId);
+		var that = this;
 		var _model = this.model;
 		this.model.findOne({
 			'loginId' : userId
 		}).exec(function(err, user) {
-			console.log(user);
-			console.log(options);
+			if(options.password){
+				options.hashPassword = that._hashPassword(user.salt, options.password);
+			}
 			if (options) {
+				delete options.password;
 				merge(user, options);
 			}
 			user.save(function(err, data) {
-				console.log(err);
 				callback(err, data);
 			});
 		});
@@ -88,7 +89,6 @@ UserDao.prototype = {
 		this.model.findOne({
 			'loginId' : name
 		}).populate('roles').populate('galleries').populate('studios').populate('directUsers').populate('directUsers roles').exec(function(err, user) {
-			console.log(user);
 			callback(err, user);
 		});
 	},
@@ -100,15 +100,17 @@ UserDao.prototype = {
 		}, function(err, user) {
 			if (user) {
 				if (err) {
-					return callback(new Error("Can't find user"));
+					return callback(new Error("用户名不存在"));
 				}
 				var hashPassword = _that._hashPassword(user.salt, pass);
-				var matched = user.password == (hashPassword+'');
+				var matched = user.hashPassword == (hashPassword+'');
 				if (matched) {
 					callback(null, user);
+				}else{
+					return callback(new Error("用户名或者密码错误"));
 				}
 			} else {
-				return callback(new Error("Can't not find user"));
+				return callback(new Error("用户名不存在"));
 			}
 		})
 	}
