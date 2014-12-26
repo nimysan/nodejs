@@ -1,3 +1,6 @@
+//;String.prototype.trim = function() {
+//	return this.replace(/(^\s*)|(\s*$)/g, "");
+//}
 /**
  * options.fn
  * 
@@ -49,7 +52,7 @@
 			if (typeof fn == 'function') {
 				fn(ele);
 			} else {
-				//loading plugin - http://hekigan.github.io/is-loading/
+				// loading plugin - http://hekigan.github.io/is-loading/
 				$.ajax({
 					url : options.urlFn || options.url,
 					dataType : options.dataType || 'json',

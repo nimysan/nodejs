@@ -1,6 +1,8 @@
 #announcement {
 	height: 30px;
 	background: #40bfc0;
+	padding: 0;
+	margin: 0;
 	border-bottom: 1px solid #89c2cb;
 	font-size: 12px;
 	color: #3c3c3c;
@@ -11,21 +13,28 @@
 }
 
 body{
-	
+	/* background-color: #f54; */
+	font-family:"Microsoft YaHei",微软雅黑,"MicrosoftJhengHei",华文细黑,STHeiti,MingLiu
 }
 
 .yt-navbar {
 	margin-bottom: 0px;
-	background-color: white;
 }
 
 .container-body {
 	margin-top: 20px; 
-	background-color: #f54;
+	
 }
 
 .loading-mask {
 	
+}
+
+.yt-ads-studio {
+	font-size: 22px;
+	padding-left: 100px;
+	font-weight: bolder;
+	color: red;
 }
 
 .logo-container {

@@ -2,7 +2,9 @@ extends ../layout
 block content
 	<link rel="stylesheet" href="/gallerylibs/imgeaccordion/style.css"> 
 	div.container
-		h2 手风琴效果
+		h2= gallery.title
+		p= gallery.desc
+		button#full_screen_button(class='btn btn-primary') 全屏观看
 		div.ia-container
 			each item in gallery.images
 				figure
@@ -13,5 +15,6 @@ block content
 		
 		
 		script(src='/jquery/jquery-1.11.0.js')
+		script(src='/jquery/jquery.fullscreen-min.js')
 		script(src='/js/gallery_portal.js')
 		script(src='/js/gallery/imgeaccordion.js')

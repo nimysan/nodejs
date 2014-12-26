@@ -2,23 +2,18 @@
 (function(window, $) {
 	'user strict';
 
-	var user = $('#metadata_user').val();
-	function showMessage(id, message, trueOrFalse) {
-		var group = $('div.form-group[atth=' + id + ']');
-		if (trueOrFalse) {
-			group.addClass('has-success').removeClass('has-error');
-		} else {
-			group.addClass('has-error').removeClass('has-success');
-		}
-		showPageMessage(message, trueOrFalse);
+	function showError(msg) {
+		$.fn.yt.tooltip({
+			'messageType' : 'danger',
+			msg : msg
+		});
 	}
 
-	function showPageMessage(message, trueOrFalse) {
-		if (trueOrFalse) {
-			$('#message').text(message).removeClass('hide').removeClass('alert-danger').addClass('alert-success');
-		} else {
-			$('#message').text(message).removeClass('hide').addClass('alert-danger');
-		}
+	function showInfo(msg) {
+		$.fn.yt.tooltip({
+			'messageType' : 'success',
+			msg : msg
+		});
 	}
 
 	function toogleMask(obj) {
@@ -48,25 +43,25 @@
 	}
 
 	function clearFromStatus() {
-		showMessage('user_name', '', true);
-		showMessage('user_password', '', true);
-		showMessage('user_password_2', '', true);
+		$('#user_name').val('');
+		$('#user_password').val('');
+		$('#user_password_2').val('');
 	}
 
 	function validate() {
-		var username = $('#user_name').val().trim();
+		var username = $.trim($('#user_name').val());
 		if (username == '') {
 			showMessage('user_name', '用户名不能为空', false);
 			return false;
 		}
 
-		var pass = $('#user_password').val().trim();
+		var pass = $.trim($('#user_password').val());
 		if (pass == '') {
 			showMessage('user_password', '密码不能为空', false);
 			return false;
 		}
 
-		var pass2 = $('#user_password_2').val().trim();
+		var pass2 = $.trim($('#user_password_2').val());
 		if (pass != pass2) {
 			showMessage('user_password_2', '两次输入的密码必须保持一致', false);
 			return false;
@@ -405,11 +400,11 @@
 										}).done(function(data) {
 											if (data === null || data.err !== null) {
 												// failed to delete gallery
-												showPageMessage('因为某些原因，这个相册不能被删除', false);
+												showError('因为某些原因，这个相册不能被删除');
 											} else {
 												// removed successfully
 												$('div[gallery-id="' + galleryId + '"]').remove();
-												showPageMessage('相册删除成功', true);
+												showInfo('相册删除成功');
 												listGalleries();
 											}
 										});

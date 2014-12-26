@@ -6,6 +6,9 @@ User Role
 1. end user
 http://segmentfault.com/q/1010000001663480
 
+Jquery plugins:
+https://github.com/kayahr/jquery-fullscreen-plugin
+
 ## Usage
 
 
