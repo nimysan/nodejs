@@ -1,10 +1,10 @@
 extends ../layout
 block content
 	//gallery images urls
-	div.container
-		div.row(id='links')
+	div.container(class='container-body')
+		div.row(id='links',style='text-align : center !important')
 			each item in gallery.images
-				div(class='col-sm-12 col-md-4 cos-xd-4',style='margin:2px;')
+				div(style='margin:2px auto;')
 					a(href='#{item}!phone')
 						img(src='#{item}!thumbnail', alt='...')
 				
