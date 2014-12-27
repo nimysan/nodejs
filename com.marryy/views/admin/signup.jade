@@ -1,0 +1,15 @@
+extends ../layout.jade
+block content
+	div.container(class='container-body')
+		<div class="alert hide" role="alert" id="message"></div>
+		div.row
+			div.col-md-4(class='cos-sm-0')
+			div.col-md-4(class='cos-sm-12')
+				div(class="panel panel-info login_panel")
+					div.panel-heading
+						h2.panel-title 注册
+					div.panel-body
+						div(role='form', id='user_signup_form') 
+						h3 已经有帐号，去  <a href="/admin/login">登录</a>
+			div.col-md-4(class='cos-sm-0')
+			script(src='/js/signup.js')

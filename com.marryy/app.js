@@ -75,6 +75,14 @@ if ('development' === app.get('env')) {
 app.use(session(sessionOption));
 app.use(express.static(path.join(__dirname, 'public')));
 
+
+// function to render all view as url for get method
+var pathFunction = function(req, res){
+	var view = (req.originalUrl+'');
+	view = view.substring(1);
+	console.log('===> path function : ' + view);
+	res.render(view);
+}
 app.use(function(req, res, next) {
 	var sess = req.session;
 	if (sess.views) {
@@ -110,9 +118,14 @@ app.get("/", routes.index, function(req, res, next) {
 	next();
 });
 
-app.get('/user/:user/index', function(req, res) {
-	res.render('user/index');
+app.route('/user/:user').get(function(req,res,next){
+	if(req.session.user_name){
+		res.render('user/index');
+	}else{
+		next();
+	}
 });
+
 // app.get('/users', user.list);
 app.route('/user/:user/gallery').get(route_gallery.list).head(function(req, res) {
 	res.render('user/gallery_create');
@@ -124,20 +137,10 @@ app.route('/gallery/:id').delete(route_gallery.remove).get(route_gallery.show).p
 app.route('/gallery').post(route_gallery.create);
 
 // app users
-app.get('/price', function(req, res) {
-	res.render('price');
-});
+app.get('/price', pathFunction);
 
 // user management
 var user_dao = require('./models/user').user_dao;
-app.get('/user/signup', function(req, res) {
-	if (req.cookies.user_name) {
-		res.redirect('/');
-	} else {
-		res.render('user/signup');
-	}
-});
-
 app.put('/user/:userId',function(req, res, next) {
 	if (req.params.userId !== req.session.user_name) {
 		res.json({
@@ -148,74 +151,40 @@ app.put('/user/:userId',function(req, res, next) {
 	}
 },management.user.update);
 
-app.put('/user/password', management.user.passwordUpdate);
-app.get("/user/login", function(req, res) {
-	res.render("user/login");
-});
-app.get("/user/logout", function(req, res) {
+// ------------------ admin routes --------------------------
+app.put('/admin/password', management.user.passwordUpdate);
+app.route("/admin/login").get(function(req, res, next){
+	if(req.session.user_name){
+		res.redirect('/user/'+req.session.user_name);
+	}else{
+		next();
+	}
+},pathFunction).post(management.user.auth);
+
+app.get("/admin/logout", function(req, res) {
 	req.session.destroy(function(err) {
 		console.log('Err ' + err);
 	});
-	res.redirect('/user/login');
+	res.redirect('/admin/login');
 });
-
-app.post("/user/login", function(req, res) {
-	user_dao.authenticate(req.body.username, req.body.password, function(err, user) {
-		if (user) {
-			req.session.user_name = user.loginId;
-			// req.session.user = user;
-			res.json({
-				a : 1
-			});
-		} else {
-			res.json({
-				'err' : '登录失败。 用户名或密码错误'
-			});
-		}
+app.route('/admin/signup').get(function(req, res,next) {
+	req.session.destroy(function(err) {
+		console.log('Err ' + err);
 	});
-});
-
-app.post("/user/signup", function(req, res) {
-	var password = req.body.password;
-	var username = req.body.username;
-	user_dao.exists(username, function(err, count) {
-		if (err !== null) {
-			res.json(err);
-		} else {
-			if (count <= 0) {
-				user_dao.create(username, password, req.body, function(err, user) {
-					if (err !== null) {
-						res.json(err);
-					} else {
-						res.json(1);
-					}
-				});
-			} else {
-				res.json({
-					'err' : '用户已经存在了'
-				});
-			}
-		}
-	});
-
-});
-// user management
-// user admin
+	next();
+},pathFunction).post(management.user.signup);
 app.get('/admin/user', management.index);
 app.post('/admin/user/:userId', management.user.create);
 app.put('/admin/user/:userId', management.user.update);
-app.route('/admin/fileupload').get(function(req, res) {
-	res.render('admin/upload');
-});
+app.route('/admin/fileupload').get(pathFunction);
 app.get('/admin/upyunsign', function(req, res) {
 	res.json({
 		sign : pig.getFromAPISign(req.query.policy)
 	});
 });
-
 app.post('/studio', studio.create);
 app.put('/studio/:id', studio.update);
-// user admin
+// ------------------ admin routes --------------------------
 
 // pictures list modules
 app.get('/list/:space', function(req, res) {

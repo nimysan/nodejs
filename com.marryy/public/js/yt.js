@@ -58,10 +58,6 @@
 					dataType : options.dataType || 'json',
 					type : options.method || 'get',
 					data : jsonFrom
-				}).then(function() {
-					$(ele).isLoading({
-						text : "努力加载中"
-					});
 				}).done(function(result) {
 					if (result && result.err) {
 						if ($.isFunction(options.doneErrFn)) {
@@ -109,6 +105,21 @@
 		var msg = $('<div class="app-message">').prependTo('body>.container');
 		msg.attr('role', 'alert').addClass('alert').addClass('alert-' + _options.messageType).text(_options.msg);
 	};
+
+	window.showError = function(msg) {
+		$.fn.yt.tooltip({
+			'messageType' : 'danger',
+			msg : msg
+		});
+	}
+
+	window.showInfo = function(msg) {
+		$.fn.yt.tooltip({
+			'messageType' : 'success',
+			msg : msg
+		});
+	}
+
 	// 插件的defaults
 	$.fn.yt.defaults = {
 		messageType : 'success'

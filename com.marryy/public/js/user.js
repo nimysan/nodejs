@@ -2,20 +2,6 @@
 (function(window, $) {
 	'user strict';
 
-	function showError(msg) {
-		$.fn.yt.tooltip({
-			'messageType' : 'danger',
-			msg : msg
-		});
-	}
-
-	function showInfo(msg) {
-		$.fn.yt.tooltip({
-			'messageType' : 'success',
-			msg : msg
-		});
-	}
-
 	function toogleMask(obj) {
 		var mask = $('div.imageChecked[src="' + $(obj).attr('src') + '"]');
 		if (mask.size() > 0) {
@@ -42,137 +28,6 @@
 
 	}
 
-	function clearFromStatus() {
-		$('#user_name').val('');
-		$('#user_password').val('');
-		$('#user_password_2').val('');
-	}
-
-	function validate() {
-		var username = $.trim($('#user_name').val());
-		if (username == '') {
-			showMessage('user_name', '用户名不能为空', false);
-			return false;
-		}
-
-		var pass = $.trim($('#user_password').val());
-		if (pass == '') {
-			showMessage('user_password', '密码不能为空', false);
-			return false;
-		}
-
-		var pass2 = $.trim($('#user_password_2').val());
-		if (pass != pass2) {
-			showMessage('user_password_2', '两次输入的密码必须保持一致', false);
-			return false;
-		}
-		clearFromStatus();
-		return true;
-	}
-
-	function validateLoginForm() {
-		var username = $('#user_name').val().trim();
-		if (username == '') {
-			showMessage('user_name', '用户名不能为空', false);
-			return false;
-		}
-
-		var pass = $('#user_password').val().trim();
-		if (pass == '') {
-			showMessage('user_password', '密码不能为空', false);
-			return false;
-		}
-
-		clearFromStatus();
-		return true;
-	}
-
-	$('#user_password_2').change(function() {
-		showMessage('user_password_2', '两次输入的密码必须一致', $('#user_password').val() == $(this).val());
-	});
-
-	$('#nav_items a').click(function() {
-		var part = $(this).attr('part');
-		$('div.panel').addClass('hide');
-		$('#' + part).removeClass('hide');
-		$('#nav_items li').removeClass('active');
-		$(this).parent('li').addClass('active');
-
-	});
-
-	$('#create_user').click(function() {
-		if (validate()) {
-			var username = $('#user_name').val().trim();
-			var pass = $('#user_password').val().trim();
-			$.ajax({
-				url : '/user/signup',
-				dataType : 'json',
-				type : 'post',
-				data : {
-					username : username,
-					password : pass
-				}
-			}).done(function(result) {
-				if (result && result.error) {
-					showMessage('user_name', result.error, false);
-				} else {
-					showMessage('user_name', '用戶注冊成功，去登录', true);
-					window.location.href = '/user/login';
-				}
-			});
-		}
-	});
-
-	$('#u_update').click(function() {
-		var userId = $('#metadata_login_id').val().trim();
-		$.ajax({
-			url : '/user/' + userId,
-			dataType : 'json',
-			type : 'put',
-			data : {
-				displayName : $('#u_display_name').val(),
-				email : $('#u_mail').val(),
-				phone : $('#u_phone').val()
-			}
-		}).done(function(result) {
-			if (result && result.err) {
-				showPageMessage('更新用户信息失败， 请重试. ' + result.err, false);
-			} else {
-				showPageMessage('更新用户信息成功', true);
-			}
-		});
-	});
-
-	$('#user_login').click(function() {
-		if (validateLoginForm()) {
-			var username = $('#user_name').val().trim();
-			var pass = $('#user_password').val().trim();
-			$.ajax({
-				url : '/user/login',
-				dataType : 'json',
-				type : 'post',
-				data : {
-					username : username,
-					password : pass
-				}
-			}).done(function(result) {
-				console.log('------------ ' + result);
-				showMessage('user_name', '登录成功', true);
-				window.location.href = '/';
-			}).always(function(XMLHttpRequest) {
-				console.log('-------------->' + arguments);
-			});
-		}
-	});
-
-	// $('a#create_gallery').click(function() {
-	// $.ajax({
-	// url : '/user/' + $('#metadata_login_id').val() + '/gallery',
-	// dataType : 'json',
-	// type : 'head'
-	// });
-	// });
-
 	// create or update
 	$('button#g_create').click(function() {
 		var title = $('#g_title').val();
@@ -181,6 +36,10 @@
 		var isPrivate = !$('#gallery_primate').bootstrapSwitch('state');
 		var question = $('#gq_desc').val();
 		var answer = $('#gq_answer').val();
+		selectedImages = [];
+		$('.image-be-checked').each(function() {
+			selectedImages.push($(this).attr('origUrl'));
+		});
 		if (id.length <= 0) {
 			$.ajax({
 				url : '/gallery',
@@ -246,16 +105,7 @@
 		selectedImages = [];
 	});
 
-	$('#selector_save').click(function() {
-		selectedImages = [];
-		$('.image-be-checked').each(function() {
-			selectedImages.push($(this).attr('origUrl'));
-		});
-		$('#g_all_images_part').modal('hide');
-	});
 	$('button#g_img_selector').click(function() {
-		$('#g_all_images_part').modal('show');
-
 		function flagSelected() {
 			$('.being_select').removeClass('image-be-checked');
 			$(selectedImages).each(function(index, url) {
@@ -263,7 +113,7 @@
 			});
 		}
 		if (userPhotos.length <= 0) {
-			var space = $('#metadata_image_path').val().trim();
+			var space = page_info.user.imagePath;
 			$.ajax({
 				url : '/list/' + space,
 				dataType : 'json',
@@ -363,7 +213,7 @@
 		$('#gallery_list_row').empty();
 		// load all gallery
 		$.ajax({
-			url : '/user/' + $('#metadata_login_id').val() + '/gallery',
+			url : '/user/' + page_info.user.loginId + '/gallery',
 			dataType : 'json',
 			type : 'get'
 		}).done(function(data) {

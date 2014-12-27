@@ -20,6 +20,50 @@ exports.management = {
 		});
 	},
 	user : {
+		auth : function(req, res) {
+			model_user.authenticate(req.body.username, req.body.password, function(err, user) {
+				if (user) {
+					req.session.user_name = user.loginId;
+					// req.session.user = user;
+					res.json({
+						user : user.loginId
+					});
+				} else {
+					res.json({
+						'err' : '登录失败。 用户名或密码错误'
+					});
+				}
+			});
+		},
+		signup : function(req, res) {
+			var password = req.body.password;
+			var username = req.body.username;
+			model_user.exists(username, function(err, count) {
+				console.log('usrename ' + username + ' count ' + count);
+				if (err !== null) {
+					res.json({
+						err : err
+					});
+				} else {
+					if (count <= 0) {
+						model_user.create(username, password, req.body, function(err, user) {
+							if (err !== null) {
+								res.json({
+									err : err
+								});
+							} else {
+								res.json(1);
+							}
+						});
+					} else {
+						res.json({
+							'err' : '用户已经存在了'
+						});
+					}
+				}
+			});
+
+		},
 		create : function(req, res) {
 			model_user.load(req.session.user_name, function(err, manager) {
 				model_user.create(req.params.userId, '123456', {

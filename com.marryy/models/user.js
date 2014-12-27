@@ -36,7 +36,7 @@ UserDao.prototype = {
 		var hashPassword = this._hashPassword(salt, password);
 		var doc = {
 				loginId : name,
-				password : hashPassword,
+				hashPassword : hashPassword,
 				salt : salt
 		};
 		if (options && options.role !== '') {
@@ -80,7 +80,7 @@ UserDao.prototype = {
 	},
 	exists : function(username, fn) {
 		this.model.count({
-			'name' : username
+			'loginId' : username
 		}, function(err, count) {
 			fn(err, count);
 		})

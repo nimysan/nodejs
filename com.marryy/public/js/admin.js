@@ -1,27 +1,6 @@
 (function(window, $) {
 	'use strict';
 
-	function _showStatus(text, trueOrFalse) {
-		$('div.form-group span').removeClass('hide');
-		$('label.control-label').text(text).removeClass('hide');
-		if (trueOrFalse) {
-			$('div.form-group span.glyphicon').addClass('glyphicon-ok').removeClass('glyphicon-remove');
-			$('div.form-group').removeClass('has-error').addClass('has-success');
-		} else {
-			$('div.form-group span.glyphicon').addClass('glyphicon-remove').removeClass('glyphicon-ok');
-			$('div.form-group').removeClass('has-success').addClass('has-error');
-		}
-
-	}
-
-	function showPageMessage(message, trueOrFalse) {
-		if (trueOrFalse) {
-			$('#message').text(message).removeClass('hide').removeClass('alert-danger').addClass('alert-success');
-		} else {
-			$('#message').text(message).removeClass('hide').addClass('alert-danger');
-		}
-	}
-
 	$('#u_login_name').change(function() {
 		$('#u_image_path').val($(this).val());
 	});
@@ -102,22 +81,6 @@
 			$('#u_login_name').attr('disabled', true);
 		}
 	});
-	// user table
-
-	$('#create_space').click(function() {
-		var name = $('#space_name').val();
-		$.ajax({
-			url : '/admin/space/' + name,
-			dataType : 'json',
-			type : 'post'
-		}).done(function(result) {
-			if (result && 0 === result) {
-				_showStatus('Failed to create space', false);
-			} else {
-				_showStatus('Create space successfully', true);
-			}
-		});
-	});
 
 	// stuido
 	$('#studio_submit').click(function() {
@@ -140,26 +103,55 @@
 		});
 	});
 
-	// page initialize
-	$('#user_password_form').yt({
-		submitText : '提交',
-		url : '/user/password',
-		method : 'put',
-		doneFn : function() {
-			$.fn.yt.tooltip({
-				'messageType' : 'success',
-				msg : '密码修改成功'
+	function initUserUpdateForm() {
+		// page initialize
+		$('#user_password_form').yt({
+			submitText : '提交',
+			url : '/user/password',
+			method : 'put',
+			doneFn : function() {
+				$.fn.yt.tooltip({
+					'messageType' : 'success',
+					msg : '密码修改成功'
+				});
+			},
+			forms : [ {
+				type : 'text',
+				placeHolder : 'username',
+				id : 'loginId'
+			}, {
+				type : 'password',
+				placeHolder : 'password',
+				id : 'password'
+			} ]
+		});
+	}
+	function initUserLoginForm() {
+		$('#user_login').click(function() {
+			var username = $('#user_name').val().trim();
+			var pass = $('#user_password').val().trim();
+			$.ajax({
+				url : '/admin/login',
+				dataType : 'json',
+				type : 'post',
+				data : {
+					username : username,
+					password : pass
+				}
+			}).done(function(result) {
+				if (result.err) {
+					showError(result.err);
+				} else {
+					showInfo('登录成功');
+					window.location.href = '/';
+				}
 			});
-		},
-		forms : [ {
-			type : 'text',
-			placeHolder : 'username',
-			id : 'loginId'
-		}, {
-			type : 'password',
-			placeHolder : 'password',
-			id : 'password'
-		} ]
+		});
+	}
+	// start to run it
+	$(document).ready(function() {
+		initUserUpdateForm();
+		initUserLoginForm();
 	});
 
 })(window, jQuery);

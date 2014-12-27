@@ -1,141 +1,116 @@
 extends ../layout.jade
 block content
 	div.container(class='container-body')
-		<div class="alert hide" role="alert" id="message"></div>
-		<div class='hide'><input type='hidden' value='#{user.loginId}' id="metadata_login_id"></input><input type='hidden' value='#{user.displayName}' id="metadata_display_name"></input><input type='hidden' value='#{user.imagePath}' id="metadata_image_path"></input></div>
-		div.row
-			div.col-md-2
-				ul(class="nav nav-pills nav-stacked", id='nav_items')
-					li.active
-						a#user(href='#',part='user_part') 用户信息
-					li(id='gallery')
-						a(href='#', part='gallery_part') 相册管理
+		ul(class="nav nav-tabs", role="tablist")
+			li.active(role="presentation")
+				a(href='#tab_profile',role="tab" data-toggle="tab", aria-controls="tab_profile") 用户信息总揽
+			li(role="presentation")
+				a(href='#tab_settings',role="tab" data-toggle="tab", aria-controls="tab_settings") 更新用户信息
+			li(id='gallery',role="presentation")
+				a(href='#tab_galleries',role="tab" data-toggle="tab", aria-controls="tab_galleries") 相册管理
+		
+		div.tab-content
+			div#tab_profile(role="tabpanel" class="tab-pane fade in active")
+				div.row
+					div(class='col-md-6 col-sm-12')
+						h2= user.displayName
+							small= user.desc
+						img.user-qr-code(class='img-thumbnail', src='http://qr.liantu.com/api.php?bg=ffffff&fg=000000&text=http://localhost:3000/user/#{user.loginId}')
+					div(class='col-md-6 col-sm-12')
+			div#tab_settings(role="tabpanel" class="tab-pane fade")
+				div.row(style='margin-top:20px;')
+					div(class='col-md-6 col-sm-0')
+						div(role='form', class="gallery_form",id='user_info_part')
+					div(class='col-md-6 col-sm-0')
 						
-			div.col-md-10
-				block user_content
-					div#user_part(class="panel panel-info")
-						div.panel-heading
-							h2.panel-title 用户信息更新 
-						div.panel-body
-							div(role='form', class="gallery_form",id='user_info_part')
-								div#g_form_id(type='hidden') 
-								div.form-group(class='has-feedback')
-									div.input-group
-										span(class='glyphicon glyphicon-user input-group-addon')
-										input#u_display_name(type='text', class='form-control',placeholder='用户名字，当你登录的时候显示的名字',value='#{user.displayName}')
-									
-								div.form-group(class='has-feedback')
-									div.input-group
-										span(class='glyphicon glyphicon-envelope input-group-addon')
-										input#u_mail(type='text', class='form-control',placeholder='电子邮件地址，用户发送信息以及重置密码',value='#{user.email}')
-										
-								div.form-group(class='has-feedback')
-									div.input-group
-										span(class='glyphicon glyphicon-phone input-group-addon')
-										input#u_phone(type='text', class='form-control',placeholder='最好填写手机号码，非必需',value='#{user.phone}')
-								
-								button#u_update(type='button', class='btn btn-primary') 提交数据
-									span(class='glyphicon glyphicon-ok-sign')
-											
-											
-					div#gallery_part(class="panel panel-info hide")
-						div.panel-heading
-							h2.panel-title 相册
-						div.panel-body
-							div(role='form', class="gallery_form")
-								div#g_form_id(type='hidden') 
-								div.form-group(class='has-feedback')
-									div.input-group
-										span(class='glyphicon glyphicon-inbox input-group-addon')
-										input#g_title(type='text', class='form-control',placeholder='相册标题,会显示给别人')
-									
-								div.form-group(class='has-feedback')
-									div.input-group
-										span(class='glyphicon glyphicon-list-alt input-group-addon')
-										textarea#g_desc(type='text', class='form-control',placeholder='详细描述')
-								
-								div.form-group
-									div.input-group
-										label 相册是公开的还是私密的?
-										div.switch
-											input#gallery_primate(type="checkbox", data-on-text="公开",data-off-text="私密", checked=true)
-								div#gallery_question(class='hide')
-									div.form-group(class='has-feedback')
-										div.input-group
-											span(class='glyphicon glyphicon-question-sign input-group-addon')
-											input#gq_desc(type='text', class='form-control',placeholder='问题描述，你的访问者货看到这个问题')
-									
-									div.form-group(class='has-feedback')
-										div.input-group
-											span(class='glyphicon glyphicon-pencil input-group-addon')
-											input#gq_answer(type='text-area', class='form-control',placeholder='你给的答案，访问者给出精确答案才能允许访问')
-								
-										
-								button#g_img_selector(type='button', class='btn btn-success') 选择图片
-									span(class='glyphicon glyphicon-cloud')
-								button#g_style_selector(type='button', class='btn btn-danger') 选择相册显示风格
-									span(class='glyphicon glyphicon-cloud')
-									
-								button#g_create(type='button', class='btn btn-primary') 提交
-									span(class='glyphicon glyphicon-cloud')
-									
-						div#g_all_images_part(class="modal fade",role="dialog")
-							div.modal-dialog
-								div.modal-content
-									div.modal-header
-										button(type="button" ,class="close" , data-dismiss="modal")
-											span(aria-hidden="true")&times;
-											span.sr-only Close
-										h2.modal-title 单击图片选中
-									div.modal-body
-										button#selector_select_all(type='button', class='btn btn-primary') 全选
-										button#selector_unselect_all(type='button', class='btn btn-danger') 全不选
-										div#links(class='images-selector')
-									div.modal-footer
-										button#selector_close(type='button', class='btn btn-primary',data-dismiss="modal") 关闭
-										button#selector_save(type='button', class='btn btn-danger') 选定
-									
+			div#tab_galleries(role="tabpanel" class="tab-pane fade")
+				div#gallery_part(class="panel panel-info")
+					div.panel-heading
+						h2.panel-title 相册
+					div.panel-body
 						div#gallery_list
 							h3 相册集合
 							div.row(id='gallery_list_row')
+						div(role='form', class="gallery_form")
+							div#g_form_id(type='hidden') 
+							div.form-group(class='has-feedback')
+								div.input-group
+									span(class='glyphicon glyphicon-inbox input-group-addon')
+									input#g_title(type='text', class='form-control',placeholder='相册标题,会显示给别人')
+								
+							div.form-group(class='has-feedback')
+								div.input-group
+									span(class='glyphicon glyphicon-list-alt input-group-addon')
+									textarea#g_desc(type='text', class='form-control',placeholder='详细描述')
 							
-						div#g_style_part(class="modal fade",role="dialog")
-							div.modal-dialog
-								div.modal-content
-									div.modal-header
-										button(type="button" ,class="close" , data-dismiss="modal")
-											span(aria-hidden="true")&times;
-											span.sr-only Close
-										h2.modal-title 选择你要的相册风格
-									div.modal-body
-										div.row
-											div(class="col-xs-6 col-md-3")
-												div.thumbnail
-													a(href='#')
-														img(src='/img/speedial.jpg')
-													div.caption
-														button(type='button', class='btn btn-warning', gstyle='speedial',style='width:100%') 九宫格
-																
-											div(class="col-xs-6 col-md-3")
-												div.thumbnail
-													a(href='#')
-														img(src='/img/photoswipe.jpg')
-													div.caption
-														button(type='button', class='btn btn-warning',gstyle='photoswipe',style='width:100%') 左右滑动
-											div(class="col-xs-6 col-md-3")
-												div.thumbnail
-													a(href='#')
-														img(src='/img/photoswipe.jpg')
-													div.caption
-														button(type='button', class='btn btn-warning',gstyle='blueimp',style='width:100%') Blueimp
-																
-											div(class="col-xs-6 col-md-3")
-												div.thumbnail
-													a(href='#')
-														img(src='/img/galleryview.jpg')
-													div.caption
-														button(type='button', class='btn btn-warning',gstyle='imgeaccordion',style='width:100%') 手风琴
-																
+							div.form-group
+								div.input-group
+									label 相册是公开的还是私密的?
+									div.switch
+										input#gallery_primate(type="checkbox", data-on-text="公开",data-off-text="私密", checked=true)
+							div#gallery_question(class='hide')
+								div.form-group(class='has-feedback')
+									div.input-group
+										span(class='glyphicon glyphicon-question-sign input-group-addon')
+										input#gq_desc(type='text', class='form-control',placeholder='问题描述，你的访问者货看到这个问题')
+								
+								div.form-group(class='has-feedback')
+									div.input-group
+										span(class='glyphicon glyphicon-pencil input-group-addon')
+										input#gq_answer(type='text-area', class='form-control',placeholder='你给的答案，访问者给出精确答案才能允许访问')
+							
+							div#g_all_images_part(class="collapse")
+								button#selector_select_all(type='button', class='btn btn-primary') 全选
+								button#selector_unselect_all(type='button', class='btn btn-danger') 全不选
+								div#links(class='images-selector')
+								//button#selector_close(type='button', class='btn btn-primary',data-dismiss="modal") 关闭
+								//button#selector_save(type='button', class='btn btn-danger') 选定
+														
+							button#g_img_selector(type='button', class='btn btn-success',data-toggle="collapse", data-target="#g_all_images_part", aria-expanded="false", aria-controls="g_all_images_part") 选择图片
+								span(class='glyphicon glyphicon-cloud')
+							button#g_style_selector(type='button', class='btn btn-danger') 选择相册显示风格
+								span(class='glyphicon glyphicon-cloud')
+								
+							button#g_create(type='button', class='btn btn-primary') 提交
+								span(class='glyphicon glyphicon-cloud')
+				
+			div#g_style_part(class="modal fade",role="dialog")
+				div.modal-dialog
+					div.modal-content
+						div.modal-header
+							button(type="button" ,class="close" , data-dismiss="modal")
+								span(aria-hidden="true")&times;
+								span.sr-only Close
+							h2.modal-title 选择你要的相册风格
+						div.modal-body
+							div.row
+								div(class="col-xs-6 col-md-3")
+									div.thumbnail
+										a(href='#')
+											img(src='/img/speedial.jpg')
+										div.caption
+											button(type='button', class='btn btn-warning', gstyle='speedial',style='width:100%') 九宫格
+													
+								div(class="col-xs-6 col-md-3")
+									div.thumbnail
+										a(href='#')
+											img(src='/img/photoswipe.jpg')
+										div.caption
+											button(type='button', class='btn btn-warning',gstyle='photoswipe',style='width:100%') 左右滑动
+								div(class="col-xs-6 col-md-3")
+									div.thumbnail
+										a(href='#')
+											img(src='/img/photoswipe.jpg')
+										div.caption
+											button(type='button', class='btn btn-warning',gstyle='blueimp',style='width:100%') Blueimp
+													
+								div(class="col-xs-6 col-md-3")
+									div.thumbnail
+										a(href='#')
+											img(src='/img/galleryview.jpg')
+										div.caption
+											button(type='button', class='btn btn-warning',gstyle='imgeaccordion',style='width:100%') 手风琴
+														
 						
 					
 	script(src='/js/user.js')

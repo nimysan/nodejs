@@ -67,6 +67,11 @@ body{
 	height: 200px;
 }
 
+.user-qr-code{
+	width: 200px;
+	height: 200px;
+}
+
 .copy{
 	margin-top: 40px;
 }
