@@ -58,10 +58,10 @@
 				clearGalleryForm();
 				selectedImages = [];
 				if (data == null || data.err != null) {
-					showPageMessage('创建相册失败， 请重新试一下', false);
+					showError('创建相册失败， 请重新试一下');
 				} else {
 					listGalleries();
-					showPageMessage('创建相册成功，你可以刷新页面以查看你的相册', true);
+					showInfo('创建相册成功，你可以刷新页面以查看你的相册');
 				}
 			});
 		} else {
@@ -82,10 +82,10 @@
 				clearGalleryForm();
 				selectedImages = [];
 				if (data == null || data.err != null) {
-					showPageMessage('更新相册失败， 请重新试一下', false);
+					showError('更新相册失败， 请重新试一下');
 				} else {
 					listGalleries();
-					showPageMessage('更新相册成功，你可以刷新页面以查看你的相册', true);
+					showInfo('更新相册成功，你可以刷新页面以查看你的相册');
 				}
 			});
 		}

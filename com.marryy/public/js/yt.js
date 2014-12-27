@@ -125,6 +125,11 @@
 		messageType : 'success'
 	};
 
+	$.fn.yt.ad = function() {
+		var div = $('<div><h1>我是广告</h1></div>');
+		$(div).appendTo($('body'));
+	};
+
 	$(document).ready(function() {
 		var meta = $.trim($('#metadata_user').val());
 		if (meta === '') {
