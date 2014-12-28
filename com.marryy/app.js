@@ -38,7 +38,7 @@ app.use(methodOverride());
 app.use(morgan('combined'));
 
 // keep this before all routes that will use pagination
-app.use(paginate.middleware(3, 50));
+app.use(paginate.middleware(6, 50));
 
 var sessionOption = {
 	// secret : 'sean_marryy',
@@ -135,7 +135,7 @@ app.post('/gallery/verify/:id', route_gallery.verify);
 app.post('/vote/gallery/:id', route_gallery.vote);
 app.route('/gallery/:id').delete(route_gallery.remove).get(route_gallery.show).put(route_gallery.update).post(route_gallery.create);
 app.route('/gallery').post(route_gallery.create);
-
+app.route('/tag/gallery/:tagId').get(route_gallery.listByTag);
 // app users
 app.get('/price', pathFunction);
 

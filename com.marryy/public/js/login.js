@@ -8,6 +8,7 @@
 			method : 'post',
 			doneFn : function(data) {
 				showInfo('用户注册成功，请登录');
+				window.location.href = '/';
 			},
 			forms : [ {
 				type : 'text',

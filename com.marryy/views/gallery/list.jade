@@ -1,0 +1,64 @@
+extends ../layout
+block content
+	div.container(class='container-body')
+		if paginate.hasPreviousPages || paginate.hasNextPages(pageCount)
+			.navigation.well-sm#pagination
+				ul.pager
+					if paginate.hasPreviousPages
+						li.previous
+							a(href=paginate.href(true)).prev
+								|  上一页
+							i.fa.fa-arrow-circle-left
+					if paginate.hasNextPages(pageCount)
+						li.next
+							a(href=paginate.href()).next
+								| 浏览更多相册
+							i.fa.fa-arrow-circle-right
+		-if (galleries)
+			each item in galleries
+				dir.row
+					div.thumbnail
+						div.row
+							div.col-md-2(class='cos-sm-6')
+								a(href='/gallery/#{item._id}')
+									img.gallery_thumbnail(src='#{item.images[0]}!thumbnail',alt='...')
+								- if (item.tags)
+									div.tags-container
+										each tag in item.tags
+											a.text-danger(href='/tag/gallery/#{tag}', style='margin-right:3px;')= tag
+							div.col-md-10(class='cos-sm-6')
+								div.caption
+									div.row
+										div(class='cos-sm-8 col-md-10')
+											h2.text-danger= item.title
+												- if (item._creator.husband || item._creator.wife)
+													- var hw = item._creator.husband
+														small= hw
+											p(class='bs-callout bs-callout-info') 
+												span 被欣赏 
+												span(class="label label-warning") #{item.meta.accesses == null ? 0  : item.meta.accesses}
+											blockquote= item.desc
+											-if (item._creator.studios && item._creator.studios.length > 0)
+												- var studio=item._creator.studios[0]
+												h5  来自 
+													a.strong(href='#{studio.link}',target="_blank") #{studio.name}
+											-else
+												h5 没有提供影楼信息
+												
+											h6  创建于 
+												span.text-muted #{item.date.getFullYear()+'/'+(item.date.getMonth()+1)+'/'+item.date.getDate()}
+											
+											div
+												button(class='btn btn-success thumbs-up', gallery_id='#{item._id}')
+													span(class='glyphicon glyphicon-thumbs-up')
+													-if (item.meta && item.meta.votes > 0)
+														span.up-vote-number #{item.meta.votes}
+													-else
+														span.up-vote-number 0
+												
+										div(class='cos-sm-4 col-md-2')
+											h4 扫一扫
+											div.row(style='text-align:left;')
+												img.qr(gallery_id = '#{item._id}', class='gallary_qr_code')
+		-else
+			h3 没有任何相册	

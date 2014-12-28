@@ -126,32 +126,10 @@
 			} ]
 		});
 	}
-	function initUserLoginForm() {
-		$('#user_login').click(function() {
-			var username = $('#user_name').val().trim();
-			var pass = $('#user_password').val().trim();
-			$.ajax({
-				url : '/admin/login',
-				dataType : 'json',
-				type : 'post',
-				data : {
-					username : username,
-					password : pass
-				}
-			}).done(function(result) {
-				if (result.err) {
-					showError(result.err);
-				} else {
-					showInfo('登录成功');
-					window.location.href = '/';
-				}
-			});
-		});
-	}
+	
 	// start to run it
 	$(document).ready(function() {
 		initUserUpdateForm();
-		initUserLoginForm();
 	});
 
 })(window, jQuery);

@@ -19,6 +19,8 @@ var userSchema = new Schema({
 	email : String,
 	phone : String,
 	wechat : String,
+	husband : String,
+	wife : String,
 	qr : String, // qr code path
 	desc : String,
 	contact : String,
@@ -81,9 +83,12 @@ var gallerySchema = new Schema({
 	isPrivate : Boolean,
 	question : String,
 	answer : String,
+	tags : [ {
+		type : String,
+	} ],
 	galleryStyle : {
 		type : String,
-		'default' : 'galleryview'
+		'default' : 'blueimp'
 	},
 	galleryOptions : String,
 	images : [ {

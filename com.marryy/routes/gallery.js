@@ -9,8 +9,6 @@ var yt_utils = require('./utils').utils;
 exports.gallery = {
 	list : function(req, res) {
 		model_user.load(req.session.user_name, function(err, user) {
-			console.log('user information ');
-			console.log(user);
 			model_gallery.list(user, function(err, data) {
 				for (var j = 0; j < data.length; j++) {
 					var gallery = data[j];
@@ -29,6 +27,27 @@ exports.gallery = {
 		});
 	},
 
+	listByTag : function(req, res) {
+		// callback(error, paginatedResults, pageCount, itemCount);
+		model_gallery.listByTag(req.params.tagId, req.query.page, req.query.limit, function(error, data, pageCount, itemCount) {
+			for (var j = 0; j < data.length; j++) {
+				var gallery = data[j];
+				if (gallery && gallery.images) {
+					for (var i = 0; i < gallery.images.length; i++) {
+						gallery.images[i] = yt_utils.getImageLink(gallery.images[i], gallery._creator.imagePath);
+					}
+				}
+				if (gallery._creator.studios && gallery._creator.studios.length > 0) {
+					gallery.studio = gallery._creator.studios[0];
+				}
+			}
+			res.render('gallery/list', {
+				galleries : data,
+				pageCount : pageCount,
+				itemCount : itemCount
+			});
+		});
+	},
 	verify : function(req, res) {
 		var galleryId = req.params.id;
 		var answer = req.body.answer;
