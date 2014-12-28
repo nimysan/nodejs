@@ -51,6 +51,7 @@
 					images : selectedImages,
 					isPrivate : isPrivate,
 					question : question,
+					tags : toTagsArray($('#g_tags').val()),
 					answer : answer,
 					galleryStyle : gstyle
 				}
@@ -75,6 +76,7 @@
 					images : selectedImages,
 					isPrivate : isPrivate,
 					question : question,
+					tags : toTagsArray($('#g_tags').val()),
 					answer : answer,
 					galleryStyle : gstyle
 				}
@@ -144,11 +146,37 @@
 		$('#g_form_id').val('');
 		$('#g_title').val('');
 		$('#g_desc').val('');
+		$('#g_tags').val('');
 		$('#gq_desc').val('');
 		$('#gq_answer').val('');
 		$('#gallery_primate').bootstrapSwitch('state', true);
 		$('div.imageChecked').remove(); // remove all masked.
 		$('#g_style_part button').removeClass('btn-danger');
+	}
+
+	function composeTags(array) {
+		var tag = '';
+		if ($.isArray(array)) {
+			for (var i = 0; i < array.length; i++) {
+				tag = tag + ' ' + array[i];
+			}
+			return tag;
+		} else {
+			return tag;
+		}
+	}
+
+	function toTagsArray(string) {
+		if ($.trim(string) === '') {
+			return [];
+		} else {
+			var tags = [];
+			var ts = string.split(' ');
+			for (var x = 0; x < ts.length; x++) {
+				tags.push($.trim(ts[x]));
+			}
+			return tags;
+		}
 	}
 
 	var selectedImages = [];
@@ -162,13 +190,14 @@
 			$('#g_form_id').val(data._id);
 			$('#g_title').val(data.title);
 			$('#g_desc').val(data.desc);
+			$('#g_tags').val();
 			$('#gallery_primate').bootstrapSwitch('state', !data.isPrivate);
 			if (data.isPrivate === true) {
 				$('#gallery_question').removeClass('hide');
 			} else {
 				$('#gallery_question').addClass('hide');
 			}
-
+			$('#g_tags').val(composeTags(data.tags));
 			$('#gq_desc').val(data.question);
 			$('#gq_answer').val(data.answer);
 			gstyle = data.galleryStyle;
