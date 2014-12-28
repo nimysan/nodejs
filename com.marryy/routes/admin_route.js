@@ -8,7 +8,6 @@
 
 var model_gallery = require('../models/gallery').gallery_dao;
 var model_user = require('../models/user').model_user;
-var model_role = require('../models/role').model_role;
 exports.management = {
 	index : function(req, res) {
 		model_user.load(req.session.user_name, function(err, data) {
@@ -65,26 +64,34 @@ exports.management = {
 
 		},
 		create : function(req, res) {
-			model_user.load(req.session.user_name, function(err, manager) {
-				model_user.create(req.params.userId, '123456', {
-					imagePath : req.body.imagePath,
-					role : req.body.role,
-					studios : req.body.studios
-				}, function(err, data) {
-					if (manager.directUsers == null) {
-						manager.directUsers = [];
-					}
-					manager.directUsers.push(data);
-					manager.save(function(err, updateManager) {
-						delete data.salt;
-						delete data.password;
-						delete data.hashPassword;
-						res.json({
-							user : data
-						});
-						return;
+			model_user.exists(req.params.userId, function(err, count) {
+				if (err || count > 0) {
+					res.json({
+						'err' : '用户已经存在了'
 					});
-				});
+				} else {
+					model_user.load(req.session.user_name, function(err, manager) {
+						model_user.create(req.params.userId, '123456', {
+							imagePath : req.body.imagePath,
+							role : req.body.role,
+							studios : req.body.studios
+						}, function(err, data) {
+							if (manager.directUsers === null) {
+								manager.directUsers = [];
+							}
+							manager.directUsers.push(data);
+							manager.save(function(err, updateManager) {
+								delete data.salt;
+								delete data.password;
+								delete data.hashPassword;
+								res.json({
+									user : data
+								});
+								return;
+							});
+						});
+					});
+				}
 			});
 		},
 		update : function(req, res) {

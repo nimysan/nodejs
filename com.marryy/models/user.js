@@ -6,7 +6,6 @@ var models = require('./schema').models;
 var mongoose = require('mongoose');
 var Schema = mongoose.Schema;
 var db = models.db;
-var model_role = require('./role').model_role;
 var model_studio = require('./studio').model_studio;
 
 var crypto = require('crypto');
@@ -26,7 +25,7 @@ UserDao.prototype = {
 	},
 	queryByIds : function(ids, callback) {
 		var query = this.model.find({});
-		 query.where('_id').in(ids).populate('roles').populate('studios').exec(function(err, data) {
+		 query.where('_id').in(ids).populate('studios').exec(function(err, data) {
 			 callback(err, data);
 		 });
 	},
@@ -39,26 +38,12 @@ UserDao.prototype = {
 				hashPassword : hashPassword,
 				salt : salt
 		};
-		if (options && options.role !== '') {
-			model_role.load(options.role, function(err, roleObj) {
-				if (options) {
-					delete options.role;
-					delete options.password;
-					merge(doc, options);
-				}
-				doc.roles = [ roleObj ];
-				_model.create(doc, function(err, data) {
-					callback(err, data);
-				});
-			});
-		} else {
-			if (options) {
-				merge(doc, options);
-			}
-			this.model.create(doc, function(err, data) {
-				callback(err, data);
-			});
+		if (options) {
+			merge(doc, options);
 		}
+		this.model.create(doc, function(err, data) {
+			callback(err, data);
+		});
 	},
 	update : function(userId, options, callback) {
 		var that = this;
@@ -88,7 +73,7 @@ UserDao.prototype = {
 	load : function(name, callback) {
 		this.model.findOne({
 			'loginId' : name
-		}).populate('roles').populate('galleries').populate('studios').populate('directUsers').populate('directUsers roles').exec(function(err, user) {
+		}).populate('galleries').populate('studios').populate('directUsers').exec(function(err, user) {
 			callback(err, user);
 		});
 	},

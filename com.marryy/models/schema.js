@@ -34,8 +34,7 @@ var userSchema = new Schema({
 		'default' : false
 	},
 	roles : [ {
-		type : Schema.Types.ObjectId,
-		ref : 'roles'
+		'type' : String,
 	} ],
 	studios : [ {
 		type : Schema.Types.ObjectId,

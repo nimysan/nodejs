@@ -10,7 +10,7 @@
 		if (imagePath && imagePath.trim().length > 0) {
 			$('#file_upload_part').modal('show');
 		} else {
-			showPageMessage('请先选择一个用户，而且这个用户的图像路径必须是给定了的', false);
+			showError('请先选择一个用户，而且这个用户的图像路径必须是给定了的');
 		}
 	});
 	$('#u_create, #u_create_manager').click(function() {
@@ -27,13 +27,15 @@
 				type : 'put',
 				data : {
 					imagePath : $('#u_image_path').val(),
-					role : (isCreateManager ? 'manager' : 'customer'),
+					roles : [(isCreateManager ? 'manager' : 'customer')],
 					studios : [ studio_id ]
 				}
 			}).done(function(result) {
 				if (result.user) {
-					showPageMessage('更新用户信息成功', true);
+					showInfo('更新用户信息成功');
 					cleanUserForm();
+				} else {
+					showError(result.err);
 				}
 			});
 		} else {
@@ -44,13 +46,15 @@
 				type : 'post',
 				data : {
 					imagePath : $('#u_image_path').val(),
-					role : (isCreateManager ? 'manager' : 'customer'),
+					roles : [(isCreateManager ? 'manager' : 'customer')],
 					studios : [ studio_id ]
 				}
 			}).done(function(result) {
 				if (result.user) {
-					showPageMessage('新用户创建成功', true);
+					showInfo('新用户创建成功');
 					cleanUserForm();
+				} else {
+					showError(result.err);
 				}
 			});
 		}
@@ -126,7 +130,7 @@
 			} ]
 		});
 	}
-	
+
 	// start to run it
 	$(document).ready(function() {
 		initUserUpdateForm();
