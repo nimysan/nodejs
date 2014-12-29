@@ -287,7 +287,9 @@
 							// glyphicon glyphicon-heart
 							$('<span class="glyphicon glyphicon-heart"></span').appendTo(caption);
 						}
-						$('<p>').text('被访问 ' + value.meta.accesses + '次').appendTo(caption); // access
+						if (value.meta) {
+							$('<p>').text('被访问 ' + value.meta.accesses + '次').appendTo(caption); // access
+						}
 						// time
 						var opertors = $('<p>');
 						var deleteButton = $('<a href="javascript:void(0);" class="btn btn-danger gallery-button" role="button">删除</a>').attr('gallery_id', value._id);

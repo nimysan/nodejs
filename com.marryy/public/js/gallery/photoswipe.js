@@ -55,9 +55,14 @@ $(function() {
 						h : data.height * (phoneVersionWidth / data.width)
 					};
 					items.push(imgItem);
-					var img = $('<img>').addClass('pic').addClass('pic' + (Math.round(Math.random() * 15) + 1));
+					var img = $('<img>').addClass('pic').addClass('pic-default');
 					img.attr('index', index);
 					img.css('width', imgItem.w * 0.3).css('height', imgItem.h * 0.3);
+					img.css('right', (50 * index) + 'px');
+					var deg = 'rotate('+Math.round(Math.random()*30)+'deg)';
+					img.css('-webkit-transform', deg);
+					img.css('-moz-transform', deg);
+					img.css('transform', deg);
 					img.prop('src', imgItem.src);
 					photoWall.append(img);
 					$(img).fadeIn('normal');
@@ -78,7 +83,7 @@ $(function() {
 		$(document).queue('ajaxRequests', function() {
 			progress = 100;
 			updateProgressBar(progress);
-			openPSWP(items, 0);
+			// openPSWP(items, 0);
 		}); // done function
 
 		// kick off
