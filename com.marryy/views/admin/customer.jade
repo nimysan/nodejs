@@ -25,46 +25,7 @@ block content
 					div.panel-heading
 						h2.panel-title 影楼信息更新
 					div.panel-body
-						h2 维护的影楼信息
-						table(class='table table-bordered')
-							tr
-								th 影楼名称
-								th 影楼网址
-								th 影楼地址
-								th 影楼联系人
-								th 影楼联系电话
-								th 影楼联系电话(手机)
-							each studio in studios
-								tr.studio-detail(studio_id='#{studio._id}')
-									td.studio-name= studio.name
-									td.studio-link= studio.link
-									td= studio.address
-									td= studio.contactName
-									td= studio.contactDeskPhone
-									td= studio.contactMobilePhone
-										
-						div(role='form', id='studio_form')
-							div.input-group
-								label(for='name',style='display:inline;') 影楼名称
-								input.form-control(id='name', type='text')
-							div.input-group
-								label(for='link') 影楼网址
-								input.form-control(id='link', type='text')
-							div.input-group
-								label(for='address') 影楼地址
-								input.form-control(id='address', type='text')
-							div.input-group
-								label(for='contactName') 影楼联系人
-								input.form-control(id='contactName', type='text')
-							div.input-group
-								label(for='contactDeskPhone') 影楼联系电话
-								input.form-control(id='contactDeskPhone', type='text')
-							div.input-group
-								label(for='contactMobilePhone') 影楼联系电话(手机)
-								input.form-control(id='contactMobilePhone', type='text')
-							div.input-group
-								button(class='btn btn-info',style='margin-top:6px',id='studio_submit', type='submit') 提交
-							
+						div#studio_table_form
 						
 			div#tab_usermanager(role="tabpanel" class="tab-pane fade in active")
 				div#file_upload_part(class="modal fade",role="dialog")
@@ -103,9 +64,11 @@ block content
 										input#u_image_path(type='text', class='form-control',placeholder='默认用用户登录名。用户在云空间拥有的路径，用户上传图片用',value='')
 										
 								div.form-group(class='has-feedback')
-									each studio in studios
-										button(data-toggle="button", class="btn btn-small btn-warn studio-button", studio_id = '#{studio._id}', style='margin:5px 20px;') #{studio.name}
-										
+									select#u_stuido.form-control
+										each studio in studios
+											-if (studio)
+												option(value='#{studio._id}')= studio.name
+											
 								button#u_create(type='button', class='btn btn-primary', style='margin-right: 20px;') 创建
 									span(class='glyphicon glyphicon-ok-sign')
 								button#u_create_manager(type='button', class='btn btn-danger', style='margin-right: 20px;') 创建管理者账户
@@ -114,11 +77,12 @@ block content
 									span(class='glyphicon glyphicon-ok-sign')
 						
 						h2 所管理的用户
-						table(class='table table-bordered')
+						table(class='table table-bordered table-hovered')
 							tr
 								td 用户名
 								td 用户类型
 								td 用户图片空间名字
+								td 来自于（影楼）
 								td 用户创建时间
 								td 已付费
 							each item in users
@@ -130,6 +94,11 @@ block content
 										td.u-role 普通用户
 										
 									td.u-image-path #{item.imagePath}
+									- if (item.studios && item.studios.length>0)
+										td.u-studio 
+											a(href='#{item.studios[0].link}',target='_blank') #{item.studios[0].name}
+									- else
+										td &nbsp;
 									td #{item.date.toDateString()}
 									td.u-payed #{item.payed}
 									

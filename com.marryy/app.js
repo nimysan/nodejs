@@ -176,6 +176,7 @@ app.get('/admin/upyunsign', function(req, res) {
 });
 app.post('/studio', studio.create);
 app.put('/studio/:id', studio.update);
+app.get('/user/:userId/studios', studio.listByUser);
 // ------------------ admin routes --------------------------
 
 // pictures list modules

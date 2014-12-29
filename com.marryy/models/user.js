@@ -20,20 +20,28 @@ UserDao.prototype = {
 	_hashPassword : function(salt, password) {
 		return compat.pbkdf2Sync(password, salt, 1, 32, 'sha512');
 	},
-	queryByIds : function(ids, callback) {
-		var query = this.model.find({});
+	 queryByIds : function(ids, callback) {
+		 var query = this.model.find({});
 		 query.where('_id').in(ids).populate('studios').exec(function(err, data) {
 			 callback(err, data);
 		 });
+	 },
+	queryByOwner : function(owner, callback) {
+		var query = this.model.find({
+			'_owner' : owner._id
+		});
+		query.populate('studios').exec(function(err, data) {
+			callback(err, data);
+		});
 	},
 	create : function(name, password, options, callback) {
 		var _model = this.model;
 		var salt = this._generateSalt();
 		var hashPassword = this._hashPassword(salt, password);
 		var doc = {
-				loginId : name,
-				hashPassword : hashPassword,
-				salt : salt
+			loginId : name,
+			hashPassword : hashPassword,
+			salt : salt
 		};
 		if (options) {
 			merge(doc, options);
@@ -49,7 +57,7 @@ UserDao.prototype = {
 			'loginId' : userId
 		}).exec(function(err, user) {
 			console.log(err);
-			if(options.password){
+			if (options.password) {
 				options.hashPassword = that._hashPassword(user.salt, options.password);
 			}
 			if (options) {
@@ -86,10 +94,10 @@ UserDao.prototype = {
 					return callback(new Error("用户名不存在"));
 				}
 				var hashPassword = _that._hashPassword(user.salt, pass);
-				var matched = user.hashPassword == (hashPassword+'');
+				var matched = user.hashPassword == (hashPassword + '');
 				if (matched) {
 					callback(null, user);
-				}else{
+				} else {
 					return callback(new Error("用户名或者密码错误"));
 				}
 			} else {

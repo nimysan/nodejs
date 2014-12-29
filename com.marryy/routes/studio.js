@@ -10,11 +10,23 @@ var yt_utils = require('./utils').utils;
 exports.studio = {
 	create : function(req, res) {
 		var user = req.session.user_name;
-		model_studio.create(req.session.user_name, req.body, function(err, data) {
+		console.log('rq ' + req.session.user_name);
+		model_studio.create(user, req.body, function(err, data) {
 			res.json({
 				err : err,
 				data : data
 			});
+		});
+	},
+	listByUser : function(req, res) {
+		model_user.load(req.session.user_name, function(err, user) {
+			if (err) {
+				res.json({
+					err : err
+				});
+			} else {
+				res.json(user.studios);
+			}
 		});
 	},
 	update : function(req, res) {

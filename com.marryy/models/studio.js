@@ -13,13 +13,14 @@ StudioDao.prototype = {
 		var _that = this.model;
 		model_user.load(user, function(err, userData) {
 			var doc = {
-				_creator : userData._id
+				_owner : userData._id
 			};
 			if (options) {
+				delete options._id;
 				merge(doc, options);
 			}
 			_that.create(doc, function(err, data) {
-				var studios = data.studios;
+				var studios = userData.studios;
 				if (typeof studios === 'undefined') {
 					studios = [];
 				}
@@ -51,8 +52,15 @@ StudioDao.prototype = {
 	load : function(name, callback) {
 		this.model.findOne({
 			'name' : name
-		}).exec(function(err, role) {
-			callback(err, role);
+		}).exec(function(err, studio) {
+			callback(err, studio);
+		});
+	},
+	listByOwner : function(owner, callback) {
+		this.model.find({
+			'_owner' : owner._id
+		}).exec(function(err, studios) {
+			callback(err, studios);
 		});
 	}
 

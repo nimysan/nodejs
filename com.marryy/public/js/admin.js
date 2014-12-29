@@ -114,6 +114,73 @@
 		});
 	});
 
+	function initStudioForm() {
+		$('#studio_table_form').yt_table({
+			dataLoadUrl : '/user/supervisor/studios',
+			table : [ {
+				th : '影楼名称',
+				attr : 'name'
+			}, {
+				th : '影楼网址',
+				attr : 'link'
+			}, {
+				th : '地址',
+				attr : 'address'
+			}, {
+				th : '影楼联系人',
+				attr : 'contactName'
+			}, {
+				th : '影楼联系电话',
+				attr : 'contactDeskPhone'
+			}, {
+				th : '影楼联系楼手机号码',
+				attr : 'contactMobilePhone'
+			} ],
+			form_options : {
+				submitText : '提交',
+				urlFn : function(data) {
+					if (data && data._id != '') {
+						return '/studio/' + data._id;
+					} else {
+						return '/studio';
+					}
+				},
+				method : 'put',
+				doneFn : function() {
+					$.fn.yt.tooltip({
+						'messageType' : 'success',
+						msg : '影楼信息更新成功'
+					});
+				},
+				forms : [ {
+					type : 'text',
+					placeHolder : '影楼名称',
+					id : 'name'
+				}, {
+					type : 'text',
+					placeHolder : '影楼网址（如果有）',
+					id : 'link'
+				}, {
+					type : 'text',
+					placeHolder : '影楼地址（如果有）',
+					id : 'address'
+				}, {
+					type : 'text',
+					placeHolder : '影楼联系人',
+					id : 'contactName'
+				}, {
+					type : 'text',
+					placeHolder : '影楼联系电话',
+					id : 'contactDeskPhone'
+				}, {
+					type : 'text',
+					placeHolder : '影楼联系楼手机号码',
+					id : 'contactMobilePhone'
+				} ]
+			}
+		});
+	}
+
 	function initUserUpdateForm() {
 		// page initialize
 		$('#user_password_form').yt({
@@ -141,6 +208,7 @@
 	// start to run it
 	$(document).ready(function() {
 		initUserUpdateForm();
+		initStudioForm();
 	});
 
 })(window, jQuery);

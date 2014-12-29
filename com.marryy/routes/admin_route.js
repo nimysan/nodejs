@@ -8,12 +8,19 @@
 
 var model_gallery = require('../models/gallery').gallery_dao;
 var model_user = require('../models/user').model_user;
+var model_studio = require('../models/studio').model_studio;
 exports.management = {
 	index : function(req, res) {
-		model_user.load(req.session.user_name, function(err, data) {
-			res.render('admin/customer', {
-				users : data.directUsers,
-				studios : data.studios
+		model_user.load(req.session.user_name, function(err, sessionUser) {
+			model_user.queryByOwner(sessionUser, function(err, users) {
+				model_studio.listByOwner(sessionUser, function(err, studios) {
+					console.log("studios -------------------");
+					console.log(studios);
+					res.render('admin/customer', {
+						users : users,
+						studios : studios
+					});
+				});
 			});
 			return;
 		});

@@ -25,10 +25,10 @@ var userSchema = new Schema({
 	desc : String,
 	contact : String,
 	imagePath : String,
-	directUsers : [ {
+	_owner : {
 		type : Schema.Types.ObjectId,
 		ref : 'users'
-	} ],
+	},// creator and owner
 	payed : {
 		'type' : Boolean,
 		'default' : false
@@ -113,7 +113,7 @@ var studioSchema = new Schema({
 	name : String,
 	desc : String,
 	link : String, // how to setup the foreign key to user?
-	address: String,
+	address : String,
 	contactName : String,
 	contactDeskPhone : String,
 	contactMobilePhone : String,

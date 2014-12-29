@@ -95,6 +95,10 @@ body{
 button#user_login{
 	width: 100%;
 }
+
+.yt-form-button{
+	margin-right: 6px;
+}
 /* usre */
 
 /* image */
@@ -124,6 +128,7 @@ button#user_login{
 	color: white;
 	font-weight: bold;
 }
+
 /* image */
 
 /* loading */
