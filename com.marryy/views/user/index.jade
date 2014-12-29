@@ -63,7 +63,9 @@ block content
 									div.input-group
 										span(class='glyphicon glyphicon-pencil input-group-addon')
 										input#gq_answer(type='text-area', class='form-control',placeholder='你给的答案，访问者给出精确答案才能允许访问')
-							
+							div.cover
+								h2 设置封面， 请将选择的照片拖入到封面区中
+								img#img_cover_tagert(src='/img/cover_pl.png',alt='封面。。。', class="gallery-cover-selector img-rounded")
 							div#g_all_images_part(class="collapse")
 								button#selector_select_all(type='button', class='btn btn-primary') 全选
 								button#selector_unselect_all(type='button', class='btn btn-danger') 全不选
@@ -118,6 +120,7 @@ block content
 														
 						
 					
+	<script src="//code.jquery.com/ui/1.11.2/jquery-ui.js"></script>
 	script(src='/js/user.js')
 	
 	

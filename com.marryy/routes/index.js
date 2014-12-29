@@ -7,7 +7,7 @@ exports.index = function(req, res) {
 	var loginId = (req.session && req.session.user) ? req.session.user.loginId : '';
 	var displayName = (req.session && req.session.user && req.session.user.displayName) ? req.session.user.displayName : loginId;
 
-	model_gallery.listAll(req.query.page, 4 , function(err, data, pageCount, itemCount) {
+	model_gallery.listAll(req.query.page, 4, function(err, data, pageCount, itemCount) {
 		for (var j = 0; j < data.length; j++) {
 			var gallery = data[j];
 			if (gallery && gallery.images) {
@@ -15,11 +15,16 @@ exports.index = function(req, res) {
 					gallery.images[i] = yt_utils.getImageLink(gallery.images[i], gallery._creator.imagePath);
 				}
 			}
+			if (gallery && gallery.cover) {
+				gallery.cover = yt_utils.getImageLink(gallery.cover, gallery._creator.imagePath);
+			} else {
+				gallery.cover = yt_utils.getImageLink(gallery.images[0], gallery._creator.imagePath);
+			}
 			if (gallery._creator.studios && gallery._creator.studios.length > 0) {
 				gallery.studio = gallery._creator.studios[0];
 			}
 		}
-		
+
 		res.render('index', {
 			loginId : loginId,
 			displayName : displayName,

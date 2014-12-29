@@ -40,6 +40,12 @@
 		$('.image-be-checked').each(function() {
 			selectedImages.push($(this).attr('origUrl'));
 		});
+		var coverImg = $('#img_cover_tagert').attr('origurl');
+		if (coverImg) {
+			if (selectedImages.indexOf(coverImg) < 0) {
+				selectedImages.push(coverImg);
+			}
+		}
 		if (id.length <= 0) {
 			$.ajax({
 				url : '/gallery',
@@ -53,7 +59,8 @@
 					question : question,
 					tags : toTagsArray($('#g_tags').val()),
 					answer : answer,
-					galleryStyle : gstyle
+					galleryStyle : gstyle,
+					cover : coverImg
 				}
 			}).done(function(data) {
 				clearGalleryForm();
@@ -78,7 +85,8 @@
 					question : question,
 					tags : toTagsArray($('#g_tags').val()),
 					answer : answer,
-					galleryStyle : gstyle
+					galleryStyle : gstyle,
+					cover : coverImg
 				}
 			}).done(function(data) {
 				clearGalleryForm();
@@ -116,6 +124,9 @@
 		}
 		if (userPhotos.length <= 0) {
 			var space = page_info.user.imagePath;
+			showLoading({
+				'text' : '正在加载你所有的照片，请稍等'
+			});
 			$.ajax({
 				url : '/list/' + space,
 				dataType : 'json',
@@ -133,9 +144,15 @@
 							$(this).addClass('image-be-checked');
 						}
 					});
+					$(img).draggable({
+						revert : true,
+						helper : 'clone'
+					});
 					img.appendTo(linksContainer);
 				});
 				flagSelected();
+			}).always(function() {
+				offLoading();
 			});
 		} else {
 			flagSelected();
@@ -152,6 +169,7 @@
 		$('#gallery_primate').bootstrapSwitch('state', true);
 		$('div.imageChecked').remove(); // remove all masked.
 		$('#g_style_part button').removeClass('btn-danger');
+		$('#img_cover_tagert').prop('src', '/img/cover_pl.png');
 	}
 
 	function composeTags(array) {
@@ -197,6 +215,7 @@
 			} else {
 				$('#gallery_question').addClass('hide');
 			}
+			$('#img_cover_tagert').prop('src', data.cover + '!100').width('auto').height('auto');
 			$('#g_tags').val(composeTags(data.tags));
 			$('#gq_desc').val(data.question);
 			$('#gq_answer').val(data.answer);
@@ -204,6 +223,8 @@
 			$('#g_style_part button[gstyle="' + gstyle + '"]').addClass('btn-danger');
 			selectedImages = data.images;
 			// $('button#g_img_selector').click()// click the button
+		}).always(function() {
+			offLoading();
 		});
 	}
 
@@ -233,7 +254,7 @@
 				classed : 'btn-default'
 			}
 		};
-		$.messager.confirm("删除相册", "你确定需要删除这个相册吗？删除之后不能恢复!", function() {
+		$.messager.confirm("删除相册", "你确定需要删除这个相册吗？删除之后相册的访问信息都会丢掉。如果你只是不想让人看到你的这个相册，你可以把相册设置为‘私密’. 设置为 私密 之后，只有能回答你预设的问题的人才有机会看到你的相册。 删除之后不能恢复!", function() {
 			closeCallback();
 		});
 	}
@@ -256,15 +277,20 @@
 						// gallery
 						var overview = $('<div class="thumbnail">');
 						overview.attr('gallery-id', value._id);
-						var coverSrc = 'http://nimysan.b0.upaiyun.com/sample1/li4J5yZUDtPg.jpg!phone'; // default
-						if (value.images && value.images.length > 0) {
-							coverSrc = value.images[0] + '!phone';
-						}
+						coverSrc = value.cover + '!phone';
 						var img = $('<img src="' + coverSrc + '" alt="...">').appendTo(overview);
 						var caption = $('<div class="caption">');
 						caption.appendTo(overview);
+						if (value.isPrivate === true) {
+							$('<span class="glyphicon glyphicon-lock"></span').appendTo(caption);
+						} else {
+							// glyphicon glyphicon-heart
+							$('<span class="glyphicon glyphicon-heart"></span').appendTo(caption);
+						}
+						$('<p>').text('被访问 ' + value.meta.accesses + '次').appendTo(caption); // access
+						// time
 						var opertors = $('<p>');
-						var deleteButton = $('<a href="#" class="btn btn-danger gallery-button" role="button">删除</a>').attr('gallery_id', value._id);
+						var deleteButton = $('<a href="javascript:void(0);" class="btn btn-danger gallery-button" role="button">删除</a>').attr('gallery_id', value._id);
 						deleteButton.appendTo(opertors);
 						$(deleteButton).click(function() {
 							var _this = this;
@@ -291,14 +317,15 @@
 								});
 							});
 						});
-						var edit = $('<a href="#" class="btn btn-primary gallery-button" role="button">编辑</a>').attr('gallery_id', value._id);
+						var edit = $('<a href="javascript:void(0);" class="btn btn-primary gallery-button" role="button">编辑</a>').attr('gallery_id', value._id);
 						edit.appendTo(opertors);
 						$(edit).click(function() {
 							var galleryId = $(this).attr('gallery_id');
+							showLoading();
 							preFllGalleryForm(galleryId);
 						});
 
-						var preview = $('<a href="#" class="btn btn-info gallery-button gallery-preview" role="button">查看效果</a>');
+						var preview = $('<a href="javascript:void(0);" class="btn btn-info gallery-button gallery-preview" role="button">查看效果</a>');
 						$(preview).click(function() {
 							window.open(window.location.origin + '/gallery/' + value._id, '_blank');
 						});
@@ -368,9 +395,19 @@
 		$('#g_style_part').modal('hide');
 	});
 
+	function addCoverDroppable() {
+		$('#img_cover_tagert').droppable({
+			drop : function(event, ui) {
+				var origurl = $(event.toElement).attr('src');
+				$(this).addClass("ui-state-highlight").prop('src', origurl).width($(event.toElement).width()).height($(event.toElement).height()).attr('origurl', $(event.toElement).attr('origurl'));
+			}
+		});
+	}
+
 	$(document).ready(function() {
 		initUserInfoForm();
 		startSwitch();
 		listGalleries();
+		addCoverDroppable();
 	});
 })(window, jQuery);

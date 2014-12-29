@@ -113,6 +113,12 @@ button#user_login{
 	border-style: double;
 }
 
+.gallery-cover-selector{
+	width: 140px;
+	height: 140px;
+	margin: 12px;
+}
+
 .up-vote-number{
 	margin-left: 3px;
 	color: white;

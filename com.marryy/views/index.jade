@@ -47,7 +47,7 @@ block content
 						div.row
 							div.col-md-2(class='cos-sm-6')
 								a(href='/gallery/#{item._id}')
-									img.gallery_thumbnail(src='#{item.images[0]}!thumbnail',alt='...')
+									img.gallery_thumbnail(src='#{item.cover}!thumbnail',alt='...')
 								- if (item.tags)
 									div.tags-container
 										each tag in item.tags
@@ -58,7 +58,7 @@ block content
 										div(class='cos-sm-8 col-md-10')
 											h2.text-danger= item.title
 												- if (item._creator.husband || item._creator.wife)
-													- var hw = item._creator.husband
+													- var hw = item._creator.displayName
 														small= hw
 											p(class='bs-callout bs-callout-info') 
 												span 被欣赏 

@@ -118,14 +118,6 @@ app.get("/", routes.index, function(req, res, next) {
 	next();
 });
 
-app.route('/user/:user').get(function(req,res,next){
-	if(req.session.user_name){
-		res.render('user/index');
-	}else{
-		next();
-	}
-});
-
 // app.get('/users', user.list);
 app.route('/user/:user/gallery').get(route_gallery.list).head(function(req, res) {
 	res.render('user/gallery_create');
@@ -141,7 +133,7 @@ app.get('/price', pathFunction);
 
 // user management
 var user_dao = require('./models/user').user_dao;
-app.put('/user/:userId',function(req, res, next) {
+app.route('/user/:userId').get(route_gallery.user.show).put(function(req, res, next) {
 	if (req.params.userId !== req.session.user_name) {
 		res.json({
 			err : '你试着去更改不属于你的信息'
@@ -149,7 +141,7 @@ app.put('/user/:userId',function(req, res, next) {
 	}else{
 		next();
 	}
-},management.user.update);
+}, management.user.update);
 
 // ------------------ admin routes --------------------------
 app.put('/admin/password', management.user.passwordUpdate);

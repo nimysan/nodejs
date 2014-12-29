@@ -7,6 +7,25 @@ var model_user = require('../models/user').model_user;
 var yt_utils = require('./utils').utils;
 
 exports.gallery = {
+	user : {
+		show : function(req, res) {
+			model_gallery.list(req.session.user_name, function(err, data) {
+				// for (var j = 0; j < data.length; j++) {
+				// var gallery = data[j];
+				// if (gallery && gallery.images) {
+				// for (var i = 0; i < gallery.images.length; i++) {
+				// gallery.images[i] = yt_utils.getImageLink(gallery.images[i],
+				// user.imagePath);
+				// }
+				// }
+				// if (user.studios && user.studios.length > 0) {
+				// gallery.studio = user.studios[0];
+				// }
+				// }
+				res.render('user/index');
+			});
+		}
+	},
 	list : function(req, res) {
 		model_user.load(req.session.user_name, function(err, user) {
 			model_gallery.list(user, function(err, data) {
@@ -16,6 +35,11 @@ exports.gallery = {
 						for (var i = 0; i < gallery.images.length; i++) {
 							gallery.images[i] = yt_utils.getImageLink(gallery.images[i], user.imagePath);
 						}
+					}
+					if (gallery && gallery.cover) {
+						gallery.cover = yt_utils.getImageLink(gallery.cover, user.imagePath);
+					} else {
+						gallery.cover = yt_utils.getImageLink(gallery.images[0], user.imagePath);
 					}
 					if (user.studios && user.studios.length > 0) {
 						gallery.studio = user.studios[0];
@@ -36,6 +60,11 @@ exports.gallery = {
 					for (var i = 0; i < gallery.images.length; i++) {
 						gallery.images[i] = yt_utils.getImageLink(gallery.images[i], gallery._creator.imagePath);
 					}
+				}
+				if (gallery && gallery.cover) {
+					gallery.cover = yt_utils.getImageLink(gallery.cover, gallery._creator.imagePath);
+				} else {
+					gallery.cover = yt_utils.getImageLink(gallery.images[0], gallery._creator.imagePath);
 				}
 				if (gallery._creator.studios && gallery._creator.studios.length > 0) {
 					gallery.studio = gallery._creator.studios[0];
@@ -104,7 +133,7 @@ exports.gallery = {
 				}
 				meta.accesses = meta.accesses + 1;
 			}
-			model_gallery.update(req.session.user, galleryId, {
+			model_gallery.update(req.session.user_name, galleryId, {
 				meta : {
 					accesses : meta.accesses
 				}
@@ -114,7 +143,7 @@ exports.gallery = {
 				}
 			});
 			var gallery = data;
-			var user = (req.session && req.session.user) ? req.session.user : null;
+			var user = (req.session && req.session.user_name) ? req.session.user_name : null;
 
 			if (gallery.isPrivate == true) {
 				if (user == null) {
@@ -122,7 +151,7 @@ exports.gallery = {
 						return;
 					}
 				} else {
-					if (gallery._creator._id == user._id) {
+					if (gallery._creator.loginId == user) {
 						// login user is the gallery owner, view gallery
 						// directly
 					} else {
@@ -137,6 +166,11 @@ exports.gallery = {
 				for (var i = 0; i < gallery.images.length; i++) {
 					gallery.images[i] = yt_utils.getImageLink(gallery.images[i], gallery._creator.imagePath);
 				}
+			}
+			if (gallery && gallery.cover) {
+				gallery.cover = yt_utils.getImageLink(gallery.cover, gallery._creator.imagePath);
+			} else {
+				gallery.cover = yt_utils.getImageLink(gallery.images[0], gallery._creator.imagePath);
 			}
 			if (gallery._creator.studios && gallery._creator.studios.length > 0) {
 				gallery.studio = gallery._creator.studios[0];
@@ -192,6 +226,9 @@ exports.gallery = {
 				req.body.images[i] = yt_utils.getImageName(req.body.images[i]);
 			}
 		}
+		if (req.body.cover) {
+			req.body.cover = yt_utils.getImageName(req.body.cover);
+		}
 		model_user.load(req.session.user_name, function(err, user) {
 			model_gallery.create(user, req.body, function(err, data) {
 				res.json({
@@ -207,6 +244,9 @@ exports.gallery = {
 			for (var i = 0; i < req.body.images.length; i++) {
 				req.body.images[i] = yt_utils.getImageName(req.body.images[i]);
 			}
+		}
+		if (req.body.cover) {
+			req.body.cover = yt_utils.getImageName(req.body.cover);
 		}
 		model_user.load(req.session.user_name, function(err, user) {
 			model_gallery.update(user, id, req.body, function(err, data) {

@@ -120,6 +120,26 @@
 		});
 	}
 
+	window.showLoading = function(options) {
+		var opt = $.extend({
+			'text' : '装载中...'
+		}, options);
+		if ($(opt.to).size() > 0) {
+			$(opt.to).isLoading(opt);
+		} else {
+			$('body').isLoading(opt);
+		}
+	};
+
+	window.offLoading = function(options) {
+		var opt = $.extend({}, options);
+		if ($(opt.to).size() > 0) {
+			$(opt.to).isLoading('hide');
+		} else {
+			$('body').isLoading('hide');
+		}
+	};
+
 	// 插件的defaults
 	$.fn.yt.defaults = {
 		messageType : 'success'
