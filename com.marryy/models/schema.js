@@ -106,9 +106,14 @@ var gallerySchema = new Schema({
 
 // studio - the photos from studio - information for AD in future
 var studioSchema = new Schema({
+	_owner : {
+		type : Schema.Types.ObjectId,
+		ref : 'users'
+	},
 	name : String,
 	desc : String,
 	link : String, // how to setup the foreign key to user?
+	address: String,
 	contactName : String,
 	contactDeskPhone : String,
 	contactMobilePhone : String,

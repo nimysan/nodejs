@@ -1,10 +1,7 @@
-/**
- * User role dao
- */
 var merge = require('utils-merge');
 var models = require('./schema').models;
-var model_user = require('./user').model_user;
 var db = models.db;
+var model_user = require('./user').model_user;
 
 var StudioDao = function(db, model) {
 	this.db = db;
@@ -13,22 +10,28 @@ var StudioDao = function(db, model) {
 
 StudioDao.prototype = {
 	create : function(user, options, callback) {
-		var doc = {
-			_creator : user._id
-		};
-		if (options) {
-			merge(doc, options);
-		}
-		this.model.create(doc, function(err, data) {
-			var studios = user.studios;
-			studios.push(data._id);
-			model_user.update(user.loginId, {
-				'studios' : studios
-			}, function(err, data) {
-				if (err) {
-					console.log('create studio error due to save to uesr error !');
+		var _that = this.model;
+		model_user.load(user, function(err, userData) {
+			var doc = {
+				_creator : userData._id
+			};
+			if (options) {
+				merge(doc, options);
+			}
+			_that.create(doc, function(err, data) {
+				var studios = data.studios;
+				if (typeof studios === 'undefined') {
+					studios = [];
 				}
-				callback(err, data);
+				studios.push(data._id);
+				model_user.update(userData.loginId, {
+					'studios' : studios
+				}, function(err, data) {
+					if (err) {
+						console.log('create studio error due to save to uesr error !');
+					}
+					callback(err, data);
+				});
 			});
 		});
 	},

@@ -9,8 +9,8 @@ var yt_utils = require('./utils').utils;
 
 exports.studio = {
 	create : function(req, res) {
-		var user = req.session.user;
-		model_studio.create(req.session.user, req.body, function(err, data) {
+		var user = req.session.user_name;
+		model_studio.create(req.session.user_name, req.body, function(err, data) {
 			res.json({
 				err : err,
 				data : data
@@ -18,9 +18,9 @@ exports.studio = {
 		});
 	},
 	update : function(req, res) {
-		var user = req.session.user;
+		var user = req.session.user_name;
 		var id = req.params.id;
-		model_studio.update(req.session.user, id, req.body, function(err, data) {
+		model_studio.update(req.session.user_name, id, req.body, function(err, data) {
 			res.json({
 				err : err,
 				data : data

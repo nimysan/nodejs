@@ -27,7 +27,7 @@
 				type : 'put',
 				data : {
 					imagePath : $('#u_image_path').val(),
-					roles : [(isCreateManager ? 'manager' : 'customer')],
+					roles : [ (isCreateManager ? 'manager' : 'customer') ],
 					studios : [ studio_id ]
 				}
 			}).done(function(result) {
@@ -46,7 +46,7 @@
 				type : 'post',
 				data : {
 					imagePath : $('#u_image_path').val(),
-					roles : [(isCreateManager ? 'manager' : 'customer')],
+					roles : [ (isCreateManager ? 'manager' : 'customer') ],
 					studios : [ studio_id ]
 				}
 			}).done(function(result) {
@@ -97,13 +97,20 @@
 		var studioId = null;
 		var method = studioId == null ? 'post' : 'put';
 		var url = studioId == null ? '/studio' : '/studio/' + studioId;
+		showLoading();
 		$.ajax({
 			url : url,
 			dataType : 'json',
 			type : method,
 			data : data
 		}).done(function(result) {
-			console.log(result);
+			if (result.err) {
+				showError(result.err);
+			} else {
+				showInfo('影楼信息创建或更新成功');
+			}
+		}).always(function() {
+			offLoading();
 		});
 	});
 

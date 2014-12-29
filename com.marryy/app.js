@@ -10,6 +10,8 @@ var express = require('express'),
 	http = require('http'), path = require('path'), 
 	pig = require('./lib/photo_gateway.js'), 
 	session = require('express-session');
+//user management
+var user_dao = require('./models/user').user_dao;
 express.static = require('serve-static');
 var paginate = require('express-paginate');
 var favicon = require('serve-favicon');
@@ -131,8 +133,6 @@ app.route('/tag/gallery/:tagId').get(route_gallery.listByTag);
 // app users
 app.get('/price', pathFunction);
 
-// user management
-var user_dao = require('./models/user').user_dao;
 app.route('/user/:userId').get(route_gallery.user.show).put(function(req, res, next) {
 	if (req.params.userId !== req.session.user_name) {
 		res.json({

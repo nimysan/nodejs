@@ -3,10 +3,7 @@
  */
 var merge = require('utils-merge');
 var models = require('./schema').models;
-var mongoose = require('mongoose');
-var Schema = mongoose.Schema;
 var db = models.db;
-var model_studio = require('./studio').model_studio;
 
 var crypto = require('crypto');
 var compat = require('pbkdf2-compat');
@@ -51,6 +48,7 @@ UserDao.prototype = {
 		this.model.findOne({
 			'loginId' : userId
 		}).exec(function(err, user) {
+			console.log(err);
 			if(options.password){
 				options.hashPassword = that._hashPassword(user.salt, options.password);
 			}
