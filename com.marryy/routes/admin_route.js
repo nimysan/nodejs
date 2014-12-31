@@ -11,19 +11,24 @@ var model_user = require('../models/user').model_user;
 var model_studio = require('../models/studio').model_studio;
 exports.management = {
 	index : function(req, res) {
-		model_user.load(req.session.user_name, function(err, sessionUser) {
-			model_user.queryByOwner(sessionUser, function(err, users) {
-				model_studio.listByOwner(sessionUser, function(err, studios) {
-					console.log("studios -------------------");
-					console.log(studios);
-					res.render('admin/customer', {
-						users : users,
-						studios : studios
+		if (req.session.user_name) {
+			model_user.load(req.session.user_name, function(err, sessionUser) {
+				console.log('Session user is: ' + req.session.uesr_name + ' ' + sessionUser);
+				model_user.queryByOwner(sessionUser, function(err, users) {
+					model_studio.listByOwner(sessionUser, function(err, studios) {
+						console.log("studios -------------------");
+						console.log(studios);
+						res.render('admin/customer', {
+							users : users,
+							studios : studios
+						});
 					});
 				});
+				return;
 			});
-			return;
-		});
+		} else {
+			res.redirect('/admin/login');
+		}
 	},
 	user : {
 		auth : function(req, res) {
@@ -77,27 +82,37 @@ exports.management = {
 						'err' : '用户已经存在了'
 					});
 				} else {
-					model_user.load(req.session.user_name, function(err, manager) {
-						model_user.create(req.params.userId, '123456', {
-							imagePath : req.body.imagePath,
-							role : req.body.role,
-							studios : req.body.studios
-						}, function(err, data) {
-							if (manager.directUsers === null) {
-								manager.directUsers = [];
-							}
-							manager.directUsers.push(data);
-							manager.save(function(err, updateManager) {
-								delete data.salt;
-								delete data.password;
-								delete data.hashPassword;
-								res.json({
-									user : data
+					if (req.body.fromStudio) {
+						model_user.load(req.session.user_name, function(err, manager) {
+							model_studio.load(req.body.fromStudio, function(err, studio) {
+								model_user.create(req.params.userId, '123456', {
+									imagePath : req.body.imagePath,
+									role : req.body.role,
+									fromStudio : studio,
+									_owner : manager
+								}, function(err, data) {
+									res.json({
+										err : err ? '创建用户失败。' : '',
+										user : data
+									});
 								});
-								return;
 							});
 						});
-					});
+					} else {
+						model_user.load(req.session.user_name, function(err, manager) {
+							model_user.create(req.params.userId, '123456', {
+								imagePath : req.body.imagePath,
+								role : req.body.role,
+								fromStudio : req.body.fromStudio,
+								_owner : manager
+							}, function(err, data) {
+								res.json({
+									err : err ? '创建用户失败。' : '',
+									user : data
+								});
+							});
+						});
+					}
 				}
 			});
 		},

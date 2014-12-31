@@ -17,8 +17,8 @@
 		var isCreateManager = $(this).attr('id') === 'u_create_manager';
 		var name = $('#u_login_name').val();
 		var user_id = $('#g_form_id').attr('user_id');
-		var studio_id = $('button.studio-button.active').attr('studio_id');
-		var studio_val = 'ObjectId("' + studio_id + '")';
+		var studio_id = $('#u_stuido').val();
+		showLoading();
 		if (user_id && user_id.length > 0) {
 			// update
 			$.ajax({
@@ -28,15 +28,18 @@
 				data : {
 					imagePath : $('#u_image_path').val(),
 					roles : [ (isCreateManager ? 'manager' : 'customer') ],
-					studios : [ studio_id ]
+					fromStudio : studio_id
 				}
 			}).done(function(result) {
+				offLoading();
 				if (result.user) {
 					showInfo('更新用户信息成功');
 					cleanUserForm();
 				} else {
 					showError(result.err);
 				}
+			}).always(function() {
+				offLoading();
 			});
 		} else {
 			// create
@@ -47,7 +50,7 @@
 				data : {
 					imagePath : $('#u_image_path').val(),
 					roles : [ (isCreateManager ? 'manager' : 'customer') ],
-					studios : [ studio_id ]
+					fromStudio : studio_id
 				}
 			}).done(function(result) {
 				if (result.user) {
@@ -56,6 +59,8 @@
 				} else {
 					showError(result.err);
 				}
+			}).always(function() {
+				offLoading();
 			});
 		}
 	});
@@ -63,6 +68,8 @@
 	function cleanUserForm() {
 		$('#u_login_name').val('');
 		$('#u_image_path').val('');
+		// studio_id
+		$('select#u_stuido').val('');
 		// user id
 		$('#g_form_id').attr('user_id', '');
 		$('#u_create').text('创建');
@@ -79,6 +86,7 @@
 			$(this).addClass('active');
 			$('#u_login_name').val($(this).find('td.u-login-id').text());
 			$('#u_image_path').val($(this).find('td.u-image-path').text());
+			$('select#u_stuido').val($(this).find('td.u-studio').attr('studio_id'));
 			// user id
 			$('#g_form_id').attr('user_id', $(this).attr('user_id'));
 			$('#u_create').text('更新');
@@ -208,7 +216,15 @@
 	// start to run it
 	$(document).ready(function() {
 		initUserUpdateForm();
-		initStudioForm();
+
+		// studio from page events
+		$('a[data-toggle="tab"]').on('shown.bs.tab', function(e) {
+			if ($(e.target).attr('href') === '#tab_studiomanager') {
+				initStudioForm();
+			} // newly activated tab
+
+			e.relatedTarget // previous active tab
+		});
 	});
 
 })(window, jQuery);

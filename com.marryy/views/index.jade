@@ -64,11 +64,11 @@ block content
 												span 被欣赏 
 												span(class="label label-warning") #{item.meta.accesses == null ? 0  : item.meta.accesses}
 											blockquote= item.desc
-											-if (item._creator.studios && item._creator.studios.length > 0)
-												- var studio=item._creator.studios[0]
+											- if (item._creator.fromStudio)
+												- var studio = item._creator.fromStudio
 												h5  来自 
 													a.strong(href='#{studio.link}',target="_blank") #{studio.name}
-											-else
+											- else
 												h5 没有提供影楼信息
 												
 											h6  创建于 

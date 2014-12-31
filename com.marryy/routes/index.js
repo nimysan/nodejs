@@ -20,8 +20,10 @@ exports.index = function(req, res) {
 			} else {
 				gallery.cover = yt_utils.getImageLink(gallery.images[0], gallery._creator.imagePath);
 			}
-			if (gallery._creator.studios && gallery._creator.studios.length > 0) {
-				gallery.studio = gallery._creator.studios[0];
+			console.log('------------------------------------------');
+			console.log(gallery._creator);
+			if (gallery._creator.fromStudio) {
+				gallery.studio = gallery._creator.fromStudio;
 			}
 		}
 

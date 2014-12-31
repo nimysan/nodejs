@@ -65,6 +65,7 @@ block content
 										
 								div.form-group(class='has-feedback')
 									select#u_stuido.form-control
+										option(value='')
 										each studio in studios
 											-if (studio)
 												option(value='#{studio._id}')= studio.name
@@ -79,12 +80,12 @@ block content
 						h2 所管理的用户
 						table(class='table table-bordered table-hovered')
 							tr
-								td 用户名
-								td 用户类型
-								td 用户图片空间名字
-								td 来自于（影楼）
-								td 用户创建时间
-								td 已付费
+								th 用户名
+								th 用户类型
+								th 用户图片空间名字
+								th 来自于（影楼）
+								th 用户创建时间
+								th 已付费
 							each item in users
 								tr.user_detail(user_id='#{item._id}')
 									td.u-login-id #{item.loginId}
@@ -94,9 +95,9 @@ block content
 										td.u-role 普通用户
 										
 									td.u-image-path #{item.imagePath}
-									- if (item.studios && item.studios.length>0)
-										td.u-studio 
-											a(href='#{item.studios[0].link}',target='_blank') #{item.studios[0].name}
+									- if (item.fromStudio )
+										td.u-studio(studio_id='#{item.fromStudio._id}') 
+											a(href='#{item.fromStudio.link}',target='_blank') #{item.fromStudio.name}
 									- else
 										td &nbsp;
 									td #{item.date.toDateString()}

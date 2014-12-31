@@ -20,14 +20,16 @@ exports.studio = {
 	},
 	listByUser : function(req, res) {
 		model_user.load(req.session.user_name, function(err, user) {
-			if (err) {
-				res.json({
-					err : err
-				});
-			} else {
-				res.json(user.studios);
-			}
-		});
+			model_studio.listByOwner(user, function(err, studios) {
+				if (err) {
+					res.json({
+						err : err
+					});
+				} else {
+					res.json(studios);
+				}
+			});
+		})
 	},
 	update : function(req, res) {
 		var user = req.session.user_name;

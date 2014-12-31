@@ -33,12 +33,12 @@ var userSchema = new Schema({
 		'type' : Boolean,
 		'default' : false
 	},
-	roles : [ {
-		'type' : String,
-	} ],
-	studios : [ {
+	fromStudio : {
 		type : Schema.Types.ObjectId,
 		ref : 'studios'
+	},
+	roles : [ {
+		'type' : String,
 	} ],
 	galleries : [ {
 		type : Schema.Types.ObjectId,

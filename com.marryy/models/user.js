@@ -20,17 +20,17 @@ UserDao.prototype = {
 	_hashPassword : function(salt, password) {
 		return compat.pbkdf2Sync(password, salt, 1, 32, 'sha512');
 	},
-	 queryByIds : function(ids, callback) {
+	queryByIds : function(ids, callback) {
 		 var query = this.model.find({});
-		 query.where('_id').in(ids).populate('studios').exec(function(err, data) {
+		 query.where('_id').in(ids).populate('fromStudio').exec(function(err, data) {
 			 callback(err, data);
 		 });
-	 },
+	},
 	queryByOwner : function(owner, callback) {
 		var query = this.model.find({
 			'_owner' : owner._id
 		});
-		query.populate('studios').exec(function(err, data) {
+		query.populate('fromStudio').exec(function(err, data) {
 			callback(err, data);
 		});
 	},
@@ -46,6 +46,8 @@ UserDao.prototype = {
 		if (options) {
 			merge(doc, options);
 		}
+		console.log('Create user ---- ' );
+		console.log(doc);
 		this.model.create(doc, function(err, data) {
 			callback(err, data);
 		});
@@ -79,7 +81,7 @@ UserDao.prototype = {
 	load : function(name, callback) {
 		this.model.findOne({
 			'loginId' : name
-		}).populate('galleries').populate('studios').populate('directUsers').exec(function(err, user) {
+		}).populate('galleries').populate('fromStudio').exec(function(err, user) {
 			callback(err, user);
 		});
 	},
