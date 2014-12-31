@@ -40,10 +40,6 @@ var userSchema = new Schema({
 	roles : [ {
 		'type' : String,
 	} ],
-	galleries : [ {
-		type : Schema.Types.ObjectId,
-		ref : 'galleries'
-	} ],
 	date : {
 		type : Date,
 		'default' : Date.now

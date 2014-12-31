@@ -56,6 +56,13 @@ StudioDao.prototype = {
 			callback(err, studio);
 		});
 	},
+	loadById : function(id, callback) {
+		this.model.findOne({
+			'_id' : id
+		}).exec(function(err, studio) {
+			callback(err, studio);
+		});
+	},
 	listByOwner : function(owner, callback) {
 		this.model.find({
 			'_owner' : owner._id

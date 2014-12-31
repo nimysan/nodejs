@@ -67,7 +67,7 @@ block content
 											- if (item._creator.fromStudio)
 												- var studio = item._creator.fromStudio
 												h5  来自 
-													a.strong(href='#{studio.link}',target="_blank") #{studio.name}
+													a.strong(href='/studio/#{studio._id}',target="_blank") #{studio.name}
 											- else
 												h5 没有提供影楼信息
 												

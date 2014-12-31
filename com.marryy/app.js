@@ -10,7 +10,7 @@ var express = require('express'),
 	http = require('http'), path = require('path'), 
 	pig = require('./lib/photo_gateway.js'), 
 	session = require('express-session');
-//user management
+// user management
 var user_dao = require('./models/user').user_dao;
 express.static = require('serve-static');
 var paginate = require('express-paginate');
@@ -40,7 +40,7 @@ app.use(methodOverride());
 app.use(morgan('combined'));
 
 // keep this before all routes that will use pagination
-app.use(paginate.middleware(6, 50));
+app.use(paginate.middleware(10, 50));
 
 var sessionOption = {
 	// secret : 'sean_marryy',
@@ -176,6 +176,7 @@ app.get('/admin/upyunsign', function(req, res) {
 });
 app.post('/studio', studio.create);
 app.put('/studio/:id', studio.update);
+app.get('/studio/:id', studio.show);
 app.get('/user/:userId/studios', studio.listByUser);
 // ------------------ admin routes --------------------------
 

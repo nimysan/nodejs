@@ -1,0 +1,62 @@
+extends ../layout
+block content
+	div.container
+		h1= studio.name
+		h5
+			a(href='#{studio.link}', target = '_blank')  主页连接
+		address= studio.address
+		
+		h6 联系电话(座机)  
+			abbr(title="Phone") #{studio.contactDeskPhone}
+		h6  联系电话 (手机) 
+			abbr(title="Phone") #{studio.contactMobilePhone}
+			
+		p.text-danger 拥有超过 
+			span(class='label label-info') #{userCount} 
+			名客户以及他们的
+			span(class='label label-danger') #{itemCount}
+			个相册。 
+		if paginate.hasPreviousPages || paginate.hasNextPages(pageCount)
+			.navigation.well-sm#pagination
+				ul.pager
+					if paginate.hasPreviousPages
+						li.previous
+							a(href=paginate.href(true)).prev
+								|  上一页
+							i.fa.fa-arrow-circle-left
+					if paginate.hasNextPages(pageCount)
+						li.next
+							a(href=paginate.href()).next
+								| 下一页
+							i.fa.fa-arrow-circle-right
+							
+		table(class='table table-bordered')
+			tr
+				th
+				th 相册名称
+				th 相册用户
+				th 相册被访问次数
+				th 相册欣赏链接
+			each gallery in galleries
+				tr
+					td
+						img(src="#{gallery.cover}!100", alt='...')
+					td= gallery.title
+					td= gallery._creator.displayName
+					td= gallery.meta.accesses
+					td 
+						a(href='/gallery/#{gallery._id}',alt='...') 欣赏
+			
+		if paginate.hasPreviousPages || paginate.hasNextPages(pageCount)
+			.navigation.well-sm#pagination
+				ul.pager
+					if paginate.hasPreviousPages
+						li.previous
+							a(href=paginate.href(true)).prev
+								|  上一页
+							i.fa.fa-arrow-circle-left
+					if paginate.hasNextPages(pageCount)
+						li.next
+							a(href=paginate.href()).next
+								| 下一页
+							i.fa.fa-arrow-circle-right

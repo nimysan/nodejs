@@ -109,6 +109,31 @@ GalleryDao.prototype = {
 		});
 
 	},
+	listBySingleUser : function(user, callback) {
+
+	},
+	listByAllUsers : function(users, page, perPage, callback) {
+		console.log('---------- query users ---------------');
+		var ids = [];
+		for (var i = 0; i < users.length; i++) {
+			ids.push(users[i]._id);
+		}
+		console.log(ids);
+		this.model.paginate({
+			_creator : {
+				$in : ids
+			}
+		}, page, perPage, function(error, pageCount, paginatedResults, itemCount) {
+			console.log(arguments);
+			callback(error, pageCount, paginatedResults, itemCount);
+		}, {
+			sortBy : {
+				'meta.accesses' : -1,
+			},
+			populate : '_creator'
+		});
+
+	},
 	listByTag : function(tag, page, perPage, callback) {
 		this.model.paginate({
 			tags : {

@@ -26,6 +26,13 @@ UserDao.prototype = {
 			 callback(err, data);
 		 });
 	},
+	loadByStudio : function(studio, callback){
+		this.model.find({
+			'fromStudio': studio
+		}).exec(function(err, users){
+			callback(err, users);
+		});
+	},
 	queryByOwner : function(owner, callback) {
 		var query = this.model.find({
 			'_owner' : owner._id
