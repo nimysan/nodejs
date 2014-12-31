@@ -147,7 +147,11 @@ app.route('/user/:userId').get(route_gallery.user.show).put(function(req, res, n
 app.put('/admin/password', management.user.passwordUpdate);
 app.route("/admin/login").get(function(req, res, next){
 	if(req.session.user_name){
-		res.redirect('/user/'+req.session.user_name);
+		if(req.session.user_name = 'supervisor'){
+			res.redirect('/admin/user');
+		}else{
+			res.redirect('/user/'+req.session.user_name);
+		}
 	}else{
 		next();
 	}
@@ -168,7 +172,9 @@ app.route('/admin/signup').get(function(req, res,next) {
 app.get('/admin/user', management.index);
 app.post('/admin/user/:userId', management.user.create);
 app.put('/admin/user/:userId', management.user.update);
-app.route('/admin/fileupload').get(pathFunction);
+app.get('/admin/resource/:userId', function(req, res){res.render('user/resource')});
+
+app.route('/admin/fileupload/:imagePath').get(management.user.fileupload);
 app.get('/admin/upyunsign', function(req, res) {
 	res.json({
 		sign : pig.getFromAPISign(req.query.policy)

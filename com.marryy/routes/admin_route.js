@@ -9,6 +9,7 @@
 var model_gallery = require('../models/gallery').gallery_dao;
 var model_user = require('../models/user').model_user;
 var model_studio = require('../models/studio').model_studio;
+var pig = require('../lib/photo_gateway.js');
 exports.management = {
 	index : function(req, res) {
 		if (req.session.user_name) {
@@ -84,10 +85,10 @@ exports.management = {
 				} else {
 					if (req.body.fromStudio) {
 						model_user.load(req.session.user_name, function(err, manager) {
-							model_studio.load(req.body.fromStudio, function(err, studio) {
+							model_studio.loadById(req.body.fromStudio, function(err, studio) {
 								model_user.create(req.params.userId, '123456', {
 									imagePath : req.body.imagePath,
-									role : req.body.role,
+									roles : req.body.roles,
 									fromStudio : studio,
 									_owner : manager
 								}, function(err, data) {
@@ -102,8 +103,7 @@ exports.management = {
 						model_user.load(req.session.user_name, function(err, manager) {
 							model_user.create(req.params.userId, '123456', {
 								imagePath : req.body.imagePath,
-								role : req.body.role,
-								fromStudio : req.body.fromStudio,
+								roles : req.body.roles,
 								_owner : manager
 							}, function(err, data) {
 								res.json({
@@ -137,6 +137,29 @@ exports.management = {
 				res.json({
 					err : err,
 					user : data
+				});
+			});
+		},
+		fileupload : function(req, res) {
+			var imagePath = req.params.imagePath;
+			var images = [];
+			var size = 0;
+			pig.listPictures('/' + imagePath, function(files) {
+				for (var i = 0; i < files.length; i++) {
+					var file = files[i];
+					console.log(file);
+					if ('file' === file.type) {
+						size += parseInt(file.length);
+						images.push({
+							name : file.name,
+							link : 'http://nimysan.b0.upaiyun.com' + '/' + imagePath + '/' + file.name
+						});
+					}
+				}
+				res.render('admin/fileupload', {
+					images : images,
+					size : size,
+					imagePath : imagePath
 				});
 			});
 		}

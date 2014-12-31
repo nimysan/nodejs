@@ -1,0 +1,38 @@
+extends ../layout
+
+block content
+	link(rel='stylesheet', href='/dropzone/css/basic.css')
+	link(rel='stylesheet', href='/dropzone/css/dropzone.css')
+	
+	div.container
+		input#meta_data_image_path(type='hidden', value='#{imagePath}')
+		h3 该用户总共有照片 #{images.length} 张， 
+		h3 总的空间使用量是: #{Math.round(size/1024)} KB  - #{Math.round(size/1024/1024)} MB - #{Math.round(size/1024/1024/1024)} GB
+		table(class="table table-striped table-bordered")
+			tr
+				th 图片名字
+				th 图片地址
+			each image in images
+				tr
+					td.exist-image-name= image.name
+					td= image.link
+		button(type='button', class='btn btn-info', id='uploadButton', style='margin-bottom:6px;font-weight: bold;height: 4em;') 点击这个按钮上传
+			span(class='glyphicon glyphicon-ok-upload')
+		
+		button(type='button', class='btn btn-danger', id='reseButton', style='margin-bottom:6px;font-weight: bold;height: 4em;') 重置
+			span(class='glyphicon glyphicon-ok-upload')
+	
+		div#notify(class='hide')
+		div.progress
+			div#upload_progress_bar(class="progress-bar progress-bar-success" role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100" style="width: 0%")
+				span.sr-only 0%
+								
+		form#upyunDropzone(class='dropzone dz-clickable',action='http://v0.api.upyun.com/nimysan')
+			div(class='dz-default dz-message')
+				span 把文件拖入到这里上传
+				
+		script(src='http://cdn.bootcss.com/crypto-js/3.1.2/components/core-min.js')
+		script(src='http://cdn.bootcss.com/crypto-js/3.1.2/components/md5.js')		
+		script(src='/dropzone/dropzone.upyun.min.js')
+		script(src='/js/fileupload.js')
+			

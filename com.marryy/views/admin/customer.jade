@@ -37,8 +37,6 @@ block content
 									span.sr-only Close
 								h2.modal-title 把文件拖到浏览器里面上传
 							div.modal-body
-								div(class="btn-group",data-toggle="buttons")
-									
 								button(type='button', class='btn btn-danger', id='uploadButton', style='margin-bottom:6px;width: 100%;font-weight: bold;height: 4em;') 点击这个按钮上传
 		
 									span(class='glyphicon glyphicon-ok-upload')
@@ -53,29 +51,23 @@ block content
 					div.panel-body
 						h2 新增用户
 						div(role='form', class="new_user_form")
-							div#g_form_id(type='hidden') 
-								div.form-group(class='has-feedback')
-									div.input-group
-										span(class='glyphicon glyphicon-user input-group-addon')
-										input#u_login_name(type='text', class='form-control',placeholder='给用户选择一个登录的名字，注意是登录名字',value='')
-								div.form-group(class='has-feedback')
-									div.input-group
-										span(class='glyphicon glyphicon-cloud input-group-addon')
-										input#u_image_path(type='text', class='form-control',placeholder='默认用用户登录名。用户在云空间拥有的路径，用户上传图片用',value='')
-										
-								div.form-group(class='has-feedback')
-									select#u_stuido.form-control
-										option(value='')
-										each studio in studios
-											-if (studio)
-												option(value='#{studio._id}')= studio.name
-											
-								button#u_create(type='button', class='btn btn-primary', style='margin-right: 20px;') 创建
-									span(class='glyphicon glyphicon-ok-sign')
-								button#u_create_manager(type='button', class='btn btn-danger', style='margin-right: 20px;') 创建管理者账户
-									span(class='glyphicon glyphicon-ok-sign')
-								button#u_upload_files(type='button', class='btn btn-info', style='margin-right: 20px;') 上传图片
-									span(class='glyphicon glyphicon-ok-sign')
+							form.form-horizontal
+								div#g_form_id(type='hidden') 
+									div.form-group(class='has-feedback')
+										div.input-group
+											span(class='glyphicon glyphicon-user input-group-addon')
+											input#u_login_name(type='text', class='form-control',placeholder='给用户选择一个登录的名字，注意是登录名字',value='')
+									div.form-group(class='has-feedback')
+										select#u_stuido.form-control
+											option(value='')
+											each studio in studios
+												-if (studio)
+													option(value='#{studio._id}')= studio.name
+									button#u_create(type='button', class='btn btn-primary', style='margin-right: 20px;') 创建普通用户
+										span(class='glyphicon glyphicon-ok-sign')
+									if (user && user.loginId == 'supervisor')
+										button#u_create_manager(type='button', class='btn btn-danger', style='margin-right: 20px;') 创建管理者账户
+											span(class='glyphicon glyphicon-ok-sign')
 						
 						h2 所管理的用户
 						table(class='table table-bordered table-hovered')
@@ -88,20 +80,29 @@ block content
 								th 已付费
 							each item in users
 								tr.user_detail(user_id='#{item._id}')
-									td.u-login-id #{item.loginId}
-									- if (item.roles && item.roles.length == 1 && item.roles[0] == '54917369df4773fbf217e7cf')
-										td.u-role 管理员
+									td.u-login-id
+										a(href='/admin/resource/#{item.loginId}') #{item.loginId}
+									- if (item.roles && item.roles.length == 1 && item.roles[0] == 'manager')
+										td.u-role 
+											span(class='glyphicon glyphicon-tree-conifer') 管理员
 									- else
-										td.u-role 普通用户
+										td.u-role 
+											span(class='glyphicon glyphicon-send') 普通用户
 										
-									td.u-image-path #{item.imagePath}
+									td.u-image-path 
+										a(href='/admin/fileupload/#{item.imagePath}',target='_blank') 管理用户照片
 									- if (item.fromStudio )
 										td.u-studio(studio_id='#{item.fromStudio._id}') 
 											a(href='#{item.fromStudio.link}',target='_blank') #{item.fromStudio.name}
 									- else
 										td &nbsp;
 									td #{item.date.toDateString()}
-									td.u-payed #{item.payed}
+									- if (item.payed)
+										td.u-payed 
+											span(class='glyphicon glyphicon-ok-circle')
+									- else
+										td.u-payed 
+											span(class='glyphicon glyphicon-remove-circle')
 									
 				
 			

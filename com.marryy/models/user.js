@@ -53,6 +53,8 @@ UserDao.prototype = {
 		if (options) {
 			merge(doc, options);
 		}
+		console.log('----------- Create user options ---- ' );
+		console.log(options);
 		console.log('Create user ---- ' );
 		console.log(doc);
 		this.model.create(doc, function(err, data) {

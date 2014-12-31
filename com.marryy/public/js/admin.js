@@ -5,13 +5,9 @@
 		$('#u_image_path').val($(this).val());
 	});
 
-	$('#u_upload_files').click(function() {
-		var imagePath = $('#u_image_path').val();
-		if (imagePath && imagePath.trim().length > 0) {
-			$('#file_upload_part').modal('show');
-		} else {
-			showError('请先选择一个用户，而且这个用户的图像路径必须是给定了的');
-		}
+	$('button#u_upload_files').click(function() {
+		var imagePath = $(this).attr('imagePath');
+		$('#file_upload_part').modal('show');
 	});
 	$('#u_create, #u_create_manager').click(function() {
 		var isCreateManager = $(this).attr('id') === 'u_create_manager';
@@ -132,6 +128,9 @@
 				th : '影楼网址',
 				attr : 'link'
 			}, {
+				th : '简介',
+				attr : 'desc'
+			}, {
 				th : '地址',
 				attr : 'address'
 			}, {
@@ -164,6 +163,10 @@
 					type : 'text',
 					placeHolder : '影楼名称',
 					id : 'name'
+				}, {
+					type : 'textarea',
+					placeHolder : '影楼简介',
+					id : 'desc'
 				}, {
 					type : 'text',
 					placeHolder : '影楼网址（如果有）',

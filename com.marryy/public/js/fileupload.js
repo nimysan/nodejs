@@ -7,6 +7,16 @@ $(function() {
 		api : 'http://v0.api.upyun.com/',
 		bucket : 'nimysan',
 	};
+
+	function getExistImages() {
+		var images = [];
+		$('td.exist-image-name').each(function(index, td) {
+			images.push($.trim($(td).text()));
+		});
+		return images;
+	}
+
+	var imagePath = $('#meta_data_image_path').val();
 	// Disable auto discover for all elements:
 	$(document).ready(function() {
 		var upyunDropzone = null;
@@ -24,18 +34,23 @@ $(function() {
 			},
 			// only allow images
 			acceptedFiles : 'image/*',
+			accept : function(file, done) {
+				if (this.existImages.indexOf(file.name) >= 0) {
+					done('文件已经存在了。 不需要重复上传')
+				} else {
+					done();
+					// continue;
+				}
+			},
 			// event listener
 			init : function() {
 				window.upyunDropzone = this;
-				this.on("addedfile", function(file) {
-					// console.log("Added file." + file.name);
-				});
-
+				this.existImages = getExistImages();
 				this.on("sending", function(file, xhr, formData) {
 					var options = {
 						bucket : config.bucket,
 						expiration : Math.floor(new Date().getTime() / 1000) + 86400,
-						'save-key' : $('#u_image_path').val() + '/' + file.name
+						'save-key' : imagePath + '/' + file.name
 					};
 					var policy = window.btoa(JSON.stringify(options));
 					formData.append('policy', policy);
@@ -51,6 +66,22 @@ $(function() {
 					}).done(function(result) {
 						formData.append('signature', result.sign);
 					});
+				});
+
+				this.on('totaluploadprogress', function(progress, sentBytes, totalBytes) {
+					var pb = $('#upload_progress_bar');
+					var p = Math.round(progress);
+					pb.attr('aria-valuenow', p);
+					pb.css('width', p + '%');
+					if (progress >= 100) {
+						pb.text("恭喜你，上传完毕了");
+					} else {
+						pb.text('正在努力上传中, 进度 %' + p);
+					}
+				});
+
+				this.on('queuecomplete', function() {
+					pb.text("恭喜你，上传完毕了");
 				});
 			},
 			// translate
@@ -69,6 +100,12 @@ $(function() {
 		// page behavior
 		$('#uploadButton').click(function() {
 			window.upyunDropzone.processQueue();
+		});
+
+		// reset
+		$('#reseButton').click(function() {
+			// will remove all files and cancel the processing files
+			window.upyunDropzone.removeAllFiles(true);
 		});
 	});
 
