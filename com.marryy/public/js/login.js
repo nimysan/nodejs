@@ -7,8 +7,14 @@
 			url : '/admin/login',
 			method : 'post',
 			doneFn : function(data) {
-				showInfo('用户注册成功，请登录');
-				window.location.href = '/';
+				showInfo('恭喜你, 登录成功！');
+				if (data && data.user && data.user.role && data.user.role == 'manager') {
+					window.location.href = '/admin/user';
+				} else if (data.user.loginId == 'supervisor') {
+					window.location.href = '/admin/user';
+				} else {
+					window.location.href = '/';
+				}
 			},
 			forms : [ {
 				type : 'text',

@@ -38,7 +38,10 @@ exports.management = {
 					req.session.user_name = user.loginId;
 					// req.session.user = user;
 					res.json({
-						user : user.loginId
+						user : {
+							loginId : user.loginId,
+							role : user.roles ? user.roles[0] : ''
+						}
 					});
 				} else {
 					res.json({
