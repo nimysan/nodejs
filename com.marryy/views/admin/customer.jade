@@ -51,23 +51,56 @@ block content
 					div.panel-body
 						h2 新增用户
 						div(role='form', class="new_user_form")
-							form.form-horizontal
-								div#g_form_id(type='hidden') 
-									div.form-group(class='has-feedback')
-										div.input-group
-											span(class='glyphicon glyphicon-user input-group-addon')
-											input#u_login_name(type='text', class='form-control',placeholder='给用户选择一个登录的名字，注意是登录名字',value='')
-									div.form-group(class='has-feedback')
-										select#u_stuido.form-control
+							form.form-horizontal(id='user_form')
+								input#_id(type='hidden')
+								div.form-group
+									label(for="loginId" class="col-sm-2 control-label") 用户名
+									div.col-sm-10
+										input#loginId(type='text', class='form-control',placeholder='给用户选择一个登录的名字，注意是登录名字',value='', data-required='true', data-pattern='^[a-zA-Z0-9_]{4,36}$')
+										span#messages
+								div.form-group
+									label(for="realName" class="col-sm-2 control-label") 用户显示名称
+									div.col-sm-10
+										input#realName(type='text', class='form-control',placeholder='用户的真实姓名，可以只需要填写比如：刘先生 方便作为相册的标识',value='')
+										span#messages
+								div.form-group
+									label(for="mobile" class="col-sm-2 control-label") 手机号码
+									div.col-sm-10
+										input#mobile(type='text', class='form-control',placeholder='请务必输入正确的用户手机号，我们会以用户手机号的后六位作为用户初始密码',value='',data-required='true', data-pattern='^1[3|4|5|8][0-9]\\d{8}$')
+										span#messages
+								div.form-group
+									label(for="email" class="col-sm-2 control-label") 电子邮件
+									div.col-sm-10
+										input#email(type='email', class='form-control',placeholder='如果用户具有，请填写用户的电子邮箱地址',value='', data-pattern='^([a-zA-Z0-9_-])+@([a-zA-Z0-9_-])+(.[a-zA-Z0-9_-])+$')
+										span#messages
+								div.form-group
+									label(for="desc" class="col-sm-2 control-label")用户详细
+									div.col-sm-10
+										textarea#desc(type='text', rows='3', class='form-control',placeholder='关于对此用户的一些描述',value='')
+										span#messages
+								div.form-group
+									label(for="fromStudio" class="col-sm-2 control-label") 来自于影楼
+									div.col-sm-10
+										select#fromStudio.form-control
 											option(value='')
 											each studio in studios
 												-if (studio)
 													option(value='#{studio._id}')= studio.name
-									button#u_create(type='button', class='btn btn-primary', style='margin-right: 20px;') 创建普通用户
-										span(class='glyphicon glyphicon-ok-sign')
-									if (user && user.loginId == 'supervisor')
-										button#u_create_manager(type='button', class='btn btn-danger', style='margin-right: 20px;') 创建管理者账户
+								div.form-group
+									div(class="col-sm-offset-2 col-sm-10")
+										div.checkbox
+											label
+												input(type='checkbox',id='selfManage')
+												允许用户自己上传和管理照片
+								div.form-group
+									div(class="col-sm-offset-2 col-sm-10")
+										button#u_create(type='button', class='btn btn-primary', style='margin-right: 20px;') 创建普通用户
 											span(class='glyphicon glyphicon-ok-sign')
+										if (user && user.loginId == 'supervisor')
+											button#u_create_manager(type='button', class='btn btn-danger', style='margin-right: 20px;') 创建管理者账户
+												span(class='glyphicon glyphicon-ok-sign')
+										button#u_reset(type='button', class='btn btn-primary', style='margin-right: 20px;') 重置
+											span(class='glyphicon glyphicon-pencil')
 						
 						h2 所管理的用户
 						table(class='table table-bordered table-hovered')
@@ -78,6 +111,7 @@ block content
 								th 来自于（影楼）
 								th 用户创建时间
 								th 已付费
+								th 操作
 							each item in users
 								tr.user_detail(user_id='#{item._id}')
 									td.u-login-id
@@ -96,13 +130,16 @@ block content
 											a(href='#{item.fromStudio.link}',target='_blank') #{item.fromStudio.name}
 									- else
 										td &nbsp;
-									td #{item.date.toDateString()}
+									td #{item.date.getFullYear()+'/'+(item.date.getMonth()+1)+'/'+item.date.getDate()}
 									- if (item.payed)
 										td.u-payed 
 											span(class='glyphicon glyphicon-ok-circle')
 									- else
 										td.u-payed 
 											span(class='glyphicon glyphicon-remove-circle')
+									td
+										button.delete-user-button(type='button', data-id='#{item.loginId}', class='btn btn-danger', style='margin-right: 20px;') 
+											span(class='glyphicon glyphicon-edit')
 									
 				
 			

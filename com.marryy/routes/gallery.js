@@ -9,20 +9,20 @@ var yt_utils = require('./utils').utils;
 exports.gallery = {
 	user : {
 		show : function(req, res) {
-			model_gallery.list(req.session.user_name, function(err, data) {
-				// for (var j = 0; j < data.length; j++) {
-				// var gallery = data[j];
-				// if (gallery && gallery.images) {
-				// for (var i = 0; i < gallery.images.length; i++) {
-				// gallery.images[i] = yt_utils.getImageLink(gallery.images[i],
-				// user.imagePath);
-				// }
-				// }
-				// if (user.studios && user.studios.length > 0) {
-				// gallery.studio = user.studios[0];
-				// }
-				// }
-				res.render('user/index');
+			model_user.load(req.params.userId, function(err, data) {
+				res.format({
+					'text/html' : function() {
+						res.render('user/index');
+					},
+					'application/json' : function() {
+						delete data.hashPassword;
+						delete data.salt;
+						res.json({
+							err : err,
+							user : data
+						});
+					}
+				});
 			});
 		}
 	},

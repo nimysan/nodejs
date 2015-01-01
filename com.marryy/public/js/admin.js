@@ -9,23 +9,77 @@
 		var imagePath = $(this).attr('imagePath');
 		$('#file_upload_part').modal('show');
 	});
-	$('#u_create, #u_create_manager').click(function() {
-		var isCreateManager = $(this).attr('id') === 'u_create_manager';
-		var name = $('#u_login_name').val();
-		var user_id = $('#g_form_id').attr('user_id');
-		var studio_id = $('#u_stuido').val();
+
+	$('form#user_form').validate({
+		onKeyup : true,
+		onSubmit : true,
+		sendForm : false,
+		eachValidField : function(event, status, options) {
+			$(this).closest('div.form-group').addClass('has-feedback').removeClass('has-error').addClass('has-success');
+			$(this).closest('div').find('span.temp').remove();
+			$(this).closest('div').find('span#messages').addClass('hide');
+		},
+		eachInvalidField : function(event, status, options) {
+			$(this).closest('div.form-group').addClass('has-feedback').addClass('has-error').removeClass('has-success');
+			$(this).closest('div').append('<span class="glyphicon glyphicon-remove form-control-feedback temp" aria-hidden="true"></span>');
+			$(this).closest('div').append('<span id="' + $(this).attr('id') + 'Error" class="sr-only temp">(不能为空)</span>');
+			var log = '';
+			var fieldDescription = options.description[$(this).attr('id')];
+			if (!status.required) {
+				log = fieldDescription.required;
+			} else if (!status.pattern) {
+				log = fieldDescription.pattern;
+			} else if (!status.conditional) {
+				log = fieldDescription.conditional;
+			}
+			$(this).closest('div').find('span#messages').removeClass('hide').html(log);
+		},
+		description : {
+			loginId : {
+				required : '用户名是必需填的',
+				pattern : '用戶名只能包含  a-z, A-Z, 0-9 的数字或者下划线组成，最多18个字符'
+			},
+			mobile : {
+				required : '用户手机号码是必需填的，我们会用手机号码后六位作为默认的用户登录密码',
+				pattern : '你填写的手机号码格式不正确。请填写符合格式的中国手机号码'
+			},
+			email : {
+				pattern : '请填写正确的电子邮件格式'
+			}
+		},
+		valid : function() {
+			submitUserFrom();
+		},
+		invalid : function() {
+		}
+	});
+
+	$('#u_reset').click(function() {
+		cleanUserForm();
+	});
+
+	function submitUserFrom() {
+		var isCreateManager = $('form#user_form').data('is-manager') + '' == 'true';
+		var json = {};
+		$('form#user_form').find('input,checkbox,textarea,button,select').each(function(index, ele) {
+			if ($(ele).attr('type') == 'checkbox') {
+				json[$(ele).attr('id')] = $(ele).prop('checked');
+			} else {
+				json[$(ele).attr('id')] = $(ele).val();
+			}
+		});
+		json.imagePath = json.loginId;
+		json.roles = [ isCreateManager ? 'manager' : 'customer' ];
+		console.log(json);
+		var user_id = json._id;
 		showLoading();
 		if (user_id && user_id.length > 0) {
 			// update
 			$.ajax({
-				url : '/admin/user/' + name,
+				url : '/admin/user/' + json.loginId,
 				dataType : 'json',
 				type : 'put',
-				data : {
-					imagePath : $('#u_image_path').val(),
-					roles : [ (isCreateManager ? 'manager' : 'customer') ],
-					fromStudio : studio_id
-				}
+				data : json
 			}).done(function(result) {
 				offLoading();
 				if (result.user) {
@@ -40,14 +94,10 @@
 		} else {
 			// create
 			$.ajax({
-				url : '/admin/user/' + name,
+				url : '/admin/user/' + json.loginId,
 				dataType : 'json',
 				type : 'post',
-				data : {
-					imagePath : $('#u_image_path').val(),
-					roles : [ (isCreateManager ? 'manager' : 'customer') ],
-					fromStudio : studio_id
-				}
+				data : json
 			}).done(function(result) {
 				if (result.user) {
 					showInfo('新用户创建成功');
@@ -59,17 +109,18 @@
 				offLoading();
 			});
 		}
+	}
+
+	$('#u_create, #u_create_manager').click(function() {
+		var isCreateManager = $(this).attr('id') === 'u_create_manager';
+		$('form#user_form').data('is-manager', isCreateManager);
+		$('form#user_form').submit();
 	});
 
 	function cleanUserForm() {
-		$('#u_login_name').val('');
-		$('#u_image_path').val('');
-		// studio_id
-		$('select#u_stuido').val('');
-		// user id
-		$('#g_form_id').attr('user_id', '');
-		$('#u_create').text('创建');
-		$('#u_login_name').attr('disabled', false);
+		$('form#user_form').find('input,checkbox,textarea,select,button').each(function(index, ele) {
+			$(ele).val('').prop('checked', false);
+		});
 	}
 	// user table
 	$('tr.user_detail').click(function() {
@@ -80,14 +131,42 @@
 		} else {
 			$('tr.user_detail').removeClass('active');
 			$(this).addClass('active');
-			$('#u_login_name').val($(this).find('td.u-login-id').text());
-			$('#u_image_path').val($(this).find('td.u-image-path').text());
-			$('select#u_stuido').val($(this).find('td.u-studio').attr('studio_id'));
+			$('form#user_form').find('#u_login_name').val($(this).find('td.u-login-id').text());
+			$('form#user_form').find('select#u_stuido').val($(this).find('td.u-studio').attr('studio_id'));
 			// user id
-			$('#g_form_id').attr('user_id', $(this).attr('user_id'));
+			$('form#user_form').find('#g_form_id').attr('user_id', $(this).attr('user_id'));
 			$('#u_create').text('更新');
 			$('#u_login_name').attr('disabled', true);
 		}
+	});
+
+	$('button.delete-user-button').click(function() {
+		var id = $(this).attr('data-id');
+		showLoading();
+		$.ajax({
+			url : '/user/' + id,
+			dataType : 'json',
+			type : 'get'
+		}).done(function(result) {
+			if (result.err) {
+				showError(result.err);
+			} else {
+				// login Id is not allowed to be changed
+				$('form#user_form').find('input#loginId').attr('disabled', true);
+				$('form#user_form').find('input,checkbox,textarea,button,select').each(function(index, ele) {
+					var attr = $(ele).attr('id');
+					if (attr == 'fromStudio') {
+						$(ele).val(result.user[attr] ? result.user[attr]._id : '');
+					} else if (attr == 'selfManage') {
+						$(ele).prop('checked', 'true' === result.user[attr]);
+					} else {
+						$(ele).val(result.user[attr] || '');
+					}
+				});
+			}
+		}).always(function() {
+			offLoading();
+		});
 	});
 
 	// stuido
@@ -162,31 +241,38 @@
 				forms : [ {
 					type : 'text',
 					placeHolder : '影楼名称',
-					id : 'name'
+					id : 'name',
+					label : '影楼名称'
 				}, {
 					type : 'textarea',
 					placeHolder : '影楼简介',
-					id : 'desc'
+					id : 'desc',
+					label : '影楼简介'
 				}, {
 					type : 'text',
 					placeHolder : '影楼网址（如果有）',
-					id : 'link'
+					id : 'link',
+					label : '影楼网址'
 				}, {
 					type : 'text',
 					placeHolder : '影楼地址（如果有）',
-					id : 'address'
+					id : 'address',
+					label : '影楼地址'
 				}, {
 					type : 'text',
 					placeHolder : '影楼联系人',
-					id : 'contactName'
+					id : 'contactName',
+					label : '影楼联系人'
 				}, {
 					type : 'text',
 					placeHolder : '影楼联系电话',
-					id : 'contactDeskPhone'
+					id : 'contactDeskPhone',
+					label : '影楼联系电话'
 				}, {
 					type : 'text',
 					placeHolder : '影楼联系楼手机号码',
-					id : 'contactMobilePhone'
+					id : 'contactMobilePhone',
+					label : '影楼联系楼手机号码'
 				} ]
 			}
 		});

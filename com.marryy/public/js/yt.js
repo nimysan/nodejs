@@ -27,63 +27,7 @@
 		}, options);
 		ele.empty();
 
-		if (true) {
-			showLoading();
-			// load data part
-			$.ajax({
-				url : options.dataLoadUrl,
-				dataType : 'json',
-				type : 'get'
-			}).done(function(result) {
-				if (result.err) {
-					$(ele).text(result.err);
-				} else {
-					var data = result;
-					var options_table = _options.table || [];
-					if (options_table.length <= 0) {
-						ele.text('Please give table title configurations');
-						return;
-					}
-					var table = $('<table>').addClass('table').addClass('table-hover').addClass('table-bordered');
-					var tableThead = $('<thead>');
-					var tableTitle = $('<tr>');
-					for (var i = 0; i < options_table.length; i++) {
-						var th_options = options_table[i];
-						var td = $('<th>').text(th_options['th']);
-						td.appendTo(tableTitle);
-					}
-
-					tableTitle.appendTo(tableThead);
-					tableThead.appendTo(table);
-					var tbody = $('<tbody>');
-					for (var i = 0; i < data.length; i++) {
-						var rowData = data[i];
-						var tr = $('<tr>');
-						for (var j = 0; j < options_table.length; j++) {
-							var th_options = options_table[j];
-							var td = $('<td>').text(rowData[th_options['attr']]);
-							td.appendTo(tr);
-						}
-						tr.data('raw', rowData);
-						tr.click(function() {
-							// fillForm
-							if (ele.form) {
-								ele.form.yt({
-									action : 'refresh',
-									data : $(this).data('raw')
-								});
-							}
-						});
-						tr.appendTo(tbody);
-					}
-					tbody.appendTo(table);
-					table.prependTo(ele);
-				}
-			}).always(function() {
-				offLoading();
-			});
-		}
-		// load data part
+		
 
 		// construct form element
 		var formEle = $('<div>').attr('id', $(ele).attr('id') + '_form');
@@ -91,6 +35,63 @@
 		formEle.appendTo(ele);
 		ele.form = formEle;
 		// construct form element
+		
+		// load data part
+		showLoading();
+		// load data part
+		$.ajax({
+			url : options.dataLoadUrl,
+			dataType : 'json',
+			type : 'get'
+		}).done(function(result) {
+			if (result.err) {
+				$(ele).text(result.err);
+			} else {
+				var data = result;
+				var options_table = _options.table || [];
+				if (options_table.length <= 0) {
+					ele.text('Please give table title configurations');
+					return;
+				}
+				var table = $('<table>').addClass('table').addClass('table-hover').addClass('table-bordered');
+				var tableThead = $('<thead>');
+				var tableTitle = $('<tr>');
+				for (var i = 0; i < options_table.length; i++) {
+					var th_options = options_table[i];
+					var td = $('<th>').text(th_options['th']);
+					td.appendTo(tableTitle);
+				}
+
+				tableTitle.appendTo(tableThead);
+				tableThead.appendTo(table);
+				var tbody = $('<tbody>');
+				for (var i = 0; i < data.length; i++) {
+					var rowData = data[i];
+					var tr = $('<tr>');
+					for (var j = 0; j < options_table.length; j++) {
+						var th_options = options_table[j];
+						var td = $('<td>').text(rowData[th_options['attr']]);
+						td.appendTo(tr);
+					}
+					tr.data('raw', rowData);
+					tr.click(function() {
+						// fillForm
+						if (ele.form) {
+							ele.form.yt({
+								action : 'refresh',
+								data : $(this).data('raw')
+							});
+						}
+					});
+					tr.appendTo(tbody);
+				}
+				tbody.appendTo(table);
+				table.prependTo(ele);
+			}
+		}).always(function() {
+			offLoading();
+		});
+	
 	};
 
 	$.fn.yt = function(opt) {
@@ -108,32 +109,40 @@
 			var idHidden = $('<input data-id="_id", type="hidden">');
 			idHidden.appendTo(ele);
 			var data = options.data || {};
+			var fromHorizontal = $('<form>').addClass('form-horizontal');
 			$(options.forms).each(function(index, formE) {
-				var formDiv = $('<div>').addClass('form-group');
-				var div = $('<div>').addClass('input-group');
+				var div = $('<div/>').addClass('form-group');
+				div.appendTo(fromHorizontal);
+				if (!formE.label) {
+					formE.label = 'Label';
+				}
+				var label = $('<label for="' + ('form_' + formE.id) + '" class="col-sm-2 control-label">' + formE.label + '</label>');
+				label.appendTo(div);
 				var input = null;
 				if (formE.type === 'textarea') {
-					input = $('<textarea data-id="' + formE.id + '", type="' + formE.type + '" class="form-control" placeholder="' + formE.placeHolder + '" aria-describedby="basic-addon1">');
+					input = $('<textarea>');
 				} else {
-					input = $('<input data-id="' + formE.id + '", type="' + formE.type + '" class="form-control" placeholder="' + formE.placeHolder + '" aria-describedby="basic-addon1">');
+					input = $('<input>');
 				}
-				input.appendTo(div);
+				input.attr('data-id', formE.id).attr('type', formE.type).addClass('form-control').attr('placeholder', formE.placeHolder);
+				var inputDiv = $('<div class="col-sm-10">');
+				input.appendTo(inputDiv);
+				inputDiv.appendTo(div);
 				input.val(data[formE.id]);
-				div.appendTo(formDiv);
-				formDiv.appendTo(ele);
 			});
+
 			if (typeof data._id === 'string') {
 				idHidden.val(data._id);
 			}
 
 			var submitButton = $('<button type="submit" class="btn btn-primary yt-form-button">').text(options.submitText);
-			submitButton.appendTo(ele);
+			submitButton.appendTo(fromHorizontal);
 			var cleanButton = $('<button type="submit" class="btn btn-danger yt-form-button">').text('重置');
 			cleanButton.click(function() {
 				$(ele).find('[data-id]').val('');// clean all values
 			});
-			cleanButton.appendTo(ele);
-
+			cleanButton.appendTo(fromHorizontal);
+			fromHorizontal.appendTo(ele);
 			$(submitButton).click(function() {
 				var jsonFrom = {};
 				$(ele).find('input,textarea').each(function() {
