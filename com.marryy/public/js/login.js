@@ -19,11 +19,13 @@
 			forms : [ {
 				type : 'text',
 				placeHolder : '请输入用户名',
-				id : 'username'
+				id : 'username',
+				label : "用户名"
 			}, {
 				type : 'password',
 				placeHolder : '请输入用户密码',
-				id : 'password'
+				id : 'password',
+				label : "密码"
 			} ]
 		});
 	}

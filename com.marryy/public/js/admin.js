@@ -290,14 +290,31 @@
 					msg : '密码修改成功'
 				});
 			},
+			preSubmitFn : function(ele){
+
+				var password = $(ele).find('[data-id="password"]');
+				var password2 = $(ele).find('[data-id="password2"]');
+				if($.trim(password.val()) != $.trim(password2.val())){
+					showError('你两次输入的密码不一致');
+					return false;
+				} 
+				return true;
+			},
 			forms : [ {
 				type : 'text',
-				placeHolder : 'username',
-				id : 'loginId'
+				placeHolder : '用户名',
+				id : 'loginId',
+				label : '用户名'
 			}, {
 				type : 'password',
-				placeHolder : 'password',
-				id : 'password'
+				placeHolder : '请输入新密码',
+				id : 'password',
+				label : '新密码'
+			}, {
+				type : 'password',
+				placeHolder : '请确认你输入的新密码跟上次的密码一致',
+				id : 'password2',
+				label : '确认新密码'
 			} ]
 		});
 	}

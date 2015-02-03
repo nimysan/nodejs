@@ -2,13 +2,13 @@ extends ../layout.jade
 block content
 	div.container(class='container-body')
 		div.row
-			div.col-md-4(class='cos-sm-0')
-			div.col-md-4(class='cos-sm-12')
+			div.col-md-3(class='cos-sm-0')
+			div.col-md-6(class='cos-sm-12')
 				div(class="panel panel-info login_panel")
 					div.panel-heading
 						h2.panel-title 登录
 					div.panel-body
 						div(role='form', id="user_login_form") 
 						h3 没有帐号？ <a href="/admin/signup">注册</a>一个.
-			div.col-md-4(class='cos-sm-0')
+			div.col-md-3(class='cos-sm-0')
 			script(src='/js/login.js')			

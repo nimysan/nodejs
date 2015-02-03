@@ -135,13 +135,15 @@
 				idHidden.val(data._id);
 			}
 
+			var buttonBar = $('<div>').addClass('yt-form-button-bar');
 			var submitButton = $('<button type="submit" class="btn btn-primary yt-form-button">').text(options.submitText);
-			submitButton.appendTo(fromHorizontal);
+			submitButton.appendTo(buttonBar);
 			var cleanButton = $('<button type="submit" class="btn btn-danger yt-form-button">').text('重置');
 			cleanButton.click(function() {
 				$(ele).find('[data-id]').val('');// clean all values
 			});
-			cleanButton.appendTo(fromHorizontal);
+			cleanButton.appendTo(buttonBar);
+			buttonBar.appendTo(fromHorizontal);
 			fromHorizontal.appendTo(ele);
 			$(submitButton).click(function() {
 				var jsonFrom = {};
@@ -150,6 +152,15 @@
 					// validate
 				});
 				var fn = options.fn;
+				var preSubmitFn = options.preSubmitFn;
+				
+				if ($.isFunction(preSubmitFn)){
+					if( !preSubmitFn(ele) ){
+						//alert('pre function return false');
+						return false;
+					}
+				}
+
 				if (typeof fn == 'function') {
 					fn(ele);
 				} else {

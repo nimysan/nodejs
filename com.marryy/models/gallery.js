@@ -113,12 +113,12 @@ GalleryDao.prototype = {
 
 	},
 	listByAllUsers : function(users, page, perPage, callback) {
-		console.log('---------- query users ---------------');
+		//console.log('---------- query users ---------------');
 		var ids = [];
 		for (var i = 0; i < users.length; i++) {
 			ids.push(users[i]._id);
 		}
-		console.log(ids);
+		//console.log(ids);
 		this.model.paginate({
 			_creator : {
 				$in : ids

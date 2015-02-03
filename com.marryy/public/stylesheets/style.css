@@ -37,6 +37,10 @@ body{
 	color: red;
 }
 
+.yt-form-button-bar {
+	text-align: center;
+}
+
 .logo-container {
 	text-align: center;
 	background-color: #00a86b;

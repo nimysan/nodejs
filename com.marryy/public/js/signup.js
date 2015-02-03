@@ -12,15 +12,18 @@
 			forms : [ {
 				type : 'text',
 				placeHolder : '请选定用户名字',
-				id : 'username'
+				id : 'username',
+				label : '用户名'
 			}, {
 				type : 'password',
 				placeHolder : '请给出用户密码',
-				id : 'password'
+				id : 'password',
+				label : '密码',
 			}, {
 				type : 'password',
 				placeHolder : '请再次输入用户密码以确保你输入的的密码是你想要的',
-				id : 'password2'
+				id : 'password2',
+				label : '确认密码'
 			}  ]
 		});
 	}
