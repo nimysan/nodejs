@@ -71,8 +71,40 @@ function showPageMessage(message, trueOrFalse) {
 		$('#message').text(message).removeClass('hide').addClass('alert-danger');
 	}
 }
+
+function loadIndexPage (){
+	var galleries = jQuery.parseJSON($('#galleries_data').val());
+	if(galleries && galleries.length > 0){
+		for(var i=0; i<galleries.length; i++){
+			var gallery = galleries[i];
+
+			var ghtml = $('<div>').addClass('thumbnail');
+			var glink = $('<a>').prop('href', '/gallery/'+gallery._id);
+			var gimg = $('<img>').prop('src', gallery.cover+'!thumbnail');
+			gimg.appendTo(glink);
+			glink.appendTo(ghtml);
+			var divHtml = $('<div>').addClass('row');
+			divHtml.appendTo(ghtml);
+			var htmlContainer = null;
+			if (i < 6) {
+				htmlContainer = $('div#container-column-1');
+			} else if (i>=6 && i <12){
+				htmlContainer = $('div#container-column-2');
+			} else if (i>=12 && i<18){
+				htmlContainer = $('div#container-column-3');
+			} else {
+				htmlContainer = $('div#container-column-4');
+			}
+			ghtml.appendTo(htmlContainer);
+
+		}
+	}
+}
+
 (function($) {
 	$(document).ready(function() {
+		//render galleries to the index page --- 
+		loadIndexPage();
 		$('#carousel-banner').carousel({
 			interval : 2000
 		});
