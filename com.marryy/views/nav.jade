@@ -1,26 +1,14 @@
 block nav
-	nav(class='navbar navbar-default yt-navbar', role="navigation")
-		<div id='announcement'><span class="glyphicon glyphicon glyphicon-volume-up" aria-hidden="true"></span>【公告】2014年12月31日起，雅潼画社对外服务</div>
+	nav(class='navbar navbar-default navbar-static-top yt-navbar', role="navigation")
+		//<div id='announcement'><span class="glyphicon glyphicon glyphicon-volume-up" aria-hidden="true"></span>【公告】2014年12月31日起，雅潼画社对外服务</div>
 		div.container
 			div.container-fluid
 				div.navbar-header
-					a.navbar-brand 雅潼万象
+					a.navbar-brand(href='javascript:void(0)') 
+						h1 雅潼万象
 						
 				div(class="collapse navbar-collapse")
-					ul(class="nav navbar-nav")
-						li.active(role="presentation") <a href="/"><span class="glyphicon glyphicon glyphicon glyphicon-home" aria-hidden="true"></span>主页</a>
-						li(role="presentation") <a href="/price">产品价格</a>
+					div.navbar-right
+						div
+							h3 I'M
 					
-					ul(class="nav navbar-nav navbar-right")
-						- if (user && (user.displayName || user.loginId))
-							- var name = user.displayName || user.loginId;
-							li.active
-								- if (user.roles && user.roles.length > 0 && user.roles[0] == '54917369df4773fbf217e7cf')
-									a(href="/user/#{user.loginId}")= name
-								- else
-									a(href="/user/#{user.loginId}")= name
-								li.active <a href="/admin/logout">退出</a>
-						- else
-							li.active <a href="/admin/login">登录</a>
-							li <a href="/admin/signup">注册</a>
-							

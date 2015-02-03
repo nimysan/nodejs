@@ -1,0 +1,86 @@
+.yt-navbar {
+	min-height: 124px;
+	margin-bottom : 19px;
+}
+
+#announcement {
+	height: 30px;
+	background: #40bfc0;
+	padding: 0;
+	margin: 0;
+	border-bottom: 1px solid #89c2cb;
+	font-size: 12px;
+	color: #3c3c3c;
+	font-family: sans-serif;
+	line-height: 30px;
+	width: 100%;
+	text-align: center;
+}
+
+body{
+	/* background-color: #f54; */
+	font-family:"Microsoft YaHei",微软雅黑,"MicrosoftJhengHei",华文细黑,STHeiti,MingLiu
+}
+
+.yt-navbar {
+	margin-bottom: 0px;
+}
+
+.container-body {
+	margin-top: 20px; 
+	
+}
+
+.loading-mask {
+	
+}
+
+.yt-ads-studio {
+	font-size: 22px;
+	padding-left: 100px;
+	font-weight: bolder;
+	color: red;
+}
+
+.yt-form-button-bar {
+	text-align: center;
+}
+
+.logo-container {
+	text-align: center;
+	background-color: #00a86b;
+	padding-top: 50px;
+	padding-bottom: 50px;
+}
+
+.gallery_thumbnail {
+	display: block;
+	border: 1px solid #CCC;
+	box-shadow: 1px 1px 5px #999;
+	width: 100%;
+	height: 176px;
+}
+
+.gallary_qr_code {
+	width: 100px;
+	height: 100px;
+	float: left;
+}
+
+.gallery-button{
+	margin-right: 6px;
+}
+
+#qr{
+	width: 200px;
+	height: 200px;
+}
+
+.user-qr-code{
+	width: 200px;
+	height: 200px;
+}
+
+.copy{
+	margin-top: 40px;
+}

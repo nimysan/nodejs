@@ -23,22 +23,23 @@ block banner
 		a(class="right carousel-control", href="#carousel-banner", role="button", data-slide="next")
 			span(class="glyphicon glyphicon-chevron-right", aria-hidden="true")
 			span.sr-only Next
-			
+block search
+
 block content
 	div.container(class='container-body')
-		if paginate.hasPreviousPages || paginate.hasNextPages(pageCount)
-			.navigation.well-sm#pagination
-				ul.pager
-					if paginate.hasPreviousPages
-						li.previous
-							a(href=paginate.href(true)).prev
-								|  上一页
-							i.fa.fa-arrow-circle-left
-					if paginate.hasNextPages(pageCount)
-						li.next
-							a(href=paginate.href()).next
-								| 浏览更多相册
-							i.fa.fa-arrow-circle-right
+		//if paginate.hasPreviousPages || paginate.hasNextPages(pageCount)
+		//	.navigation.well-sm#pagination
+		//		ul.pager
+		//			if paginate.hasPreviousPages
+		//				li.previous
+		//					a(href=paginate.href(true)).prev
+		//						|  上一页
+		//					i.fa.fa-arrow-circle-left
+		//			if paginate.hasNextPages(pageCount)
+		//				li.next
+		//					a(href=paginate.href()).next
+		//						| 浏览更多相册
+		//					i.fa.fa-arrow-circle-right
 		
 		div.row
 			each item in galleries
