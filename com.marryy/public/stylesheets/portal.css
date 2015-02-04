@@ -82,3 +82,33 @@ body{
 .copy{
 	margin-top: 40px;
 }
+
+
+ /* --------image counts -------- */
+ .img-thumbnail-index {
+	position: relative;
+ }
+ .num {
+ 	font-size: 26px;
+	margin-right: 5px;
+	position: relative;
+	top: 1px;
+	font-family: Trebuchet MS;
+	background: transparent;
+	color: #FFF;
+ }
+ .image-counts-label {
+ 	position: absolute;
+	line-height: 32px;
+	height: 32px;
+	right: 0;
+	top: 20px;
+	padding: 0 10px 0 16px;
+	background-image: url(/img/image-counts.png);
+	background-repeat: no-repeat;
+	background-position: left top;
+	_filter: progid:dximagetransform.microsoft.alphaimageloader(src='/img/image-counts.png', sizingmethod='crop');
+	_background-image: none;
+	color: #fff;
+	display: block;
+ }

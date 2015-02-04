@@ -77,14 +77,26 @@ function loadIndexPage (){
 	if(galleries && galleries.length > 0){
 		for(var i=0; i<galleries.length; i++){
 			var gallery = galleries[i];
+			
+			if(gallery.images.length <=0){
+				continue;
+			}
 
 			var ghtml = $('<div>').addClass('thumbnail').addClass('img-thumbnail-index');
+			
 			var glink = $('<a>').prop('href', '/gallery/'+gallery._id);
 			var gimg = $('<img>').prop('src', gallery.cover+'!thumbnail');
 			gimg.appendTo(glink);
 			glink.appendTo(ghtml);
-			var divHtml = $('<div>').addClass('row');
+			var divHtml = $('<div>').addClass('caption');
+			var titleH = $('<h7>'+ gallery.title +'</h7>').addClass('tile-text');
+			titleH.appendTo(divHtml);
+
+			var tagH = $('<div><p class="small">ABC</p></div>');
+			tagH.appendTo(divHtml);
 			divHtml.appendTo(ghtml);
+			var countHtml = $('<div><code class="num">'+gallery.images.length +'</code><span style="margin-left:2px;margin-top:2px;">张</span></div>').addClass('image-counts-label');
+			countHtml.appendTo(ghtml);
 			var htmlContainer = null;
 			if (i < 6) {
 				htmlContainer = $('div#container-column-1');
@@ -95,6 +107,7 @@ function loadIndexPage (){
 			} else {
 				htmlContainer = $('div#container-column-4');
 			}
+
 			ghtml.appendTo(htmlContainer);
 
 		}
@@ -102,7 +115,7 @@ function loadIndexPage (){
 
 	$("img").each(function(k,img){
 			new JumpObj(img,10);
-			$(img).hover(function(){this.parentNode.parentNode.className="hover thumbnail"});
+			$(img).hover(function(){this.parentNode.parentNode.className="hover thumbnail img-thumbnail-index"});
 		});
 
 }
