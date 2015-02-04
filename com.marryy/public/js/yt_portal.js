@@ -72,6 +72,23 @@ function showPageMessage(message, trueOrFalse) {
 	}
 }
 
+
+function renderTags(gallery, container){
+	if(gallery && gallery.tags && gallery.tags.length > 0){
+		var tagsDiv = $('<div>').addClass('tags-container');
+		var tagsHtml = $('<ul>').addClass('tags');
+		tagsHtml.appendTo(tagsDiv);
+		for(var i=0; i < gallery.tags.length; i++){
+			if($.trim(gallery.tags[i]).length <=0 ){
+				continue;
+			}
+			var tag = $('<li class="tag-container"><a class="tag-link" href="/tag/gallery/'+gallery.tags[i]+'">'+gallery.tags[i]+'</a></li>');
+			tag.appendTo(tagsHtml);
+		}
+		tagsDiv.appendTo(container);
+	}
+}
+
 function loadIndexPage (){
 	var galleries = jQuery.parseJSON($('#galleries_data').val());
 	if(galleries && galleries.length > 0){
@@ -89,14 +106,27 @@ function loadIndexPage (){
 			gimg.appendTo(glink);
 			glink.appendTo(ghtml);
 			var divHtml = $('<div>').addClass('caption');
-			var titleH = $('<h7>'+ gallery.title +'</h7>').addClass('tile-text');
+			var accesses = 0;
+			if(gallery.meta && gallery.meta.accesses >0){
+				accesses = gallery.meta.accesses;
+			}
+			var titleH = $('<h4>'+gallery.title+'<span class="label label-info accesses-tag">'+ accesses +'</span></h4>')
+			//var titleH = $('<h4>'+ gallery.title +'</h4>').addClass('tile-text');
+			//var viewsH = $();
 			titleH.appendTo(divHtml);
+			//viewsH.appendTo(divHtml);
 
-			var tagH = $('<div><p class="small">ABC</p></div>');
-			tagH.appendTo(divHtml);
+			// var tagH = $('<div><p class="small">ABC</p></div>');
+			// tagH.appendTo(divHtml);
+			renderTags(gallery, divHtml);
 			divHtml.appendTo(ghtml);
 			var countHtml = $('<div><code class="num">'+gallery.images.length +'</code><span style="margin-left:2px;margin-top:2px;">张</span></div>').addClass('image-counts-label');
 			countHtml.appendTo(ghtml);
+
+			//desc
+			var desc = $('<div class="gallery-desc" style="display:none;"><p>'+gallery.desc+'</p></div>');
+			desc.appendTo(ghtml);
+
 			var htmlContainer = null;
 			if (i < 6) {
 				htmlContainer = $('div#container-column-1');
