@@ -78,7 +78,7 @@ function loadIndexPage (){
 		for(var i=0; i<galleries.length; i++){
 			var gallery = galleries[i];
 
-			var ghtml = $('<div>').addClass('thumbnail');
+			var ghtml = $('<div>').addClass('thumbnail').addClass('img-thumbnail-index');
 			var glink = $('<a>').prop('href', '/gallery/'+gallery._id);
 			var gimg = $('<img>').prop('src', gallery.cover+'!thumbnail');
 			gimg.appendTo(glink);
@@ -99,6 +99,12 @@ function loadIndexPage (){
 
 		}
 	}
+
+	$("img").each(function(k,img){
+			new JumpObj(img,10);
+			$(img).hover(function(){this.parentNode.parentNode.className="hover thumbnail"});
+		});
+
 }
 
 (function($) {
