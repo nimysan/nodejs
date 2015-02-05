@@ -110,7 +110,7 @@ function loadIndexPage (){
 			if(gallery.meta && gallery.meta.accesses >0){
 				accesses = gallery.meta.accesses;
 			}
-			var titleH = $('<h4>'+gallery.title+'<span class="label label-info accesses-tag">'+ accesses +'</span></h4>')
+			var titleH = $('<h4>'+padToFixLength(gallery.title, 10)+'</h4>');
 			//var titleH = $('<h4>'+ gallery.title +'</h4>').addClass('tile-text');
 			//var viewsH = $();
 			titleH.appendTo(divHtml);
@@ -150,10 +150,33 @@ function loadIndexPage (){
 
 }
 
+function initSearchBox(){
+
+	// create a settings object
+	var settings = {
+	  // these are required:
+	  suggestUrl: '/suggests/', // the URL that provides the data for the suggest
+	  // these are optional:
+	  instantVisualFeedback: 'all', // where the instant visual feedback should be shown, 'top', 'bottom', 'all', or 'none', default: 'all'
+	  throttleTime: 300, // the number of milliseconds before the suggest is triggered after finished input, default: 300ms
+	  extraHtml: undefined, // extra HTML code that is shown in each search suggest
+	  highlight: true, // whether matched words should be highlighted, default: true
+	  queryVisualizationHeadline: '', // A headline for the image visualization, default: empty
+	  animationSpeed: 300, // speed of the animations, default: 300ms
+	  enterCallback: undefined, // callback on what should happen when enter is pressed, default: undefined, meaning the link will be followed
+	  minChars: 3, // minimum number of characters before the suggests shows, default: 3
+	  maxWidth: 400 // the maximum width of the suggest box, default: as wide as the input box
+	};
+
+	// apply the settings to an input that should get the unibox
+	$("#index_search_box").unibox(settings);
+}
+
 (function($) {
 	$(document).ready(function() {
 		//render galleries to the index page --- 
 		loadIndexPage();
+		initSearchBox();
 		$('#carousel-banner').carousel({
 			interval : 2000
 		});

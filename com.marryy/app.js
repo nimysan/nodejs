@@ -120,6 +120,10 @@ app.get("/", routes.index, function(req, res, next) {
 	next();
 });
 
+app.get("/suggests/*", routes.suggests, function(req, res, next) {
+	next();
+});
+
 // app.get('/users', user.list);
 app.route('/user/:user/gallery').get(route_gallery.list).head(function(req, res) {
 	res.render('user/gallery_create');

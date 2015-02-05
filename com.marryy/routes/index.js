@@ -3,6 +3,33 @@
  */
 var model_gallery = require('../models/gallery').gallery_dao;
 var yt_utils = require('./utils').utils;
+exports.suggests = function(req, res){
+	//search by tag --- db.galleries.find({'tags': /海/}) //grep search
+	var suggests = {
+					  words: [
+					  ],
+					  suggests: {
+					    '': [
+					      {
+					        name: 'name', // the name of the suggest that is shown to the user
+					        image: 'http://nimysan.b0.upaiyun.com/undefined/7200213_112207695174_2.jpg!thumbnail', // optionally an image URL to show next to the suggest
+					        link: '/gallery/54a3c7bc4396440825a52aad'// optionally a URL that links to the suggested page
+					        // ... more fields that can be used with ##name## in "extraHtml" templates
+					      }
+					    ]
+					    /*,
+						'海岛': [
+					      {
+					        name: 'name', // the name of the suggest that is shown to the user
+					       image: 'http://nimysan.b0.upaiyun.com/undefined/7200213_112207695174_2.jpg!thumbnail', // optionally an image URL to show next to the suggest
+					        link: '/gallery/54a3c7bc4396440825a52aad'// optionally a URL that links to the suggested page
+					        // ... more fields that can be used with ##name## in "extraHtml" templates
+					      }
+					    ] */
+					  }
+					};
+ 	res.json(suggests);
+};
 exports.index = function(req, res) {
 	var loginId = (req.session && req.session.user) ? req.session.user.loginId : '';
 	var displayName = (req.session && req.session.user && req.session.user.displayName) ? req.session.user.displayName : loginId;

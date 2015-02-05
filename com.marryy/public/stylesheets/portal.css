@@ -83,6 +83,10 @@ body{
 	margin-top: 40px;
 }
 
+.index-search-group {
+	width : 100%;
+	margin-bottom: 32px;
+}
 
  /* --------image counts -------- */
  .img-thumbnail-index {
@@ -135,7 +139,7 @@ body{
 	line-height: 32px;
 	height: 32px;
 	right: 0;
-	top: 20px;
+	top: 30px;
 	padding: 0 10px 0 16px;
 	background-image: url(/img/image-counts.png);
 	background-repeat: no-repeat;

@@ -31,7 +31,37 @@ block banner
 
 block content
 	script(src='/js/effect/jumpOver.js')
+	script(src='/jsLib/unibox-master/js/unibox.min.js')
+	link(rel='stylesheet', href='/jsLib/unibox-master/css/unibox.min.css')
 	div.container(class='container-body')
+		//hot tags
+		div.row(style='display:none;')
+			div(class='col-sm-6 col-md-3')
+				div(class='thumbnail tile tile-wide tile-teal')
+					h1 Tweet
+			div(class='col-sm-6 col-md-3')
+				div(class='thumbnail tile  tile-wide tile-green')
+					H1 婚恋
+			div(class='col-sm-6 col-md-3')
+				div(class='thumbnail tile  tile-wide tile-orange')
+					Twtte
+			div(class='col-sm-6 col-md-3')
+				div(class='thumbnail tile tile-wide tile-amethyst')
+					Twtte
+		div.row
+			div(class='col-md-2 col-sm-12')
+
+			div(class='col-md-8 col-sm-12')
+				<span class="glyphicon glyphicon-star" aria-hidden="true"></span>
+				div(class='index-search-group')
+					div.input-group(id='unibox')
+						input(type='text', class= 'form-control', id='index_search_box')
+						div(class='input-group-btn')
+							button(class='btn btn-info btn-medium', style='margin-top: -4px;') 找
+						
+
+			div(class='col-md-2 col-sm-12')
+			
 		//if paginate.hasPreviousPages || paginate.hasNextPages(pageCount)
 		//	.navigation.well-sm#pagination
 		//		ul.pager

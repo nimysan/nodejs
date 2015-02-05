@@ -109,6 +109,10 @@ GalleryDao.prototype = {
 		});
 
 	},
+	search : function(keyword, callback){
+		var regex = new RegExp(keyword);
+		this.model.find({'tags', regex} , callback);
+	},
 	listBySingleUser : function(user, callback) {
 
 	},
