@@ -1,5 +1,5 @@
 exports.db = {
-	Url : 'mongodb://marryy:marryy123@ds045057.mongolab.com:45057/marryy'
+	Url : 'mongodb://marryy:marryy123@120.24.232.176:27018/marryy'
 };
 var mongoose = require('mongoose');
 var db = mongoose.createConnection(exports.db.Url);
