@@ -11,7 +11,7 @@
 				if (data && data.user && data.user.role && data.user.role == 'manager') {
 					window.location.href = '/admin/user';
 				} else if (data.user.loginId == 'supervisor') {
-					window.location.href = '/admin/user';
+					window.location.href = '/admin/supervisor';
 				} else {
 					window.location.href = '/';
 				}

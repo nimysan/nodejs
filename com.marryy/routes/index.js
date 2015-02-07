@@ -31,9 +31,10 @@ exports.suggests = function(req, res){
  	res.json(suggests);
 };
 exports.index = function(req, res) {
-	var loginId = (req.session && req.session.user) ? req.session.user.loginId : '';
-	var displayName = (req.session && req.session.user && req.session.user.displayName) ? req.session.user.displayName : loginId;
-
+	var loginId = (req.session && req.session.user_name) ? req.session.user_name : '';
+	//var displayName = (req.session && req.session.user && req.session.user.displayName) ? req.session.user.displayName : loginId;
+	console.log('session' + loginId);
+	console.log(req.session);
 	model_gallery.listAll(req.query.page, 24, function(err, data, pageCount, itemCount) {
 		for (var j = 0; j < data.length; j++) {
 			var gallery = data[j];
@@ -56,7 +57,7 @@ exports.index = function(req, res) {
 
 		res.render('index', {
 			loginId : loginId,
-			displayName : displayName,
+			//displayName : displayName,
 			layout : true,
 			galleries : data,
 			pageCount : pageCount,

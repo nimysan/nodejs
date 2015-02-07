@@ -204,6 +204,9 @@
                         submitButton.removeClass('disabled');
                     });
                 }
+
+                // stop submitting form
+                return false;
             });
         }
     };
@@ -232,22 +235,22 @@
     };
 
     function fixedLength(str, len, pad) {
-    	if (str == undefined || $.trim(str).length == 0){
-    		return '';
-    	}
-    	if (len<=0) {
-    		return str;
-    	}
+        if (str == undefined || $.trim(str).length == 0) {
+            return '';
+        }
+        if (len <= 0) {
+            return str;
+        }
 
-    	var pads = pad || '...';
-    	var sl = str.length;
-    	var pl = pads.length;
-    	if ((sl+pl) <= len){
-    		return str;
-    	} else {
-    		var cutl = sl+pl-len;
-    		return str.substring(0, str.length-cutl)+pads;
-    	}
+        var pads = pad || '...';
+        var sl = str.length;
+        var pl = pads.length;
+        if ((sl + pl) <= len) {
+            return str;
+        } else {
+            var cutl = sl + pl - len;
+            return str.substring(0, str.length - cutl) + pads;
+        }
 
     }
     window.padToFixLength = fixedLength;
@@ -266,9 +269,40 @@
     }
 
     window.showLoading = function(options) {
+        var mask = $('#page_mask');
+        $('#page_mask').css('display', 'block');
+        //return;
         var opt = $.extend({
             'text': '装载中...'
         }, options);
+
+        if (typeof opt.to == 'string') {
+            opt.to = $(opt.to + '');
+        }
+
+        if (opt.to == null || opt.to.size() == 0) {
+            opt.to = $('body'); //whole documents
+        }
+
+        var height = opt.to.height();
+        if (opt.minHeight && opt.minHeight > 0) {
+            if (height < opt.minHeight) {
+                height = opt.minHeight;
+            }
+        }
+
+
+        mask.prependTo(opt.to);
+        mask.css({
+            display: 'block',
+            position: 'absolute',
+            width: opt.to.width(),
+            height: height
+        });
+        var maskContent = mask.find('#page_mask_indicator');
+        maskContent.css('margin-top', (mask.height() / 2 - maskContent.height() / 2) + 'px');
+        mask.find('.page-mask-text').text(opt.text);
+        return;
         if ($(opt.to).size() > 0) {
             $(opt.to).isLoading(opt);
         } else {
@@ -277,6 +311,11 @@
     };
 
     window.offLoading = function(options) {
+        var mask = $('#page_mask');
+        mask.css('display', 'none');;
+        $('#mask_container').empty().prepend(mask);
+
+        return;
         var opt = $.extend({}, options);
         if ($(opt.to).size() > 0) {
             $(opt.to).isLoading('hide');

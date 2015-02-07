@@ -5,21 +5,26 @@ block nav
 			div.container(style='width:100%;')
 				//div.container-fluid
 				div.navbar-header
-					a.navbar-brand(href='http://www.marryy.com', alt="雅潼万象")
+					a.navbar-brand(href='/', alt="雅潼万象")
 						span.text-danger 雅
-						span 潼
-						span 万
-						span 象
+						span.text-info 潼
+						span.muted-text .
+						span(style='font-size:16px;') 万
+						span(style='font-size:16px;') 象
 							
 				div(class="collapse navbar-collapse pull-right")
 					ul(class='nav navbar-nav')
 						li.active
-							
-							a(class='navbar-link', href='/user/profile') 
-								span(class='glyphicon glyphicon-user') 234aini@gmail.com
+							//h3 #{JSON.stringify(user)}
+							if user.realName && user.realName.length > 0
+								a(class='navbar-link', href='/user/profile') 
+									span(class='glyphicon glyphicon-user') #{user.realName}
+							else
+								a(class='navbar-link', href='/admin/login') 
+									span(class='glyphicon glyphicon-user') 登录
 						li
 							
-							a(class='navbar-link', href='/user/profile') 
+							a(class='navbar-link', href='/admin/logout') 
 								span(class='glyphicon glyphicon-log-out') 退出
 											
 							

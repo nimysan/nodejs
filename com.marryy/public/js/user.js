@@ -21,8 +21,8 @@
 		});
 		oDiv.attr('src', $(obj).attr('src'));
 		$(oDiv).css("height", picH + "px").css("width", picW + "px").css({
-			top : picTop + 2,
-			left : picLeft + 2
+			top: picTop + 2,
+			left: picLeft + 2
 		}).appendTo($("#links"));
 		oDiv.data('rel', obj);
 
@@ -48,19 +48,19 @@
 		}
 		if (id.length <= 0) {
 			$.ajax({
-				url : '/gallery',
-				dataType : 'json',
-				type : 'post',
-				data : {
-					title : title,
-					desc : desc,
-					images : selectedImages,
-					isPrivate : isPrivate,
-					question : question,
-					tags : toTagsArray($('#g_tags').val()),
-					answer : answer,
-					galleryStyle : gstyle,
-					cover : coverImg
+				url: '/gallery',
+				dataType: 'json',
+				type: 'post',
+				data: {
+					title: title,
+					desc: desc,
+					images: selectedImages,
+					isPrivate: isPrivate,
+					question: question,
+					tags: toTagsArray($('#g_tags').val()),
+					answer: answer,
+					galleryStyle: gstyle,
+					cover: coverImg
 				}
 			}).done(function(data) {
 				clearGalleryForm();
@@ -74,19 +74,19 @@
 			});
 		} else {
 			$.ajax({
-				url : '/gallery/' + id,
-				dataType : 'json',
-				type : 'put',
-				data : {
-					title : title,
-					desc : desc,
-					images : selectedImages,
-					isPrivate : isPrivate,
-					question : question,
-					tags : toTagsArray($('#g_tags').val()),
-					answer : answer,
-					galleryStyle : gstyle,
-					cover : coverImg
+				url: '/gallery/' + id,
+				dataType: 'json',
+				type: 'put',
+				data: {
+					title: title,
+					desc: desc,
+					images: selectedImages,
+					isPrivate: isPrivate,
+					question: question,
+					tags: toTagsArray($('#g_tags').val()),
+					answer: answer,
+					galleryStyle: gstyle,
+					cover: coverImg
 				}
 			}).done(function(data) {
 				clearGalleryForm();
@@ -125,11 +125,11 @@
 		if (userPhotos.length <= 0) {
 			var space = page_info.user.imagePath;
 			showLoading({
-				'text' : '正在加载你所有的照片，请稍等'
+				'text': '正在加载你所有的照片，请稍等'
 			});
 			$.ajax({
-				url : '/list/' + space,
-				dataType : 'json',
+				url: '/list/' + space,
+				dataType: 'json',
 			}).done(function(result) {
 				var linksContainer = $('#links');
 				// Add the demo images as links with thumbnails to the page:
@@ -145,8 +145,8 @@
 						}
 					});
 					$(img).draggable({
-						revert : true,
-						helper : 'clone'
+						revert: true,
+						helper: 'clone'
 					});
 					img.appendTo(linksContainer);
 				});
@@ -198,12 +198,13 @@
 	}
 
 	var selectedImages = [];
+
 	function preFllGalleryForm(galleryId) {
 		clearGalleryForm();
 		$.ajax({
-			url : '/gallery/' + galleryId,
-			dataType : 'json',
-			type : 'get'
+			url: '/gallery/' + galleryId,
+			dataType: 'json',
+			type: 'get'
 		}).done(function(data) {
 			$('#g_form_id').val(data._id);
 			$('#g_title').val(data.title);
@@ -229,29 +230,15 @@
 	}
 
 	// page initialize
-	function startSwitch() {
-		var swi = $('#gallery_primate').bootstrapSwitch();
-		$('#gallery_primate').on('switchChange.bootstrapSwitch', function() {
-			var state = $(this).bootstrapSwitch('state');
-			if (state + '' === 'false') {
-				// show question area
-				$('#gallery_question').removeClass('hide');
-			} else {
-				// hide question area
-				$('#gallery_question').addClass('hide');
-			}
-		});
-	}
-
 	function confirmDelete(closeCallback) {
 		$.messager.model = {
-			ok : {
-				text : "确认",
-				classed : 'btn-danger'
+			ok: {
+				text: "确认",
+				classed: 'btn-danger'
 			},
-			cancel : {
-				text : "取消",
-				classed : 'btn-default'
+			cancel: {
+				text: "取消",
+				classed: 'btn-default'
 			}
 		};
 		$.messager.confirm("删除相册", "你确定需要删除这个相册吗？删除之后相册的访问信息都会丢掉。如果你只是不想让人看到你的这个相册，你可以把相册设置为‘私密’. 设置为 私密 之后，只有能回答你预设的问题的人才有机会看到你的相册。 删除之后不能恢复!", function() {
@@ -260,128 +247,140 @@
 	}
 
 	function listGalleries() {
-		$('#gallery_list_row').empty();
-		// load all gallery
-		$.ajax({
-			url : '/user/' + page_info.user.loginId + '/gallery',
-			dataType : 'json',
-			type : 'get'
-		}).done(function(data) {
-			if (data && data.length > 0) {
-				$('#no_gallery').remove();
-				$('#gallery_list_row').empty();
-				$(data).each(function(index, value) {
-					if (value) {
+			showLoading({
+				to: '#gallery_list',
+				minHeight: 400
+			});
+			$('#gallery_list_row').empty();
+			// load all gallery
+			$.ajax({
+				url: '/user/' + page_info.user.loginId + '/gallery',
+				dataType: 'json',
+				type: 'get'
+			}).done(function(data) {
+				offLoading();
+				if (data && data.length > 0) {
+					$('#no_gallery').remove();
+					$('#gallery_list_row').empty();
+					$(data).each(function(index, value) {
+						if (value) {
 
-						// fill
-						// gallery
-						var overview = $('<div class="thumbnail">');
-						overview.attr('gallery-id', value._id);
-						coverSrc = value.cover + '!phone';
-						var img = $('<img src="' + coverSrc + '" alt="...">').appendTo(overview);
-						var caption = $('<div class="caption">');
-						caption.appendTo(overview);
-						if (value.isPrivate === true) {
-							$('<span class="glyphicon glyphicon-lock"></span').appendTo(caption);
-						} else {
-							// glyphicon glyphicon-heart
-							$('<span class="glyphicon glyphicon-heart"></span').appendTo(caption);
-						}
-						if (value.meta) {
-							$('<p>').text('被访问 ' + value.meta.accesses + '次').appendTo(caption); // access
-						}
-						// time
-						var opertors = $('<p>');
-						var deleteButton = $('<a href="javascript:void(0);" class="btn btn-danger gallery-button" role="button">删除</a>').attr('gallery_id', value._id);
-						deleteButton.appendTo(opertors);
-						$(deleteButton).click(function() {
-							var _this = this;
-							confirmDelete(function() {
-								$(_this).parents('div.thumbnail').each(function() {
-									var galleryId = $(this).attr('gallery-id');
-									if (typeof galleryId === 'string') {
-										$.ajax({
-											url : '/gallery/' + galleryId,
-											dataType : 'json',
-											type : 'delete'
-										}).done(function(data) {
-											if (data === null || data.err !== null) {
-												// failed to delete gallery
-												showError('因为某些原因，这个相册不能被删除');
-											} else {
-												// removed successfully
-												$('div[gallery-id="' + galleryId + '"]').remove();
-												showInfo('相册删除成功');
-												listGalleries();
-											}
-										});
-									}
+							// fill
+							// gallery
+							var overview = $('<div class="thumbnail">');
+							overview.attr('gallery-id', value._id);
+							coverSrc = value.cover + '!phone';
+							var img = $('<img src="' + coverSrc + '" alt="...">').appendTo(overview);
+							var caption = $('<div class="caption">');
+							caption.appendTo(overview);
+							if (value.isPrivate === true) {
+								$('<span class="glyphicon glyphicon-lock"></span').appendTo(caption);
+							} else {
+								// glyphicon glyphicon-heart
+								$('<span class="glyphicon glyphicon-heart"></span').appendTo(caption);
+							}
+							if (value.meta) {
+								$('<p>').text('被访问 ' + value.meta.accesses + '次').appendTo(caption); // access
+							}
+							// time
+							var opertors = $('<p>');
+							var deleteButton = $('<a href="javascript:void(0);" class="btn btn-danger btn-sm gallery-button" role="button">删除</a>').attr('gallery_id', value._id);
+							deleteButton.appendTo(opertors); 
+							$(deleteButton).click(function() {
+								var _this = this;
+								confirmDelete(function() {
+									$(_this).parents('div.thumbnail').each(function() {
+										var galleryId = $(this).attr('gallery-id');
+										if (typeof galleryId === 'string') {
+											$.ajax({
+												url: '/gallery/' + galleryId,
+												dataType: 'json',
+												type: 'delete'
+											}).done(function(data) {
+												if (data === null || data.err !== null) {
+													// failed to delete gallery
+													showError('因为某些原因，这个相册不能被删除');
+												} else {
+													// removed successfully
+													$('div[gallery-id="' + galleryId + '"]').remove();
+													showInfo('相册删除成功');
+													listGalleries();
+												}
+											});
+										}
+									});
 								});
 							});
-						});
-						var edit = $('<a href="javascript:void(0);" class="btn btn-primary gallery-button" role="button">编辑</a>').attr('gallery_id', value._id);
-						edit.appendTo(opertors);
-						$(edit).click(function() {
-							var galleryId = $(this).attr('gallery_id');
-							showLoading();
-							preFllGalleryForm(galleryId);
-						});
+							var edit = $('<a href="javascript:void(0);" class="btn btn-primary btn-sm gallery-button" role="button">编辑</a>').attr('gallery_id', value._id);
+							edit.appendTo(opertors);
+							$(edit).click(function() {
+								var galleryId = $(this).attr('gallery_id');
+								showLoading({
+									to : '.tab-content'
+								});
+								preFllGalleryForm(galleryId);
+							});
 
-						var preview = $('<a href="javascript:void(0);" class="btn btn-info gallery-button gallery-preview" role="button">查看效果</a>');
-						$(preview).click(function() {
-							window.open(window.location.origin + '/gallery/' + value._id, '_blank');
-						});
-						preview.appendTo(opertors);
+							var preview = $('<a href="javascript:void(0);" class="btn btn-info btn-sm gallery-button gallery-preview" role="button">查看</a>');
+							$(preview).click(function() {
+								window.open(window.location.origin + '/gallery/' + value._id, '_blank');
+							});
+							preview.appendTo(opertors);
 
-						opertors.appendTo(caption);
+							opertors.appendTo(caption);
 
-						$('<h3>').text(value.title).appendTo(caption);
-						$('<p>').text(value.desc).appendTo(caption);
+							$('<h6>').text(value.title).appendTo(caption);
+							$('<p>').text(value.desc).appendTo(caption);
 
-						var layout = $('<div>').addClass('col-md-4').addClass('col-xs-12');
-						layout.append(overview);
-						$('#gallery_list_row').append(layout);
-					}
-				});
-			} else {
-				$('<h2 id="no_gallery">你还没有任何相册</h2>').appendTo($('#gallery_list'));
-			}
-		});
-	}
-	// -----------------------------
+							var layout = $('<div>').addClass('col-md-6').addClass('col-xs-12');
+							layout.append(overview);
+							$('#gallery_list_row').append(layout);
+						}
+					});
+				} else {
+					$('<h3 id="no_gallery", class="text-warning">你还没有任何相册</h2>').appendTo($('#gallery_list'));
+				}
+			});
+		}
+		// -----------------------------
 	function initUserInfoForm() {
 		$('#user_info_part').yt({
-			submitText : '提交',
-			url : '/user/' + page_info.user.loginId,
-			method : 'put',
-			data : page_info.user,
-			doneFn : function() {
+			submitText: '提交',
+			url: '/user/' + page_info.user.loginId,
+			method: 'put',
+			data: page_info.user,
+			doneFn: function() {
 				$.fn.yt.tooltip({
-					'messageType' : 'success',
-					msg : '用户信息更改成功.'
+					'messageType': 'success',
+					msg: '用户信息更改成功.'
 				});
 			},
-			forms : [ {
-				type : 'text',
-				placeHolder : '用户名字，当你登录的时候显示的名字',
-				id : 'displayName'
+			forms: [{
+				type: 'text',
+				placeHolder: '用户名字，当你登录的时候显示的名字',
+				id: 'realName',
+				label: '用户名'
 			}, {
-				type : 'text',
-				placeHolder : '电子邮件地址，用户发送信息以及重置密码',
-				id : 'email'
+				type: 'text',
+				placeHolder: '电子邮件地址，用户发送信息以及重置密码',
+				id: 'email',
+				label: '邮件'
 			}, {
-				type : 'text',
-				placeHolder : '最好填写手机号码，非必需',
-				id : 'phone'
+				type: 'text',
+				placeHolder: '最好填写手机号码，非必需',
+				id: 'mobile',
+				label: '手机号码'
 			}, {
-				type : 'text',
-				placeHolder : '微信号。 用于我们向你推送一些优惠和活动信息',
-				id : 'wechat'
+				type: 'text',
+				placeHolder: '微信号。 用于我们向你推送一些优惠和活动信息',
+				id: 'wechat',
+				label: '微信号'
 			}, {
-				type : 'textarea',
-				placeHolder : '你的个人详细描述',
-				id : 'desc'
-			} ]
+				type: 'textarea',
+				placeHolder: '你的个人详细描述',
+				id: 'desc',
+				label: '更多描述'
+			}]
 		});
 	}
 
@@ -399,7 +398,7 @@
 
 	function addCoverDroppable() {
 		$('#img_cover_tagert').droppable({
-			drop : function(event, ui) {
+			drop: function(event, ui) {
 				var origurl = $(event.toElement).attr('src');
 				$(this).addClass("ui-state-highlight").prop('src', origurl).width($(event.toElement).width()).height($(event.toElement).height()).attr('origurl', $(event.toElement).attr('origurl'));
 			}
@@ -408,7 +407,6 @@
 
 	$(document).ready(function() {
 		initUserInfoForm();
-		startSwitch();
 		listGalleries();
 		addCoverDroppable();
 	});
