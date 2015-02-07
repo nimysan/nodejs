@@ -31,8 +31,8 @@ block banner
 
 block content
 	script(src='/js/effect/jumpOver.js')
-	script(src='/jsLib/unibox-master/js/unibox.min.js')
-	link(rel='stylesheet', href='/jsLib/unibox-master/css/unibox.min.css')
+	script(src='/jslib/unibox-master/js/unibox.min.js')
+	link(rel='stylesheet', href='/jslib/unibox-master/css/unibox.min.css')
 	div.container(class='container-body')
 		//hot tags
 		div.row(style='display:none;')
@@ -50,9 +50,11 @@ block content
 					Twtte
 		div.row
 			div(class='col-md-2 col-sm-12')
-
+				img(alt="雅潼万象", src="/img/yt-ico.png", style='float:right;margin-right:-20px;margin-top:16px')
+						
 			div(class='col-md-8 col-sm-12')
-				<span class="glyphicon glyphicon-star" aria-hidden="true"></span>
+				//<span class="glyphicon glyphicon-star" aria-hidden="true"></span>
+
 				div(class='index-search-group')
 					div.input-group(id='unibox')
 						input(type='text', class= 'form-control', id='index_search_box')

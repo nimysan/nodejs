@@ -102,7 +102,7 @@ function loadIndexPage (){
 			var ghtml = $('<div>').addClass('thumbnail').addClass('img-thumbnail-index');
 			
 			var glink = $('<a>').prop('href', '/gallery/'+gallery._id);
-			var gimg = $('<img>').prop('src', gallery.cover+'!thumbnail');
+			var gimg = $('<img>').prop('src', gallery.cover+'!thumbnail').addClass('gallery-cover');
 			gimg.appendTo(glink);
 			glink.appendTo(ghtml);
 			var divHtml = $('<div>').addClass('caption');
@@ -143,7 +143,7 @@ function loadIndexPage (){
 		}
 	}
 
-	$("img").each(function(k,img){
+	$("img.gallery-cover").each(function(k,img){
 			new JumpObj(img,10);
 			$(img).hover(function(){this.parentNode.parentNode.className="hover thumbnail img-thumbnail-index"});
 		});

@@ -1,14 +1,26 @@
 block nav
-	nav(class='navbar navbar-default navbar-static-top yt-navbar', role="navigation")
+	nav(class='navbar navbar-inverse yt-navbar', role="navigation")
 		//<div id='announcement'><span class="glyphicon glyphicon glyphicon-volume-up" aria-hidden="true"></span>【公告】2014年12月31日起，雅潼画社对外服务</div>
-		div.container
-			div.container-fluid
+		div.navbar-inner
+			div.container(style='width:100%;')
+				//div.container-fluid
 				div.navbar-header
-					a.navbar-brand(href='javascript:void(0)') 
-						h1 雅潼万象
-						
-				div(class="collapse navbar-collapse")
-					div.navbar-right
-						div
-							h3 I'M
-					
+					a.navbar-brand(href='http://www.marryy.com', alt="雅潼万象")
+						span.text-danger 雅
+						span 潼
+						span 万
+						span 象
+							
+				div(class="collapse navbar-collapse pull-right")
+					ul(class='nav navbar-nav')
+						li.active
+							
+							a(class='navbar-link', href='/user/profile') 
+								span(class='glyphicon glyphicon-user') 234aini@gmail.com
+						li
+							
+							a(class='navbar-link', href='/user/profile') 
+								span(class='glyphicon glyphicon-log-out') 退出
+											
+							
+											
