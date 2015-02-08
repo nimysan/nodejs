@@ -1,6 +1,9 @@
 ;
 (function(window, $) {
 	'user strict';
+	var userPhotos = [];
+	var selectedImages = [];
+	var gstyle = 'photoswipe';
 
 	function toogleMask(obj) {
 		var mask = $('div.imageChecked[src="' + $(obj).attr('src') + '"]');
@@ -28,136 +31,157 @@
 
 	}
 
-	// create or update
-	$('button#g_create').click(function() {
-		var title = $('#g_title').val();
-		var desc = $('#g_desc').val();
-		var id = $('#g_form_id').val();
-		var isPrivate = !$('#gallery_primate').bootstrapSwitch('state');
-		var question = $('#gq_desc').val();
-		var answer = $('#gq_answer').val();
-		selectedImages = [];
-		$('.image-be-checked').each(function() {
-			selectedImages.push($(this).attr('origUrl'));
+	function initGalleryForm() {
+		$('#gallery_primate').click(function(event) {
+			var checked = $(this).prop('checked');
+			checked ? $('#gallery_question').removeClass('hide') : $('#gallery_question').addClass('hide');
 		});
-		var coverImg = $('#img_cover_tagert').attr('origurl');
-		if (coverImg) {
-			if (selectedImages.indexOf(coverImg) < 0) {
-				selectedImages.push(coverImg);
+		// create or update
+		$('button#g_create').click(function() {
+			var title = $('#g_title').val();
+			var desc = $('#g_desc').val();
+			var id = $('#g_form_id').val();
+			var isPrivate = !$('#gallery_primate').bootstrapSwitch('state');
+			var question = $('#gq_desc').val();
+			var answer = $('#gq_answer').val();
+			selectedImages = [];
+			$('.image-be-checked').each(function() {
+				selectedImages.push($(this).attr('origUrl'));
+			});
+			var coverImg = $('#img_cover_tagert').attr('origurl');
+			if (coverImg) {
+				if (selectedImages.indexOf(coverImg) < 0) {
+					selectedImages.push(coverImg);
+				}
 			}
-		}
-		if (id.length <= 0) {
-			$.ajax({
-				url: '/gallery',
-				dataType: 'json',
-				type: 'post',
-				data: {
-					title: title,
-					desc: desc,
-					images: selectedImages,
-					isPrivate: isPrivate,
-					question: question,
-					tags: toTagsArray($('#g_tags').val()),
-					answer: answer,
-					galleryStyle: gstyle,
-					cover: coverImg
-				}
-			}).done(function(data) {
-				clearGalleryForm();
-				selectedImages = [];
-				if (data == null || data.err != null) {
-					showError('创建相册失败， 请重新试一下');
-				} else {
-					listGalleries();
-					showInfo('创建相册成功，你可以刷新页面以查看你的相册');
-				}
-			});
-		} else {
-			$.ajax({
-				url: '/gallery/' + id,
-				dataType: 'json',
-				type: 'put',
-				data: {
-					title: title,
-					desc: desc,
-					images: selectedImages,
-					isPrivate: isPrivate,
-					question: question,
-					tags: toTagsArray($('#g_tags').val()),
-					answer: answer,
-					galleryStyle: gstyle,
-					cover: coverImg
-				}
-			}).done(function(data) {
-				clearGalleryForm();
-				selectedImages = [];
-				if (data == null || data.err != null) {
-					showError('更新相册失败， 请重新试一下');
-				} else {
-					listGalleries();
-					showInfo('更新相册成功，你可以刷新页面以查看你的相册');
-				}
-			});
-		}
-
-	});
-
-	var userPhotos = [];
-
-	$('#selector_select_all').click(function() {
-		$('img.being_select').addClass('image-be-checked');
-		$('.image-be-checked').each(function() {
-			selectedImages.push($(this).attr('origUrl'));
-		});
-	});
-	$('#selector_unselect_all').click(function() {
-		$('img.being_select').removeClass('image-be-checked');
-		selectedImages = [];
-	});
-
-	$('button#g_img_selector').click(function() {
-		function flagSelected() {
-			$('.being_select').removeClass('image-be-checked');
-			$(selectedImages).each(function(index, url) {
-				$('.being_select[origUrl="' + url + '"]').addClass('image-be-checked');
-			});
-		}
-		if (userPhotos.length <= 0) {
-			var space = page_info.user.imagePath;
-			showLoading({
-				'text': '正在加载你所有的照片，请稍等'
-			});
-			$.ajax({
-				url: '/list/' + space,
-				dataType: 'json',
-			}).done(function(result) {
-				var linksContainer = $('#links');
-				// Add the demo images as links with thumbnails to the page:
-				userPhotos = result;
-
-				$.each(result, function(index, photo) {
-					var photoUrl = photo + '!100'; // use thumbnail
-					var img = $('<img>').addClass('being_select').css('width', '100px').css('cursor', 'pointer').css('height', 'auto').attr('origUrl', photo).prop('src', photoUrl).click(function() {
-						if ($(this).hasClass('image-be-checked')) {
-							$(this).removeClass('image-be-checked');
-						} else {
-							$(this).addClass('image-be-checked');
-						}
-					});
-					$(img).draggable({
-						revert: true,
-						helper: 'clone'
-					});
-					img.appendTo(linksContainer);
+			if (id.length <= 0) {
+				$.ajax({
+					url: '/gallery',
+					dataType: 'json',
+					type: 'post',
+					data: {
+						title: title,
+						desc: desc,
+						images: selectedImages,
+						isPrivate: isPrivate,
+						question: question,
+						tags: toTagsArray($('#g_tags').val()),
+						answer: answer,
+						galleryStyle: gstyle,
+						cover: coverImg
+					}
+				}).done(function(data) {
+					clearGalleryForm();
+					selectedImages = [];
+					if (data == null || data.err != null) {
+						showError('创建相册失败， 请重新试一下');
+					} else {
+						listGalleries();
+						showInfo('创建相册成功，你可以刷新页面以查看你的相册');
+					}
 				});
-				flagSelected();
-			}).always(function() {
-				offLoading();
+			} else {
+				$.ajax({
+					url: '/gallery/' + id,
+					dataType: 'json',
+					type: 'put',
+					data: {
+						title: title,
+						desc: desc,
+						images: selectedImages,
+						isPrivate: isPrivate,
+						question: question,
+						tags: toTagsArray($('#g_tags').val()),
+						answer: answer,
+						galleryStyle: gstyle,
+						cover: coverImg
+					}
+				}).done(function(data) {
+					clearGalleryForm();
+					selectedImages = [];
+					if (data == null || data.err != null) {
+						showError('更新相册失败， 请重新试一下');
+					} else {
+						listGalleries();
+						showInfo('更新相册成功，你可以刷新页面以查看你的相册');
+					}
+				});
+			}
+
+		});
+
+
+
+		$('#selector_select_all').click(function() {
+			$('img.being_select').addClass('image-be-checked');
+			$('.image-be-checked').each(function() {
+				selectedImages.push($(this).attr('origUrl'));
 			});
-		} else {
-			flagSelected();
-		}
-	});
+		});
+		$('#selector_unselect_all').click(function() {
+			$('img.being_select').removeClass('image-be-checked');
+			selectedImages = [];
+		});
+
+		$('button#g_img_selector').click(function() {
+			function flagSelected() {
+				$('.being_select').removeClass('image-be-checked');
+				$(selectedImages).each(function(index, url) {
+					$('.being_select[origUrl="' + url + '"]').addClass('image-be-checked');
+				});
+			}
+			if (userPhotos.length <= 0) {
+				var space = page_info.user.loginId;
+				showLoading({
+					'text': '正在加载你所有的照片，请稍等'
+				});
+				$.ajax({
+					url: '/image/list/' + space,
+					dataType: 'json',
+				}).done(function(result) {
+					if (result.err) {
+						showInfo('你还没有图片');
+					}
+					return;
+					var linksContainer = $('#links');
+					// Add the demo images as links with thumbnails to the page:
+					userPhotos = result;
+
+					$.each(result, function(index, photo) {
+						var photoUrl = photo + '!100'; // use thumbnail
+						var img = $('<img>').addClass('being_select').css('width', '100px').css('cursor', 'pointer').css('height', 'auto').attr('origUrl', photo).prop('src', photoUrl).click(function() {
+							if ($(this).hasClass('image-be-checked')) {
+								$(this).removeClass('image-be-checked');
+							} else {
+								$(this).addClass('image-be-checked');
+							}
+						});
+						$(img).draggable({
+							revert: true,
+							helper: 'clone'
+						});
+						img.appendTo(linksContainer);
+					});
+					flagSelected();
+				}).always(function() {
+					offLoading();
+				});
+			} else {
+				flagSelected();
+			}
+		});
+		$('#g_style_selector').click(function() {
+			$('#g_style_part').modal('show');
+		});
+
+
+		$('#g_style_part button').click(function() {
+			$('#g_style_part button').removeClass('btn-danger');
+			$(this).addClass('btn-danger');
+			gstyle = $(this).attr('gstyle');
+			$('#g_style_part').modal('hide');
+		});
+	}
 
 	function clearGalleryForm() {
 		$('#g_form_id').val('');
@@ -197,7 +221,7 @@
 		}
 	}
 
-	var selectedImages = [];
+
 
 	function preFllGalleryForm(galleryId) {
 		clearGalleryForm();
@@ -231,6 +255,23 @@
 
 	// page initialize
 	function confirmDelete(closeCallback) {
+		BootstrapDialog.show({
+			title: '删除相册',
+			message: '你确定需要删除这个相册吗？删除之后相册的访问信息都会丢掉。如果你只是不想让人看到你的这个相册，你可以把相册设置为‘私密’. 设置为 私密 之后，只有能回答你预设的问题的人才有机会看到你的相册。 删除之后不能恢复!',
+			buttons: [{
+				label: '取消',
+				action: function(dialog) {
+					dialog.close();
+				}
+			}, {
+				label: '确认',
+				cssClass: 'btn-warning',
+				action: function(dialog) {
+					closeCallback();
+					dialog.close();
+				}
+			}]
+		});
 		$.messager.model = {
 			ok: {
 				text: "确认",
@@ -262,9 +303,13 @@
 				if (data && data.length > 0) {
 					$('#no_gallery').remove();
 					$('#gallery_list_row').empty();
+					var container;
 					$(data).each(function(index, value) {
 						if (value) {
-
+							if (index % 2 == 0) {
+								container = $('<div class="row">');
+								$('#gallery_list_row').append(container);
+							}
 							// fill
 							// gallery
 							var overview = $('<div class="thumbnail">');
@@ -285,7 +330,7 @@
 							// time
 							var opertors = $('<p>');
 							var deleteButton = $('<a href="javascript:void(0);" class="btn btn-danger btn-sm gallery-button" role="button">删除</a>').attr('gallery_id', value._id);
-							deleteButton.appendTo(opertors); 
+							deleteButton.appendTo(opertors);
 							$(deleteButton).click(function() {
 								var _this = this;
 								confirmDelete(function() {
@@ -316,7 +361,7 @@
 							$(edit).click(function() {
 								var galleryId = $(this).attr('gallery_id');
 								showLoading({
-									to : '.tab-content'
+									to: '.tab-content'
 								});
 								preFllGalleryForm(galleryId);
 							});
@@ -329,16 +374,16 @@
 
 							opertors.appendTo(caption);
 
-							$('<h6>').text(value.title).appendTo(caption);
-							$('<p>').text(value.desc).appendTo(caption);
-
-							var layout = $('<div>').addClass('col-md-6').addClass('col-xs-12');
+							$('<h6>').text(value.title).appendTo(padToFixLength(caption, 10));
+							$('<p>').text(padToFixLength(value.desc, 10)).appendTo(caption);
+							var layout = $('<div>').addClass('col-md-6').addClass('col-xs-12').addClass('col-sm-6');
 							layout.append(overview);
-							$('#gallery_list_row').append(layout);
+							container.append(layout);
+
 						}
 					});
 				} else {
-					$('<h3 id="no_gallery", class="text-warning">你还没有任何相册</h2>').appendTo($('#gallery_list'));
+					$('<p id="no_gallery", class="text-info">你还没有任何相册,你可以在左边编辑你的相册。如果你的图片库还没有任何图片，请联系你的婚纱店管理员或者系统管理员。</p>').appendTo($('#gallery_list'));
 				}
 			});
 		}
@@ -384,17 +429,7 @@
 		});
 	}
 
-	$('#g_style_selector').click(function() {
-		$('#g_style_part').modal('show');
-	});
 
-	var gstyle = 'photoswipe';
-	$('#g_style_part button').click(function() {
-		$('#g_style_part button').removeClass('btn-danger');
-		$(this).addClass('btn-danger');
-		gstyle = $(this).attr('gstyle');
-		$('#g_style_part').modal('hide');
-	});
 
 	function addCoverDroppable() {
 		$('#img_cover_tagert').droppable({
@@ -409,5 +444,6 @@
 		initUserInfoForm();
 		listGalleries();
 		addCoverDroppable();
+		initGalleryForm();
 	});
 })(window, jQuery);

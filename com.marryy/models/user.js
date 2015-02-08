@@ -53,10 +53,6 @@ UserDao.prototype = {
 		if (options) {
 			merge(doc, options);
 		}
-		console.log('----------- Create user options ---- ' );
-		console.log(options);
-		console.log('Create user ---- ' );
-		console.log(doc);
 		this.model.create(doc, function(err, data) {
 			callback(err, data);
 		});
@@ -67,15 +63,18 @@ UserDao.prototype = {
 		this.model.findOne({
 			'loginId' : userId
 		}).exec(function(err, user) {
-			console.log(err);
 			if (options.password) {
 				options.hashPassword = that._hashPassword(user.salt, options.password);
 			}
 			if (options) {
 				delete options.password;
+				delete options._id;
 				merge(user, options);
 			}
 			user.save(function(err, data) {
+				delete data.password;
+				delete data.hashPassword;
+				delete data.salt;
 				callback(err, data);
 			});
 		});

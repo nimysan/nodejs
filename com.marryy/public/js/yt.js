@@ -107,7 +107,9 @@
         } else {
             ele.empty();
             var idHidden = $('<input data-id="_id", type="hidden">');
-            idHidden.appendTo(ele);
+            if (opt.withId === true) {
+                idHidden.appendTo(ele);
+            }
             var data = options.data || {};
             var fromHorizontal = $('<form>').addClass('form-horizontal');
             $(options.forms).each(function(index, formE) {
@@ -179,9 +181,10 @@
                     $.ajax({
                         url: url,
                         dataType: options.dataType || 'json',
-                        type: jsonFrom._id != '' ? options.method : 'post',
+                        method: (options.method && options.method.length > 0) ? options.method : 'get',
                         data: jsonFrom
                     }).done(function(result) {
+                        offLoading();
                         if (result && result.err) {
                             if ($.isFunction(options.doneErrFn)) {
                                 options.doneErrFn(result);
@@ -200,7 +203,7 @@
                         if ($.isFunction(options.alwaysFn)) {
                             options.alwaysFn(arguments);
                         }
-                        $(ele).isLoading('hide');
+                        offLoading();
                         submitButton.removeClass('disabled');
                     });
                 }
@@ -303,25 +306,25 @@
         maskContent.css('margin-top', (mask.height() / 2 - maskContent.height() / 2) + 'px');
         mask.find('.page-mask-text').text(opt.text);
         return;
-        if ($(opt.to).size() > 0) {
-            $(opt.to).isLoading(opt);
-        } else {
-            $('body').isLoading(opt);
-        }
     };
 
     window.offLoading = function(options) {
         var mask = $('#page_mask');
         mask.css('display', 'none');;
         $('#mask_container').empty().prepend(mask);
+    };
 
-        return;
-        var opt = $.extend({}, options);
-        if ($(opt.to).size() > 0) {
-            $(opt.to).isLoading('hide');
-        } else {
-            $('body').isLoading('hide');
-        }
+    window.openDialog = function(options) {
+        var opt = $.extend({
+            confirmFn: $.noop
+        }, options);
+        var dialog = $('#message_modal');
+        dialog.find('.yt-btn-confirm').click(function() {
+            opt.confirmFn(opt);
+        });
+        dialog.find('yt-dialoig-header').text(opt.header);
+        dialog.find('yt-dialoig-body').text(opt.content);
+        dialog.modal('show');
     };
 
     // 插件的defaults

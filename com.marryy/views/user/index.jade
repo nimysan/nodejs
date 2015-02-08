@@ -31,57 +31,57 @@ block content
 					div.panel-body
 						div.row
 
-							div(class='col-md-6 col-sm-12')
+							div(class='col-md-5 col-sm-12')
 								div#gallery_list
 									h5 你的相册列表
-									div.row(id='gallery_list_row')
+									div(id='gallery_list_row')
 
-							div(class='col-md-6 col-sm-12 user-gallery-form', style='border-left: 1px #9c27b0 solid;')
+							div(class='col-md-7 col-sm-12 user-gallery-form', style='border-left: 1px #9c27b0 solid;')
 								div
-									h5 相册编辑
+									h4 相册编辑
 								div(role='form', class="gallery_form")
 									div#g_form_id(type='hidden') 
 									div.form-group(class='has-feedback')
 										div.input-group
-											span(class='glyphicon glyphicon-inbox input-group-addon')
+											span(class='text-info input-group-addon') 标题
 											input#g_title(type='text', class='form-control',placeholder='相册标题,会显示给别人')
 										
 									div.form-group(class='has-feedback')
 										div.input-group
-											span(class='glyphicon glyphicon-list-alt input-group-addon')
+											span(class='text-info input-group-addon') 描述
 											textarea#g_desc(type='text',rows='3', class='form-control',placeholder='详细描述')
 									
 									div.form-group(class='has-feedback')
 										div.input-group
-											span(class='glyphicon glyphicon-list-alt input-group-addon')
+											span(class='text-info input-group-addon') 标签
 											input#g_tags(type='text', class='form-control',placeholder='相册特色的描述， 请以空格分开多个相册风格')
 									
 									div.form-group
-										div.input-group
+										div.input-group(style='margin-left: 20px;')
 											div.checkbox
 												label
-													input#gallery_primate(type="checkbox", checked=true)
+													input#gallery_primate(type="checkbox")
 													私密？	
 												
 									div#gallery_question(class='hide')
 										div.form-group(class='has-feedback')
 											div.input-group
-												span(class='glyphicon glyphicon-question-sign input-group-addon')
+												span(class='text-info input-group-addon') 谜面
 												input#gq_desc(type='text', class='form-control',placeholder='问题描述，你的访问者会看到这个问题')
 										
 										div.form-group(class='has-feedback')
 											div.input-group
-												span(class='glyphicon glyphicon-pencil input-group-addon')
+												span(class='text-info input-group-addon') 谜底
 												input#gq_answer(type='text-area', class='form-control',placeholder='你给的答案，访问者给出精确答案才能允许访问')
 									div.cover
 										h6 设置封面， 请将选择的照片拖入到封面区中
 										img#img_cover_tagert(src='/img/cover_pl.png',alt='封面。。。', class="gallery-cover-selector img-rounded")
 									div#g_all_images_part(class="collapse")
-										button#selector_select_all(type='button', class='btn btn-primary') 全选
-										button#selector_unselect_all(type='button', class='btn btn-danger') 全不选
+										button#selector_select_all(type='button', class='btn btn-primary btn-sm') 全选
+										button#selector_unselect_all(type='button', class='btn btn-danger btn-sm') 全不选
 										div#links(class='images-selector')
-										//button#selector_close(type='button', class='btn btn-primary',data-dismiss="modal") 关闭
-										//button#selector_save(type='button', class='btn btn-danger') 选定
+										//button#selector_close(type='button', class='btn btn-primary btn-sm',data-dismiss="modal") 关闭
+										//button#selector_save(type='button', class='btn btn-danger btn-sm') 选定
 																
 									button#g_img_selector(type='button', class='btn btn-success btn-sm',data-toggle="collapse", data-target="#g_all_images_part", aria-expanded="false", aria-controls="g_all_images_part") 选择图片
 										span(class='glyphicon glyphicon-cloud')
@@ -128,9 +128,9 @@ block content
 										div.caption
 											button(type='button', class='btn btn-warning',gstyle='imgeaccordion',style='width:100%') 手风琴
 														
-						
-					
-	<script src="/jquery/jquery-ui.js"></script>
+	script(src='/jquery/jquery-ui.js')
+	//script(src='/jquery/easyloader.js')
+	//script(src='/jquery/jquery.easyui.min.js')
 	script(src='/js/user.js')
 	
 	

@@ -86,6 +86,10 @@ var pathFunction = function(req, res) {
 	console.log('===> path function : ' + view);
 	res.render(view);
 }
+
+/*
+ * Global filter
+ */
 app.use(function(req, res, next) {
 	var sess = req.session;
 	if (sess.views) {
@@ -93,6 +97,8 @@ app.use(function(req, res, next) {
 	} else {
 		sess.views = 1;
 	}
+
+	//Send login user information to front-end
 	if (req.session.user_name) {
 		user_dao.load(req.session.user_name, function(err, user) {
 			var eu = {};
@@ -105,11 +111,29 @@ app.use(function(req, res, next) {
 			}
 			res.locals.user = eu;
 			next();
+			return;
 		});
 
 	} else {
+		//only get method is allowed for non-authorized access.
+		//filter req.method and req.url
+		console.log('-------------- ' + req.url);
+		if (req.method.toLowerCase() != 'get') {
+			if (['/login', '/signup', '/logout'].indexOf(req.url) < 0) {
+				if (req.is('json')) {
+					res.send({
+						err: 'please login to get this information!'
+					})
+				} else {
+					res.redirect('/login');
+				}
+
+				return;
+			}
+		}
 		res.locals.user = {};
 		next();
+		return;
 	}
 });
 
@@ -135,7 +159,7 @@ app.route('/tag/gallery/:tagId').get(route_gallery.listByTag);
 app.get('/price', pathFunction);
 
 app.route('/user/:userId').get(route_gallery.user.show).put(function(req, res, next) {
-	if (req.params.userId !== req.session.user_name) {
+	if (req.params.userId !== req.session.user_name && req.session.user_name != 'supervisor') {
 		res.json({
 			err: '你试着去更改不属于你的信息'
 		});
@@ -146,7 +170,7 @@ app.route('/user/:userId').get(route_gallery.user.show).put(function(req, res, n
 
 // ------------------ admin routes --------------------------
 app.put('/admin/password', management.user.passwordUpdate);
-app.route("/admin/login").get(function(req, res, next) {
+app.route("/login").get(function(req, res, next) {
 	if (req.session.user_name) {
 		if (req.session.user_name = 'supervisor') {
 			res.redirect('/admin/user');
@@ -154,22 +178,22 @@ app.route("/admin/login").get(function(req, res, next) {
 			res.redirect('/user/' + req.session.user_name);
 		}
 	} else {
-		next();
+		res.render('login');
 	}
-}, pathFunction).post(management.user.auth);
+}).post(management.user.auth);
 
-app.get("/admin/logout", function(req, res) {
+app.get("/logout", function(req, res) {
 	req.session.destroy(function(err) {
 		console.log('Err ' + err);
 	});
-	res.redirect('/admin/login');
+	res.redirect('/login');
 });
-app.route('/admin/signup').get(function(req, res, next) {
+app.route('/signup').get(function(req, res, next) {
 	req.session.destroy(function(err) {
 		console.log('Err ' + err);
 	});
-	next();
-}, pathFunction).post(management.user.signup);
+	res.render('signup');
+}).post(management.user.signup);
 app.get('/admin/user', management.index);
 app.post('/admin/user/:userId', management.user.create);
 app.put('/admin/user/:userId', management.user.update);
@@ -190,14 +214,20 @@ app.get('/user/:userId/studios', studio.listByUser);
 // ------------------ admin routes --------------------------
 
 // pictures list modules
-app.get('/list/:space', function(req, res) {
+app.get('/image/list/:space', function(req, res) {
 	var unique_key = req.params.space; // unique key
+	if (typeof unique_key == 'undefined' || unique_key == 'undefined') {
+		res.json({
+			err: '用户还没有图片'
+		});
+		return;
+	}
 	var links = [];
 	pig.listPictures('/' + unique_key, function(files) {
 		for (var i = 0; i < files.length; i++) {
 			var file = files[i];
 			if ('file' === file.type) {
-				links.push('http://nimysan.b0.upaiyun.com' + '/' + unique_key + '/' + file.name);
+				links.push('http://pic.marryy.com' + '/' + unique_key + '/' + file.name);
 			}
 		}
 		res.json(links);

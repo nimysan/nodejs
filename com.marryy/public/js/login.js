@@ -4,8 +4,9 @@
 		// page initialize
 		$('#user_login_form').yt({
 			submitText : '登录',
-			url : '/admin/login',
+			url : '/login',
 			method : 'post',
+			dataType : 'json',
 			doneFn : function(data) {
 				showInfo('恭喜你, 登录成功！');
 				if (data && data.user && data.user.role && data.user.role == 'manager') {

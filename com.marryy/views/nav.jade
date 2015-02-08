@@ -5,6 +5,12 @@ block nav
 			div.container(style='width:100%;')
 				//div.container-fluid
 				div.navbar-header
+					button(class="navbar-toggle collapsed", type="button", data-toggle="collapse", data-target=".yt-navbar-collapse")
+						span(class='class="sr-only"')
+						span(class="icon-bar")
+						span(class="icon-bar")
+						span(class="icon-bar")
+
 					a.navbar-brand(href='/', alt="雅潼万象")
 						span.text-danger 雅
 						span.text-info 潼
@@ -12,19 +18,23 @@ block nav
 						span(style='font-size:16px;') 万
 						span(style='font-size:16px;') 象
 							
-				div(class="collapse navbar-collapse pull-right")
+				nav(class="collapse navbar-collapse pull-right yt-navbar-collapse")
 					ul(class='nav navbar-nav')
-						li.active
-							//h3 #{JSON.stringify(user)}
-							if user.realName && user.realName.length > 0
+						//h3 #{JSON.stringify(user)}
+						if (user.loginId || user.realName)
+							li.active
 								a(class='navbar-link', href='/user/profile') 
-									span(class='glyphicon glyphicon-user') #{user.realName}
-							else
-								a(class='navbar-link', href='/admin/login') 
+									span(class='glyphicon glyphicon-user') #{user.realName || user.loginId}
+						else
+							li
+								a(class='navbar-link', href='/signup') 
+									span(class='glyphicon glyphicon-plus') 注册
+							li.active
+								a(class='navbar-link', href='/login') 
 									span(class='glyphicon glyphicon-user') 登录
 						li
 							
-							a(class='navbar-link', href='/admin/logout') 
+							a(class='navbar-link', href='/logout') 
 								span(class='glyphicon glyphicon-log-out') 退出
 											
 							

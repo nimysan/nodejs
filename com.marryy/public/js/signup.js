@@ -4,7 +4,7 @@
 		// page initialize
 		$('#user_signup_form').yt({
 			submitText : '提交注册',
-			url : '/admin/signup',
+			url : '/signup',
 			method : 'post',
 			doneFn : function(data) {
 				showInfo('用户注册成功，请登录');
