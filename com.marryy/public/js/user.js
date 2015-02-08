@@ -272,19 +272,6 @@
 				}
 			}]
 		});
-		$.messager.model = {
-			ok: {
-				text: "确认",
-				classed: 'btn-danger'
-			},
-			cancel: {
-				text: "取消",
-				classed: 'btn-default'
-			}
-		};
-		$.messager.confirm("删除相册", "你确定需要删除这个相册吗？删除之后相册的访问信息都会丢掉。如果你只是不想让人看到你的这个相册，你可以把相册设置为‘私密’. 设置为 私密 之后，只有能回答你预设的问题的人才有机会看到你的相册。 删除之后不能恢复!", function() {
-			closeCallback();
-		});
 	}
 
 	function listGalleries() {
