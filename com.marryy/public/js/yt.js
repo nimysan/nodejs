@@ -327,6 +327,20 @@
         dialog.modal('show');
     };
 
+    window.openWarning = function(title, message) {
+        BootstrapDialog.show({
+            title: title,
+            message: message,
+            buttons: [{
+                label: '确认',
+                cssClass: 'btn-warning',
+                action: function(dialog) {
+                    dialog.close();
+                }
+            }]
+        });
+    }
+
     // 插件的defaults
     $.fn.yt.defaults = {
         messageType: 'success'

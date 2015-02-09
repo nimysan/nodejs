@@ -74,6 +74,7 @@ if ('development' === app.get('env')) {
 } else if (app.get('env') === 'production') {
 	app.set('trust proxy', 1); // trust first proxy
 	app.locals.pretty = false;
+
 }
 app.use(session(sessionOption));
 app.use(express.static(path.join(__dirname, 'public')));
@@ -128,6 +129,17 @@ app.use(function(req, res, next) {
 					res.redirect('/login');
 				}
 
+				return;
+			}
+		} else {
+			if (['/user/profile'].indexOf(req.url) >= 0) {
+				if (req.is('json')) {
+					res.send({
+						err: 'please login to get this information!'
+					})
+				} else {
+					res.redirect('/login');
+				}
 				return;
 			}
 		}
@@ -234,6 +246,10 @@ app.get('/image/list/:space', function(req, res) {
 	});
 
 }); // list the file under unique key
+//general error page
+app.get('*', function(req, res) {
+	res.render('404', {});
+});
 
 http.createServer(app).listen(app.get('port'), function() {
 	console.log('Express server listening on port ' + app.get('port'));

@@ -206,3 +206,47 @@ body{
 	color: #fff;
 	display: block;
  }
+.images-selector {
+	margin-bottom: 10px;
+}
+ .img-be-selected {
+ 	position: relative;
+	width: 100px;
+	margin: 6px;
+	/* padding: 20px; */
+	vertical-align: middle;
+ }
+
+ .img-selected-indicator {
+	position: absolute;
+	line-height: 32px;
+	height: 32px;
+	right: 0;
+	top: 2px;
+	padding: 0 10px 0 16px;
+	background-image: url(/img/pickup.png);
+	background-repeat: no-repeat;
+	background-position: center center;
+	_filter: progid:dximagetransform.microsoft.alphaimageloader(src='/img/image-counts.png', sizingmethod='crop');
+	_background-image: none;
+	color: #fff;
+	display: block;
+	width: 100px;
+ }
+
+ .being-select {
+ 	opacity: 0.7;
+ }
+
+#img_cover_tagert {
+	border: 2px purple dashed;
+	margin-bottom: 10px;
+} 
+ #selector_select_all {
+ 	margin-bottom: 10px;
+ 	margin-left: 4px;
+ }
+
+ #selector_unselect_all {
+ 	margin-bottom: 10px;
+ }

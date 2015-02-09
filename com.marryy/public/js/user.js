@@ -5,30 +5,24 @@
 	var selectedImages = [];
 	var gstyle = 'photoswipe';
 
-	function toogleMask(obj) {
-		var mask = $('div.imageChecked[src="' + $(obj).attr('src') + '"]');
-		if (mask.size() > 0) {
-			mask.remove();
+	function addMask(obj) {
+		$(obj).find('img').addClass('being-select');
+		$(obj).attr('selected', 'true');
+		$(obj).find('.img-selected-indicator').css('display', 'block');
+	}
+
+	function clearMask(obj) {
+		$(obj).find('img').removeClass('being-select');
+		$(obj).removeAttr('selected');
+		$(obj).find('.img-selected-indicator').css('display', 'none');
+	}
+
+	function toogleImgMask(obj) {
+		if ($(obj).attr('selected')) {
+			clearMask(obj);
 		} else {
 			addMask(obj);
 		}
-	}
-
-	function addMask(obj) {
-		var picH = $(obj).height();
-		var picW = $(obj).width();
-		var picTop = $(obj).position().top;
-		var picLeft = $(obj).position().left;
-		var oDiv = $("<div class='imageChecked'><div id='mask' class='mask'></div></div>").click(function() {
-			$(this).remove();
-		});
-		oDiv.attr('src', $(obj).attr('src'));
-		$(oDiv).css("height", picH + "px").css("width", picW + "px").css({
-			top: picTop + 2,
-			left: picLeft + 2
-		}).appendTo($("#links"));
-		oDiv.data('rel', obj);
-
 	}
 
 	function initGalleryForm() {
@@ -36,23 +30,38 @@
 			var checked = $(this).prop('checked');
 			checked ? $('#gallery_question').removeClass('hide') : $('#gallery_question').addClass('hide');
 		});
+
+		$('#g_reset').click(function() {
+			clearGalleryForm();
+		});
 		// create or update
 		$('button#g_create').click(function() {
 			var title = $('#g_title').val();
+			if ($.trim(title) == '') {
+				//
+				openWarning('创建或更新相册', '相册标题不能为空');
+
+				return;
+			}
 			var desc = $('#g_desc').val();
 			var id = $('#g_form_id').val();
-			var isPrivate = !$('#gallery_primate').bootstrapSwitch('state');
+			var isPrivate = $('#gallery_primate').prop('checked');
 			var question = $('#gq_desc').val();
 			var answer = $('#gq_answer').val();
 			selectedImages = [];
-			$('.image-be-checked').each(function() {
-				selectedImages.push($(this).attr('origUrl'));
+			$('.img-be-selected[selected]').each(function() {
+				selectedImages.push($(this).find('img').attr('origUrl'));
 			});
 			var coverImg = $('#img_cover_tagert').attr('origurl');
 			if (coverImg) {
 				if (selectedImages.indexOf(coverImg) < 0) {
 					selectedImages.push(coverImg);
 				}
+			}
+			if (selectedImages.length == 0) {
+				//
+				openWarning('创建或更新相册', '你没有选择任何图片');
+				return;
 			}
 			if (id.length <= 0) {
 				$.ajax({
@@ -113,23 +122,21 @@
 
 
 		$('#selector_select_all').click(function() {
-			$('img.being_select').addClass('image-be-checked');
-			$('.image-be-checked').each(function() {
-				selectedImages.push($(this).attr('origUrl'));
+			$('.img-be-selected').each(function(index, d) {
+				//clearMask(d);
+				addMask(d);
 			});
 		});
 		$('#selector_unselect_all').click(function() {
-			$('img.being_select').removeClass('image-be-checked');
-			selectedImages = [];
+			$('.img-be-selected').each(function(index, d) {
+				//clearMask(d);
+				clearMask(d);
+			});
+			//selectedImages = [];
 		});
 
 		$('button#g_img_selector').click(function() {
-			function flagSelected() {
-				$('.being_select').removeClass('image-be-checked');
-				$(selectedImages).each(function(index, url) {
-					$('.being_select[origUrl="' + url + '"]').addClass('image-be-checked');
-				});
-			}
+
 			if (userPhotos.length <= 0) {
 				var space = page_info.user.loginId;
 				showLoading({
@@ -141,26 +148,27 @@
 				}).done(function(result) {
 					if (result.err) {
 						showInfo('你还没有图片');
+						return;
 					}
-					return;
 					var linksContainer = $('#links');
 					// Add the demo images as links with thumbnails to the page:
 					userPhotos = result;
 
 					$.each(result, function(index, photo) {
 						var photoUrl = photo + '!100'; // use thumbnail
-						var img = $('<img>').addClass('being_select').css('width', '100px').css('cursor', 'pointer').css('height', 'auto').attr('origUrl', photo).prop('src', photoUrl).click(function() {
-							if ($(this).hasClass('image-be-checked')) {
-								$(this).removeClass('image-be-checked');
-							} else {
-								$(this).addClass('image-be-checked');
-							}
-						});
+						var img = $('<img>').css('width', '100px').css('cursor', 'pointer').css('height', 'auto').attr('origUrl', photo).prop('src', photoUrl);
 						$(img).draggable({
 							revert: true,
 							helper: 'clone'
 						});
-						img.appendTo(linksContainer);
+						var div = $('<div">').addClass('img-be-selected');
+						div.click(function() {
+							toogleImgMask(this);
+						});
+						img.appendTo(div);
+						var selIndicator = $('<div class="img-selected-indicator"></div>').css('display', 'none');
+						selIndicator.appendTo(div);
+						div.appendTo(linksContainer);
 					});
 					flagSelected();
 				}).always(function() {
@@ -190,10 +198,33 @@
 		$('#g_tags').val('');
 		$('#gq_desc').val('');
 		$('#gq_answer').val('');
-		$('#gallery_primate').bootstrapSwitch('state', true);
+		$('#gallery_primate').prop('checked', false);
 		$('div.imageChecked').remove(); // remove all masked.
 		$('#g_style_part button').removeClass('btn-danger');
 		$('#img_cover_tagert').prop('src', '/img/cover_pl.png');
+	}
+
+	function flagSelected() {
+		$('.img-be-selected').each(function(index, d) {
+			//clearMask(d);
+			clearMask(d);
+		});
+		if (selectedImages && selectedImages.length > 0) {
+			var divs = $('.img-be-selected');
+			for (var i = 0; i < selectedImages.length; i++) {
+				var img = selectedImages[i];
+				var png = img.substring(img.lastIndexOf('/') + 1);
+				divs.each(function(index, im) {
+						var url = $(im).find('img').attr('origurl');
+						url = url.substring(url.lastIndexOf('/') + 1);
+						if (url === png) {
+							clearMask(im);
+							addMask(im);
+						}
+					})
+					//console.log(img);
+			}
+		}
 	}
 
 	function composeTags(array) {
@@ -230,17 +261,18 @@
 			dataType: 'json',
 			type: 'get'
 		}).done(function(data) {
+			offLoading();
 			$('#g_form_id').val(data._id);
 			$('#g_title').val(data.title);
 			$('#g_desc').val(data.desc);
 			$('#g_tags').val();
-			$('#gallery_primate').bootstrapSwitch('state', !data.isPrivate);
+			$('#gallery_primate').prop('checked', data.isPrivate);
 			if (data.isPrivate === true) {
 				$('#gallery_question').removeClass('hide');
 			} else {
 				$('#gallery_question').addClass('hide');
 			}
-			$('#img_cover_tagert').prop('src', data.cover + '!100').width('auto').height('auto');
+			$('#img_cover_tagert').prop('src', data.cover + '!phone').width('260').height('auto');
 			$('#g_tags').val(composeTags(data.tags));
 			$('#gq_desc').val(data.question);
 			$('#gq_answer').val(data.answer);
@@ -248,6 +280,7 @@
 			$('#g_style_part button[gstyle="' + gstyle + '"]').addClass('btn-danger');
 			selectedImages = data.images;
 			// $('button#g_img_selector').click()// click the button
+			flagSelected();
 		}).always(function() {
 			offLoading();
 		});
@@ -422,7 +455,11 @@
 		$('#img_cover_tagert').droppable({
 			drop: function(event, ui) {
 				var origurl = $(event.toElement).attr('src');
-				$(this).addClass("ui-state-highlight").prop('src', origurl).width($(event.toElement).width()).height($(event.toElement).height()).attr('origurl', $(event.toElement).attr('origurl'));
+				var showUrl = origurl.substring(0, origurl.lastIndexOf('!')) + '!phone';
+				//console.log(origurl);
+				$(this).addClass("ui-state-highlight").prop('src', showUrl).width(260).height('auto').attr('origurl', $(event.toElement).attr('origurl'));
+				addMask($('.img-be-selected img[origurl="' + origurl + '"]').parents('div.img-be-selected'));
+				event.stopPropagation();
 			}
 		});
 	}

@@ -83,13 +83,16 @@ block content
 										//button#selector_close(type='button', class='btn btn-primary btn-sm',data-dismiss="modal") 关闭
 										//button#selector_save(type='button', class='btn btn-danger btn-sm') 选定
 																
-									button#g_img_selector(type='button', class='btn btn-success btn-sm',data-toggle="collapse", data-target="#g_all_images_part", aria-expanded="false", aria-controls="g_all_images_part") 选择图片
+									button#g_img_selector(type='button', class='btn btn-info btn-sm',data-toggle="collapse", data-target="#g_all_images_part", aria-expanded="false", aria-controls="g_all_images_part") 选择图片
 										span(class='glyphicon glyphicon-cloud')
 									button#g_style_selector(type='button', class='btn btn-danger btn-sm') 选择相册显示风格
 										span(class='glyphicon glyphicon-cloud')
 										
 									button#g_create(type='button', class='btn btn-primary btn-sm') 提交
 										span(class='glyphicon glyphicon-cloud')
+
+									button#g_reset(type='button', class='btn btn-danger btn-sm') 重置
+										span(class='glyphicon glyphicon-edit')
 				
 			div#g_style_part(class="modal fade",role="dialog")
 				div.modal-dialog
@@ -98,7 +101,7 @@ block content
 							button(type="button" ,class="close" , data-dismiss="modal")
 								span(aria-hidden="true")&times;
 								span.sr-only Close
-							h2.modal-title 选择你要的相册风格
+							h5.modal-title 选择你要的相册风格
 						div.modal-body
 							div.row
 								div(class="col-xs-6 col-md-3")
@@ -106,27 +109,27 @@ block content
 										a(href='#')
 											img(src='/img/speedial.jpg')
 										div.caption
-											button(type='button', class='btn btn-warning', gstyle='speedial',style='width:100%') 九宫格
+											button(type='button', class='btn btn-sm btn-warning', gstyle='speedial',style='width:100%') 九宫格
 													
 								div(class="col-xs-6 col-md-3")
 									div.thumbnail
 										a(href='#')
 											img(src='/img/photoswipe.jpg')
 										div.caption
-											button(type='button', class='btn btn-warning',gstyle='photoswipe',style='width:100%') 左右滑动
+											button(type='button', class='btn btn-sm btn-warning',gstyle='photoswipe',style='width:100%') 左右滑动
 								div(class="col-xs-6 col-md-3")
 									div.thumbnail
 										a(href='#')
 											img(src='/img/photoswipe.jpg')
 										div.caption
-											button(type='button', class='btn btn-warning',gstyle='blueimp',style='width:100%') Blueimp
+											button(type='button', class='btn btn-sm btn-warning',gstyle='blueimp',style='width:100%') Blueimp
 													
 								div(class="col-xs-6 col-md-3")
 									div.thumbnail
 										a(href='#')
 											img(src='/img/galleryview.jpg')
 										div.caption
-											button(type='button', class='btn btn-warning',gstyle='imgeaccordion',style='width:100%') 手风琴
+											button(type='button', class='btn btn-warning btn-sm',gstyle='imgeaccordion',style='width:100%') 手风琴
 														
 	script(src='/jquery/jquery-ui.js')
 	//script(src='/jquery/easyloader.js')
