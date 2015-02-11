@@ -7,6 +7,7 @@ var express = require('express'),
 	route_gallery = require('./routes/gallery').gallery,
 	studio = require('./routes/studio').studio,
 	management = require('./routes/admin_route').management,
+	filter = require('./routes/authFilter').filter,
 	http = require('http'),
 	path = require('path'),
 	pig = require('./lib/photo_gateway.js'),
@@ -91,63 +92,7 @@ var pathFunction = function(req, res) {
 /*
  * Global filter
  */
-app.use(function(req, res, next) {
-	var sess = req.session;
-	if (sess.views) {
-		sess.views++;
-	} else {
-		sess.views = 1;
-	}
-
-	//Send login user information to front-end
-	if (req.session.user_name) {
-		user_dao.load(req.session.user_name, function(err, user) {
-			var eu = {};
-			for (var a in user) {
-				if ('string' === typeof user[a]) {
-					if (['password', 'hashPassword', 'salt'].indexOf(a) < 0) {
-						eu[a] = user[a];
-					}
-				}
-			}
-			res.locals.user = eu;
-			next();
-			return;
-		});
-
-	} else {
-		//only get method is allowed for non-authorized access.
-		//filter req.method and req.url
-		console.log('-------------- ' + req.url);
-		if (req.method.toLowerCase() != 'get') {
-			if (['/login', '/signup', '/logout'].indexOf(req.url) < 0) {
-				if (req.is('json')) {
-					res.send({
-						err: 'please login to get this information!'
-					})
-				} else {
-					res.redirect('/login');
-				}
-
-				return;
-			}
-		} else {
-			if (['/user/profile'].indexOf(req.url) >= 0) {
-				if (req.is('json')) {
-					res.send({
-						err: 'please login to get this information!'
-					})
-				} else {
-					res.redirect('/login');
-				}
-				return;
-			}
-		}
-		res.locals.user = {};
-		next();
-		return;
-	}
-});
+app.use(filter.permission);
 
 app.get("/", routes.index, function(req, res, next) {
 	next();
@@ -222,6 +167,7 @@ app.get('/admin/upyunsign', function(req, res) {
 app.post('/studio', studio.create);
 app.put('/studio/:id', studio.update);
 app.get('/studio/:id', studio.show);
+app.delete('/studio/:id', studio.delete);
 app.get('/user/:userId/studios', studio.listByUser);
 // ------------------ admin routes --------------------------
 

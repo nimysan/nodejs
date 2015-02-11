@@ -14,41 +14,41 @@ var UserDao = function(db, model) {
 };
 
 UserDao.prototype = {
-	_generateSalt : function() {
+	_generateSalt: function() {
 		return crypto.randomBytes(128).toString('base64');
 	},
-	_hashPassword : function(salt, password) {
+	_hashPassword: function(salt, password) {
 		return compat.pbkdf2Sync(password, salt, 1, 32, 'sha512');
 	},
-	queryByIds : function(ids, callback) {
-		 var query = this.model.find({});
-		 query.where('_id').in(ids).populate('fromStudio').exec(function(err, data) {
-			 callback(err, data);
-		 });
+	queryByIds: function(ids, callback) {
+		var query = this.model.find({});
+		query.where('_id').in(ids).populate('fromStudio').exec(function(err, data) {
+			callback(err, data);
+		});
 	},
-	loadByStudio : function(studio, callback){
+	loadByStudio: function(studio, callback) {
 		this.model.find({
 			'fromStudio': studio
-		}).exec(function(err, users){
+		}).exec(function(err, users) {
 			callback(err, users);
 		});
 	},
-	queryByOwner : function(owner, callback) {
+	queryByOwner: function(owner, callback) {
 		var query = this.model.find({
-			'_owner' : owner._id
+			'_owner': owner._id
 		});
 		query.populate('fromStudio').exec(function(err, data) {
 			callback(err, data);
 		});
 	},
-	create : function(name, password, options, callback) {
+	create: function(name, password, options, callback) {
 		var _model = this.model;
 		var salt = this._generateSalt();
 		var hashPassword = this._hashPassword(salt, password);
 		var doc = {
-			loginId : name,
-			hashPassword : hashPassword,
-			salt : salt
+			loginId: name,
+			hashPassword: hashPassword,
+			salt: salt
 		};
 		if (options) {
 			merge(doc, options);
@@ -57,12 +57,17 @@ UserDao.prototype = {
 			callback(err, data);
 		});
 	},
-	update : function(userId, options, callback) {
+	update: function(userId, options, callback) {
 		var that = this;
 		var _model = this.model;
+		console.log('---try to query useri d ' + userId);
 		this.model.findOne({
-			'loginId' : userId
+			'loginId': userId
 		}).exec(function(err, user) {
+			if (err || user == null) {
+				callback('用户名不存在。', callback);
+				return;
+			}
 			if (options.password) {
 				options.hashPassword = that._hashPassword(user.salt, options.password);
 			}
@@ -79,25 +84,25 @@ UserDao.prototype = {
 			});
 		});
 	},
-	exists : function(username, fn) {
+	exists: function(username, fn) {
 		this.model.count({
-			'loginId' : username
+			'loginId': username
 		}, function(err, count) {
 			fn(err, count);
 		})
 	},
-	load : function(name, callback) {
+	load: function(name, callback) {
 		this.model.findOne({
-			'loginId' : name
+			'loginId': name
 		}).populate('galleries').populate('fromStudio').exec(function(err, user) {
 			callback(err, user);
 		});
 	},
-	authenticate : function(name, pass, callback) {
+	authenticate: function(name, pass, callback) {
 		console.log('authenticating %s:%s', name, pass);
 		var _that = this;
 		this.model.findOne({
-			'loginId' : name
+			'loginId': name
 		}, function(err, user) {
 			if (user) {
 				if (err) {

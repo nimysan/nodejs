@@ -40,7 +40,7 @@
         showLoading();
         // load data part
         $.ajax({
-            url: options.dataLoadUrl,
+            url: _options.dataLoadUrl,
             dataType: 'json',
             type: 'get'
         }).done(function(result) {
@@ -61,7 +61,7 @@
                     var td = $('<th>').text(th_options['th']);
                     td.appendTo(tableTitle);
                 }
-
+                $('<th>').appendTo(tableTitle);
                 tableTitle.appendTo(tableThead);
                 tableThead.appendTo(table);
                 var tbody = $('<tbody>');
@@ -83,8 +83,47 @@
                             });
                         }
                     });
+                    var buttonBar = $('<td>');
+                    var deleteButton = $('<button class="btn btn-danger btn-sm yt-table-button">删除</btn>');
+                    deleteButton.appendTo(buttonBar);
+                    deleteButton.click(function() {
+                        BootstrapDialog.show({
+                            title: '雅潼万象',
+                            message: '你确定需要删除吗？',
+                            buttons: [{
+                                label: '取消',
+                                action: function(dialog) {
+                                    dialog.close();
+                                }
+                            }, {
+                                label: '确认',
+                                cssClass: 'btn-warning',
+                                action: function(dialog) {
+                                    dialog.close();
+                                    $.ajax({
+                                        url: _options.deleteUrl + '/' + rowData._id,
+
+                                        type: 'delete'
+                                    }).done(function() {
+                                        tr.remove();
+                                        offLoading();
+                                    }).always(function() {
+                                        offLoading();
+                                    });
+                                }
+                            }]
+                        });
+                    });
+                    var editButton = $('<button class="btn btn-info btn-sm yt-table-button">编辑</btn>');
+                    editButton.appendTo(buttonBar);
+                    editButton.click(function() {
+                        var id = rowData._id;
+
+                    });
+                    buttonBar.appendTo(tr);
                     tr.appendTo(tbody);
                 }
+
                 tbody.appendTo(table);
                 table.prependTo(ele);
             }
@@ -104,6 +143,7 @@
                 $(ele).val(data[$(ele).attr('data-id')]); // include _id
                 // attribute
             });
+            $(ele).attr('_id', data._id);
         } else {
             ele.empty();
             var idHidden = $('<input data-id="_id", type="hidden">');
@@ -143,11 +183,12 @@
             var cleanButton = $('<button type="submit" class="btn btn-danger yt-form-button">').text('重置');
             cleanButton.click(function() {
                 $(ele).find('[data-id]').val(''); // clean all values
+                return false;
             });
             cleanButton.appendTo(buttonBar);
             buttonBar.appendTo(fromHorizontal);
             fromHorizontal.appendTo(ele);
-            $(submitButton).click(function() {
+            $(submitButton).click(function(event) {
                 var jsonFrom = {};
                 $(ele).find('input,textarea').each(function() {
                     jsonFrom[$(this).attr('data-id')] = $(this).val();
@@ -167,21 +208,26 @@
                     fn(ele);
                 } else {
                     // loading plugin - http://hekigan.github.io/is-loading/
-                    var url = '';
-                    if ($.isFunction(options.urlFn)) {
-                        url = options.urlFn(jsonFrom);
-                    } else {
-                        url = options.url;
-                    }
-                    // comply with REST style
+                    // var url = '';
+                    function getUrl() {
+                            if ($.isFunction(options.urlFn)) {
+                                if ($(ele).attr('_id')) {
+                                    jsonFrom['_id'] = $(ele).attr('_id');
+                                }
+                                url = options.urlFn(jsonFrom);
+                            } else {
+                                url = options.url;
+                            }
+                        }
+                        // comply with REST style
                     submitButton.addClass('disabled');
                     showLoading({
                         to: ele
                     });
                     $.ajax({
-                        url: url,
+                        url: getUrl(),
                         dataType: options.dataType || 'json',
-                        method: (options.method && options.method.length > 0) ? options.method : 'get',
+                        method: 'post',
                         data: jsonFrom
                     }).done(function(result) {
                         offLoading();

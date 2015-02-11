@@ -134,7 +134,9 @@
 			});
 			//selectedImages = [];
 		});
-
+		$('#full_screen').click(function() {
+			$('.user-gallery-form').fullScreen(true);
+		})
 		$('button#g_img_selector').click(function() {
 
 			if (userPhotos.length <= 0) {

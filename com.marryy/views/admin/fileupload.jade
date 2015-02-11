@@ -6,9 +6,12 @@ block content
 	
 	div.container
 		input#meta_data_image_path(type='hidden', value='#{imagePath}')
-		h3 该用户总共有照片 #{images.length} 张， 
-		h3 总的空间使用量是: #{Math.round(size/1024)} KB  - #{Math.round(size/1024/1024)} MB - #{Math.round(size/1024/1024/1024)} GB
-		table(class="table table-striped table-bordered")
+		h5 该用户总共有照片 
+			span.text-info #{images.length} 
+			张， 
+		h6 总的空间使用量是: 
+			span.text-danger #{Math.round(size/1024)} KB  - #{Math.round(size/1024/1024)} MB - #{Math.round(size/1024/1024/1024)} GB
+		table(class="table table-striped table-bordered", id="image_table")
 			tr
 				th 图片名字
 				th 图片地址

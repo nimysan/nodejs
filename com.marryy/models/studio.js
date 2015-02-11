@@ -9,11 +9,11 @@ var StudioDao = function(db, model) {
 };
 
 StudioDao.prototype = {
-	create : function(user, options, callback) {
+	create: function(user, options, callback) {
 		var _that = this.model;
 		model_user.load(user, function(err, userData) {
 			var doc = {
-				_owner : userData._id
+				_owner: userData._id
 			};
 			if (options) {
 				delete options._id;
@@ -26,7 +26,7 @@ StudioDao.prototype = {
 				}
 				studios.push(data._id);
 				model_user.update(userData.loginId, {
-					'studios' : studios
+					'studios': studios
 				}, function(err, data) {
 					if (err) {
 						console.log('create studio error due to save to uesr error !');
@@ -36,10 +36,10 @@ StudioDao.prototype = {
 			});
 		});
 	},
-	update : function(user, id, options, callback) {
+	update: function(user, id, options, callback) {
 		var _model = this.model;
 		this.model.findOne({
-			'_id' : id
+			'_id': id
 		}).exec(function(err, studio) {
 			if (options) {
 				merge(studio, options);
@@ -49,23 +49,32 @@ StudioDao.prototype = {
 			});
 		});
 	},
-	load : function(name, callback) {
+	load: function(name, callback) {
+
 		this.model.findOne({
-			'name' : name
+			'name': name
 		}).exec(function(err, studio) {
 			callback(err, studio);
 		});
 	},
-	loadById : function(id, callback) {
+	delete: function(id, callback) {
+		console.log('---------- trying to delete ' + id);
+		this.model.findOneAndRemove({
+			_id: id
+		}, function(err, data) {
+			callback(err, data);
+		});
+	},
+	loadById: function(id, callback) {
 		this.model.findOne({
-			'_id' : id
+			'_id': id
 		}).exec(function(err, studio) {
 			callback(err, studio);
 		});
 	},
-	listByOwner : function(owner, callback) {
+	listByOwner: function(owner, callback) {
 		this.model.find({
-			'_owner' : owner._id
+			'_owner': owner._id
 		}).exec(function(err, studios) {
 			callback(err, studios);
 		});

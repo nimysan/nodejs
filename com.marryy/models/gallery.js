@@ -11,9 +11,9 @@ var GalleryDao = function(db, model) {
 };
 
 GalleryDao.prototype = {
-	create : function(user, options, callback) {
+	create: function(user, options, callback) {
 		var doc = {
-			_creator : user._id
+			_creator: user._id
 		};
 		if (options) {
 			merge(doc, options);
@@ -23,29 +23,28 @@ GalleryDao.prototype = {
 			callback(err, data);
 		});
 	},
-	update : function(user, id, options, callback) {
+	update: function(user, id, options, callback) {
 		var _model = this.model;
 		this.model.findOne({
-			'_id' : id
+			'_id': id
 		}).exec(function(err, gallery) {
 			if (options) {
 				merge(gallery, options);
 			}
 			gallery.save(function(err, data) {
-				console.log(err);
 				callback(err, data);
 			});
 		});
 	},
-	vote : function(id, callback) {
+	vote: function(id, callback) {
 		var _model = this.model;
 		this.model.findOne({
-			'_id' : id
+			'_id': id
 		}).exec(function(err, gallery) {
 			// increment meta votes
 			if (gallery.meta == null) {
 				gallery.meta = {
-					votes : 1
+					votes: 1
 				}
 			} else {
 				if (gallery.meta.votes == null) {
@@ -60,26 +59,30 @@ GalleryDao.prototype = {
 			});
 		});
 	},
-	load : function(id, callback) {
+	load: function(id, callback) {
 		this.model.findOne({
-			'_id' : id
+			'_id': id
 		}).populate('_creator').exec(function(err, gallery) {
-			model_user.load(gallery._creator.loginId, function(uerr, creator) {
-				gallery._creator = creator;
-				callback(err, gallery);
-			});
+			if (gallery) {
+				callback("can't find the gallery with " + id, gallery);
+			} else {
+				model_user.load(gallery._creator.loginId, function(uerr, creator) {
+					gallery._creator = creator;
+					callback(err, gallery);
+				});
+			}
 		});
 	},
-	list : function(user, callback) {
+	list: function(user, callback) {
 		this.model.find({
-			_creator : user._id
+			_creator: user._id
 		}).sort('-date').exec(function(err, data) {
 			callback(err, data);
 		});
 	},
-	listAll : function(page, perPage, callback) {
+	listAll: function(page, perPage, callback) {
 		this.model.paginate({
-			isPrivate : false
+			isPrivate: false
 		}, page, perPage, function(error, pageCount, paginatedResults, itemCount) {
 			var userList = [];
 			for (var i = 0; i < paginatedResults.length; i++) {
@@ -102,21 +105,23 @@ GalleryDao.prototype = {
 				callback(error, paginatedResults, pageCount, itemCount);
 			});
 		}, {
-			sortBy : {
-				'meta.accesses' : -1,
+			sortBy: {
+				'meta.accesses': -1,
 			},
-			populate : '_creator'
+			populate: '_creator'
 		});
 
 	},
-	search : function(keyword, callback){
+	search: function(keyword, callback) {
 		var regex = new RegExp(keyword);
-		this.model.find({'tags' : regex} , callback);
+		this.model.find({
+			'tags': regex
+		}, callback);
 	},
-	listBySingleUser : function(user, callback) {
+	listBySingleUser: function(user, callback) {
 
 	},
-	listByAllUsers : function(users, page, perPage, callback) {
+	listByAllUsers: function(users, page, perPage, callback) {
 		//console.log('---------- query users ---------------');
 		var ids = [];
 		for (var i = 0; i < users.length; i++) {
@@ -124,26 +129,26 @@ GalleryDao.prototype = {
 		}
 		//console.log(ids);
 		this.model.paginate({
-			_creator : {
-				$in : ids
+			_creator: {
+				$in: ids
 			}
 		}, page, perPage, function(error, pageCount, paginatedResults, itemCount) {
 			console.log(arguments);
 			callback(error, pageCount, paginatedResults, itemCount);
 		}, {
-			sortBy : {
-				'meta.accesses' : -1,
+			sortBy: {
+				'meta.accesses': -1,
 			},
-			populate : '_creator'
+			populate: '_creator'
 		});
 
 	},
-	listByTag : function(tag, page, perPage, callback) {
+	listByTag: function(tag, page, perPage, callback) {
 		this.model.paginate({
-			tags : {
-				$in : [ tag ]
+			tags: {
+				$in: [tag]
 			},
-			'isPrivate' : false
+			'isPrivate': false
 		}, page, perPage, function(error, pageCount, paginatedResults, itemCount) {
 			var userList = [];
 			for (var i = 0; i < paginatedResults.length; i++) {
@@ -166,23 +171,23 @@ GalleryDao.prototype = {
 				callback(error, paginatedResults, pageCount, itemCount);
 			});
 		}, {
-			sortBy : {
-				'meta.accesses' : -1,
+			sortBy: {
+				'meta.accesses': -1,
 			},
-			populate : '_creator'
+			populate: '_creator'
 		});
 
 	},
-	remove : function(id, callback) {
+	remove: function(id, callback) {
 		this.model.findOneAndRemove({
-			_id : id
+			_id: id
 		}, function(err, data) {
 			callback(err, data);
 		});
 	},
-	exists : function(username, fn) {
+	exists: function(username, fn) {
 		this.model.count({
-			'name' : username
+			'name': username
 		}, function(err, count) {
 			console.log("Model search error " + typeof err + " - " + count);
 			fn(err, count);

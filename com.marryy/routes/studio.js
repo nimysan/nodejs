@@ -8,7 +8,7 @@ var model_studio = require('../models/studio').model_studio;
 var yt_utils = require('./utils').utils;
 
 exports.studio = {
-	show : function(req, res) {
+	show: function(req, res) {
 		model_studio.loadById(req.params.id, function(err, studio) {
 			model_user.loadByStudio(studio, function(err, users) {
 				model_gallery.listByAllUsers(users, req.query.page, req.query.limit, function(err, pageCount, galleries, itemCount) {
@@ -34,34 +34,34 @@ exports.studio = {
 					}
 					// gallery
 					res.render('studio/index', {
-						studio : studio,
-						userCount : userCount,
-						galleryCount : galleries.length,
-						galleries : galleries,
-						pageCount : pageCount,
-						itemCount : itemCount
+						studio: studio,
+						userCount: userCount,
+						galleryCount: galleries.length,
+						galleries: galleries,
+						pageCount: pageCount,
+						itemCount: itemCount
 					});
 				})
 
 			})
 		});
 	},
-	create : function(req, res) {
+	create: function(req, res) {
 		var user = req.session.user_name;
 		console.log('rq ' + req.session.user_name);
 		model_studio.create(user, req.body, function(err, data) {
 			res.json({
-				err : err,
-				data : data
+				err: err,
+				data: data
 			});
 		});
 	},
-	listByUser : function(req, res) {
+	listByUser: function(req, res) {
 		model_user.load(req.session.user_name, function(err, user) {
 			model_studio.listByOwner(user, function(err, studios) {
 				if (err) {
 					res.json({
-						err : err
+						err: err
 					});
 				} else {
 					res.json(studios);
@@ -69,13 +69,22 @@ exports.studio = {
 			});
 		})
 	},
-	update : function(req, res) {
+	update: function(req, res) {
 		var user = req.session.user_name;
 		var id = req.params.id;
 		model_studio.update(req.session.user_name, id, req.body, function(err, data) {
 			res.json({
-				err : err,
-				data : data
+				err: err,
+				data: data
+			});
+		});
+	},
+	delete: function(req, res) {
+		var id = req.params.id;
+		model_studio.delete(id, function(err, data) {
+			res.json({
+				err: err,
+				data: data
 			});
 		});
 	}
