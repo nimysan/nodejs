@@ -4,6 +4,7 @@
 
 var model_gallery = require('../models/gallery').gallery_dao;
 var model_user = require('../models/user').model_user;
+
 var yt_utils = require('./utils').utils;
 
 exports.gallery = {
@@ -144,7 +145,6 @@ exports.gallery = {
 				}
 			});
 			var gallery = gd;
-			console.log('===== ' +gd);
 			var user = (req.session && req.session.user_name) ? req.session.user_name : null;
 			if (gallery.isPrivate == true) {
 				if (user == null) {
@@ -167,7 +167,6 @@ exports.gallery = {
 					gallery.images[i] = yt_utils.getImageLink(gallery.images[i], gallery._creator.imagePath);
 				}
 			}
-			console.log('----- ' + gallery);
 			if (gallery && gallery.cover) {
 				gallery.cover = yt_utils.getImageLink(gallery.cover, gallery._creator.imagePath);
 			} else {

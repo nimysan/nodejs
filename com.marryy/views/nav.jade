@@ -24,7 +24,7 @@ block nav
 						if (user.loginId || user.realName)
 							li.active
 								- var user_link = '/user/profile'
-								if (user.roles || user.roles.indexOf('manager')>=0)
+								if (user.roles && user.roles.indexOf('manager')>=0)
 									- user_link = '/admin/user'
 								a(class='navbar-link', href='#{user_link}') 
 									span(class='glyphicon glyphicon-user') #{user.realName || user.loginId}

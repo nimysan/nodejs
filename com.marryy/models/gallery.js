@@ -5,6 +5,7 @@ var merge = require('utils-merge');
 var models = require('./schema').models;
 var db = models.db;
 var model_user = require('./user').model_user;
+var model_studio = require('./studio').model_studio;
 var GalleryDao = function(db, model) {
 	this.db = db;
 	this.model = model;
@@ -63,11 +64,12 @@ GalleryDao.prototype = {
 		this.model.findOne({
 			'_id': id
 		}).populate('_creator').exec(function(err, gallery) {
-			if (gallery) {
+			if (err) {
 				callback("can't find the gallery with " + id, gallery);
 			} else {
-				model_user.load(gallery._creator.loginId, function(uerr, creator) {
-					gallery._creator = creator;
+				model_studio.loadById(gallery._creator.fromStudio, function(err, studio) {
+					console.log('----------- ' + studio);
+					gallery.studio = studio;
 					callback(err, gallery);
 				});
 			}

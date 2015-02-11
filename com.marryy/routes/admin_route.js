@@ -85,17 +85,20 @@ exports.management = {
 						'err': '用户已经存在了'
 					});
 				} else {
+					var userContent = {};
+					for (var attr in req.body) {
+						if (attr != '_id') {
+							userContent[attr] = req.body[attr];
+						}
+					}
 					if (req.body.fromStudio) {
 						model_user.load(req.session.user_name, function(err, manager) {
 							model_studio.loadById(req.body.fromStudio, function(err, studio) {
-								model_user.create(req.params.userId, '123456', {
-									imagePath: req.body.imagePath,
-									roles: req.body.roles,
-									fromStudio: studio,
-									_owner: manager
-								}, function(err, data) {
+								userContent.fromStudio = studio;
+								userContent._owner = manager;
+								model_user.create(req.params.userId, '123456', userContent, function(err, data) {
 									res.json({
-										err: err ? '创建用户失败。' : '',
+										err: err ? err + '创建用户失败。' : '',
 										user: data
 									});
 								});
@@ -109,7 +112,7 @@ exports.management = {
 								_owner: manager
 							}, function(err, data) {
 								res.json({
-									err: err ? '创建用户失败。' : '',
+									err: err ? err + '创建用户失败。' : '',
 									user: data
 								});
 							});
