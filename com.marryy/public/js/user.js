@@ -34,6 +34,11 @@
 		$('#g_reset').click(function() {
 			clearGalleryForm();
 		});
+		var marrySelect = $('#g_marry_type');
+		for (var m in data_marries) {
+			var option = $('<option>').text(data_marries[m] + '-' + m).val(data_marries[m]);
+			option.appendTo(marrySelect);
+		}
 		// create or update
 		$('button#g_create').click(function() {
 			var title = $('#g_title').val();
@@ -77,6 +82,7 @@
 						tags: toTagsArray($('#g_tags').val()),
 						answer: answer,
 						galleryStyle: gstyle,
+						marryType: $('#g_marry_type').val(),
 						cover: coverImg
 					}
 				}).done(function(data) {
@@ -103,7 +109,8 @@
 						tags: toTagsArray($('#g_tags').val()),
 						answer: answer,
 						galleryStyle: gstyle,
-						cover: coverImg
+						cover: coverImg,
+						marryType: $('#g_marry_type').val()
 					}
 				}).done(function(data) {
 					clearGalleryForm();
@@ -198,6 +205,7 @@
 		$('#g_title').val('');
 		$('#g_desc').val('');
 		$('#g_tags').val('');
+		$('#g_marry_type').val('');
 		$('#gq_desc').val('');
 		$('#gq_answer').val('');
 		$('#gallery_primate').prop('checked', false);
@@ -268,6 +276,7 @@
 			$('#g_title').val(data.title);
 			$('#g_desc').val(data.desc);
 			$('#g_tags').val();
+			$('#g_marry_type').val(data.marryType);
 			$('#gallery_primate').prop('checked', data.isPrivate);
 			if (data.isPrivate === true) {
 				$('#gallery_question').removeClass('hide');

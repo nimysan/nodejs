@@ -80,6 +80,7 @@ var gallerySchema = new Schema({
 	isPrivate : Boolean,
 	question : String,
 	answer : String,
+	marryType : String,
 	tags : [ {
 		type : String,
 	} ],

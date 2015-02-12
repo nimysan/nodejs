@@ -152,6 +152,48 @@ GalleryDao.prototype = {
 			},
 			'isPrivate': false
 		}, page, perPage, function(error, pageCount, paginatedResults, itemCount) {
+			if (error) {
+				callback(error, null);
+				return;
+			}
+			var userList = [];
+			for (var i = 0; i < paginatedResults.length; i++) {
+				var gallery = paginatedResults[i];
+				if (gallery._creator) {
+					userList.push(gallery._creator._id);
+				}
+			}
+			model_user.queryByIds(userList, function(uerr, users) {
+				for (var i = 0; i < paginatedResults.length; i++) {
+					var gallery = paginatedResults[i];
+					for (var j = 0; j < users.length; j++) {
+						var user = users[j];
+						if (gallery._creator._id + '' == user._id + '') {
+							gallery._creator = user;
+
+						}
+					}
+				}
+				callback(error, paginatedResults, pageCount, itemCount);
+			});
+		}, {
+			sortBy: {
+				'meta.accesses': -1,
+			},
+			populate: '_creator'
+		});
+
+	},
+	listByMarryType: function(tag, page, perPage, callback) {
+		this.model.paginate({
+			marryType: {
+				$in: [tag]
+			}
+		}, page, perPage, function(error, pageCount, paginatedResults, itemCount) {
+			if (error) {
+				callback(error, null);
+				return;
+			}
 			var userList = [];
 			for (var i = 0; i < paginatedResults.length; i++) {
 				var gallery = paginatedResults[i];

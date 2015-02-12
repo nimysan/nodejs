@@ -112,6 +112,7 @@ app.post('/vote/gallery/:id', route_gallery.vote);
 app.route('/gallery/:id').delete(route_gallery.remove).get(route_gallery.show).put(route_gallery.update).post(route_gallery.create);
 app.route('/gallery').post(route_gallery.create);
 app.route('/tag/gallery/:tagId').get(route_gallery.listByTag);
+app.route('/marry/:marryId').get(route_gallery.listByMarryType);
 // app users
 app.get('/price', pathFunction);
 

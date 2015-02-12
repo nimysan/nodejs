@@ -55,27 +55,36 @@ exports.gallery = {
 	listByTag: function(req, res) {
 		// callback(error, paginatedResults, pageCount, itemCount);
 		model_gallery.listByTag(req.params.tagId, req.query.page, req.query.limit, function(error, data, pageCount, itemCount) {
-			for (var j = 0; j < data.length; j++) {
-				var gallery = data[j];
-				if (gallery && gallery.images) {
-					for (var i = 0; i < gallery.images.length; i++) {
-						gallery.images[i] = yt_utils.getImageLink(gallery.images[i], gallery._creator.imagePath);
-					}
-				}
-				if (gallery && gallery.cover) {
-					gallery.cover = yt_utils.getImageLink(gallery.cover, gallery._creator.imagePath);
-				} else {
-					gallery.cover = yt_utils.getImageLink(gallery.images[0], gallery._creator.imagePath);
-				}
-				if (gallery._creator.studios && gallery._creator.studios.length > 0) {
-					gallery.studio = gallery._creator.studios[0];
+			exports.gallery._galleryListView(data, req, res, pageCount, itemCount);
+		});
+	},
+	listByMarryType: function(req, res) {
+		// callback(error, paginatedResults, pageCount, itemCount);
+		model_gallery.listByMarryType(req.params.marryId, req.query.page, req.query.limit, function(error, data, pageCount, itemCount) {
+			exports.gallery._galleryListView(data, req, res, pageCount, itemCount);
+		});
+	},
+	_galleryListView: function(data, req, res, pageCount, itemCount) {
+		for (var j = 0; j < data.length; j++) {
+			var gallery = data[j];
+			if (gallery && gallery.images) {
+				for (var i = 0; i < gallery.images.length; i++) {
+					gallery.images[i] = yt_utils.getImageLink(gallery.images[i], gallery._creator.imagePath);
 				}
 			}
-			res.render('gallery/list', {
-				galleries: data,
-				pageCount: pageCount,
-				itemCount: itemCount
-			});
+			if (gallery && gallery.cover) {
+				gallery.cover = yt_utils.getImageLink(gallery.cover, gallery._creator.imagePath);
+			} else {
+				gallery.cover = yt_utils.getImageLink(gallery.images[0], gallery._creator.imagePath);
+			}
+			if (gallery._creator.studios && gallery._creator.studios.length > 0) {
+				gallery.studio = gallery._creator.studios[0];
+			}
+		}
+		res.render('gallery/list', {
+			galleries: data,
+			pageCount: pageCount,
+			itemCount: itemCount
 		});
 	},
 	verify: function(req, res) {

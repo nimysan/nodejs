@@ -60,7 +60,6 @@ UserDao.prototype = {
 	update: function(userId, options, callback) {
 		var that = this;
 		var _model = this.model;
-		console.log('---try to query useri d ' + userId);
 		this.model.findOne({
 			'loginId': userId
 		}).exec(function(err, user) {
@@ -71,6 +70,7 @@ UserDao.prototype = {
 			if (options.password) {
 				options.hashPassword = that._hashPassword(user.salt, options.password);
 			}
+			
 			if (options) {
 				delete options.password;
 				delete options._id;

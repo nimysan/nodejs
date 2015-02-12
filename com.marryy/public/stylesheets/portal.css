@@ -255,3 +255,15 @@ body{
  #selector_unselect_all {
  	margin-bottom: 10px;
  }
+
+ .marry-type-link, .marry-type-link label {
+ 	text-decoration: none;
+ 	cursor: pointer;
+ 	font-size: 8px;
+ 	margin-top: -8px;
+ }
+ .marry-type-link:hover{
+ 	text-decoration: none;
+ 	font-size: 8px;
+ 	margin-top: -8px;
+ }
