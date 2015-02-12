@@ -10,9 +10,12 @@ var yt_utils = require('./utils').utils;
 exports.studio = {
 	show: function(req, res) {
 		model_studio.loadById(req.params.id, function(err, studio) {
+			if (err || studio == null) {
+				callback(err, studio);
+				return;
+			}
 			model_user.loadByStudio(studio, function(err, users) {
 				model_gallery.listByAllUsers(users, req.query.page, req.query.limit, function(err, pageCount, galleries, itemCount) {
-					console.log(arguments);
 					var count = 0;
 					if (users) {
 						userCount = users.length;
@@ -32,15 +35,20 @@ exports.studio = {
 							gallery.cover = yt_utils.getImageLink(gallery.images[0], gallery._creator.imagePath);
 						}
 					}
-					// gallery
-					res.render('studio/index', {
-						studio: studio,
-						userCount: userCount,
-						galleryCount: galleries.length,
-						galleries: galleries,
-						pageCount: pageCount,
-						itemCount: itemCount
-					});
+					if ((req.get('Content-Type') + '').indexOf('json') >= 0) {
+						res.json({
+							studio: studio
+						});
+					} else {
+						res.render('studio/index', {
+							studio: studio,
+							userCount: userCount,
+							galleryCount: galleries.length,
+							galleries: galleries,
+							pageCount: pageCount,
+							itemCount: itemCount
+						});
+					}
 				})
 
 			})
@@ -48,7 +56,6 @@ exports.studio = {
 	},
 	create: function(req, res) {
 		var user = req.session.user_name;
-		console.log('rq ' + req.session.user_name);
 		model_studio.create(user, req.body, function(err, data) {
 			res.json({
 				err: err,

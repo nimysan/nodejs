@@ -69,7 +69,6 @@
 		});
 		json.imagePath = json.loginId;
 		json.roles = [isCreateManager ? 'manager' : 'customer'];
-		console.log(json);
 		var user_id = json._id;
 		showLoading();
 		if (user_id && user_id.length > 0) {
@@ -120,6 +119,7 @@
 			$('form#user_form').find('input,checkbox,textarea,select,button').each(function(index, ele) {
 				$(ele).val('').prop('checked', false);
 			});
+			$('#u_create').text('提交');
 		}
 		// user table
 	$('tr.user_detail').click(function() {
@@ -138,15 +138,21 @@
 			$('#u_login_name').attr('disabled', true);
 		}
 	});
-
-	$('button.delete-user-button').click(function() {
+	$('#add_new_user').click(function() {
+		$('#user_edit_form').modal('show');
+		$('form#user_form').find('input#loginId').attr('disabled', false);
+		cleanUserForm();
+	});
+	$('button.edit-user-button').click(function() {
 		var id = $(this).attr('data-id');
+		cleanUserForm();
 		showLoading();
 		$.ajax({
 			url: '/user/' + id,
 			dataType: 'json',
 			type: 'get'
 		}).done(function(result) {
+			$('#user_edit_form').modal('show');
 			if (result.err) {
 				showError(result.err);
 			} else {
@@ -167,16 +173,50 @@
 			offLoading();
 		});
 	});
+	$('button.delete-user-button').click(function() {
+		var id = $(this).attr('data-id');
+		BootstrapDialog.show({
+			title: '雅潼万象',
+			message: '你确定要删除这个用户吗？',
+			buttons: [{
+				label: '取消',
+				action: function(dialog) {
+					dialog.close();
+				}
+			}, {
+				label: '确认',
+				cssClass: 'btn-warning',
+				action: function(dialog) {
+					showLoading();
+					$.ajax({
+						url: '/user/' + id,
+						dataType: 'json',
+						type: 'delete'
+					}).done(function(result) {
+						if (result.err) {
+							showError(result.err);
+						} else {
+							showInfo("删除成功！");
+						}
+					}).always(function() {
+						offLoading();
+					});
+					dialog.close();
+				}
+			}]
+		});
+
+	});
 
 	// stuido
 	$('#studio_submit').click(function() {
 		var form = $('#studio_form');
 		var data = {};
-		form.find('input').each(function(index, input) {
+		form.find('input,textarea').each(function(index, input) {
 			var $i = $(input);
 			data[$i.attr('id')] = $.trim($i.val());
 		});
-		var studioId = null;
+		var studioId = form.data('_id');
 		var method = studioId == null ? 'post' : 'put';
 		var url = studioId == null ? '/studio' : '/studio/' + studioId;
 		showLoading();
@@ -186,9 +226,11 @@
 			type: method,
 			data: data
 		}).done(function(result) {
+			$('#studio_edit_form').modal('hide');
 			if (result.err) {
 				showError(result.err);
 			} else {
+				loadStudios();
 				showInfo('影楼信息创建或更新成功');
 			}
 		}).always(function() {
@@ -196,86 +238,113 @@
 		});
 	});
 
-	function initStudioForm() {
-		$('#studio_table_form').yt_table({
-			dataLoadUrl: '/user/' + page_info.user.loginId + '/studios',
-			deleteUrl: '/studio',
-			table: [{
-				th: '影楼名称',
-				attr: 'name'
-			}, {
-				th: '影楼网址',
-				attr: 'link'
-			}, {
-				th: '简介',
-				attr: 'desc'
-			}, {
-				th: '地址',
-				attr: 'address'
-			}, {
-				th: '影楼联系人',
-				attr: 'contactName'
-			}, {
-				th: '影楼联系电话',
-				attr: 'contactDeskPhone'
-			}, {
-				th: '影楼联系楼手机号码',
-				attr: 'contactMobilePhone'
-			}],
-			form_options: {
-				submitText: '提交',
-				urlFn: function(data) {
-					if (data && data._id && data._id != '') {
-						return '/studio/' + data._id;
-					} else {
-						return '/studio';
-					}
-				},
+	function clearStudioForm() {
+		$('#studio_edit_form').find('input,textarea,checkbox').val('');
+		$('form#studio_form').data('_id', null);
+	}
 
-				method: 'post',
-				doneFn: function() {
-					$.fn.yt.tooltip({
-						'messageType': 'success',
-						msg: '影楼信息更新成功'
-					});
-				},
-				forms: [{
-					type: 'text',
-					placeHolder: '影楼名称',
-					id: 'name',
-					label: '影楼名称'
-				}, {
-					type: 'textarea',
-					placeHolder: '影楼简介',
-					id: 'desc',
-					label: '影楼简介'
-				}, {
-					type: 'text',
-					placeHolder: '影楼网址（如果有）',
-					id: 'link',
-					label: '影楼网址'
-				}, {
-					type: 'text',
-					placeHolder: '影楼地址（如果有）',
-					id: 'address',
-					label: '影楼地址'
-				}, {
-					type: 'text',
-					placeHolder: '影楼联系人',
-					id: 'contactName',
-					label: '影楼联系人'
-				}, {
-					type: 'text',
-					placeHolder: '影楼联系电话',
-					id: 'contactDeskPhone',
-					label: '影楼联系电话'
-				}, {
-					type: 'text',
-					placeHolder: '影楼联系楼手机号码',
-					id: 'contactMobilePhone',
-					label: '影楼联系楼手机号码'
-				}]
+	function preloadStudioForm(studioId) {
+
+		showLoading();
+		$.ajax({
+			url: '/studio/' + studioId,
+			dataType: 'json',
+			contentType: 'json',
+			type: 'get'
+		}).done(function(result) {
+			$('#studio_edit_form').modal('show');
+			$('form#studio_form').find('#u_create').text('提交');
+			if (result.err) {
+				showError(result.err);
+			} else {
+				offLoading();
+				$('#studio_edit_form').modal('show');
+				// login Id is not allowed to be changed
+				//$('form#studio_form').find('input#loginId').attr('disabled', true);
+				$('form#studio_form').find('input,checkbox,textarea,button,select').each(function(index, ele) {
+					var attr = $(ele).attr('id');
+					$(ele).val(result.studio[attr] || '');
+				});
+				$('form#studio_form').data('_id', studioId);
 			}
+		}).always(function() {
+			offLoading();
+		});
+	}
+
+
+	function renderStudioTable(table, data) {
+		var tbody = $(table).find('tbody');
+		tbody.empty();
+		var rows = $(table).find('th[yt-attr]');
+		for (var i = 0; i < data.length; i++) {
+			var rowData = data[i];
+			var tr = $('<tr>');
+			for (var j = 0; j < rows.size(); j++) {
+				var attr = $(rows.get(j)).attr('yt-attr');
+				var td = $('<td>').text(rowData[attr]);
+				td.appendTo(tr);
+			}
+			tr.data('rowId', rowData._id);
+			var buttonBar = $('<td>');
+			var deleteButton = $('<button class="btn btn-danger btn-sm yt-table-button">删除</btn>');
+			deleteButton.appendTo(buttonBar);
+			deleteButton.click(function() {
+				BootstrapDialog.show({
+					title: '雅潼万象',
+					message: '你确定需要删除吗？',
+					buttons: [{
+						label: '取消',
+						action: function(dialog) {
+							dialog.close();
+						}
+					}, {
+						label: '确认',
+						cssClass: 'btn-warning',
+						action: function(dialog) {
+							dialog.close();
+							$.ajax({
+								url: '/studio/' + $(tr).data('rowId'),
+								type: 'delete'
+							}).done(function() {
+								tr.remove();
+								offLoading();
+								showInfo('删除成功！');
+							}).always(function() {
+								offLoading();
+							});
+						}
+					}]
+				});
+			});
+			var editButton = $('<button class="btn btn-info btn-sm yt-table-button">编辑</btn>');
+			editButton.appendTo(buttonBar);
+			editButton.click(function() {
+				var studioId = tr.data('rowId');
+				clearStudioForm();
+				preloadStudioForm(studioId);
+			});
+			buttonBar.appendTo(tr);
+			tr.appendTo(tbody);
+		}
+		//tbody.appendTo(table);
+	}
+
+	function loadStudios() {
+		$.ajax({
+			url: '/user/' + page_info.user.loginId + '/studios',
+			dataType: 'json',
+			type: 'get'
+		}).done(function(result) {
+			offLoading();
+			if (result && result.err) {
+				showError(err);
+			} else {
+				//render table
+				renderStudioTable($('#studio_grid'), result);
+			}
+		}).always(function() {
+			offLoading();
 		});
 	}
 
@@ -293,7 +362,7 @@
 			},
 			preSubmitFn: function(ele) {
 				var password = $(ele).find('[data-id="password"]');
-				if ($.trim(password) == '') {
+				if ($load.trim(password) == '') {
 					if ($.trim(password.val()) != $.trim(password2.val())) {
 						showError('你没有输入密码！');
 						return false;
@@ -324,7 +393,11 @@
 			}]
 		});
 	}
-
+	$('#add_new_studio').click(function() {
+		clearStudioForm();
+		$('#studio_edit_form').modal('show');
+		$('form#studio_form').find('#u_create').text('提交');
+	});
 	// start to run it
 	$(document).ready(function() {
 		initUserUpdateForm();
@@ -332,7 +405,7 @@
 		// studio from page events
 		$('a[data-toggle="tab"]').on('shown.bs.tab', function(e) {
 			if ($(e.target).attr('href') === '#tab_studiomanager') {
-				initStudioForm();
+				loadStudios();
 			} // newly activated tab
 
 			e.relatedTarget // previous active tab
