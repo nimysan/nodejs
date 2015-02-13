@@ -1,21 +1,22 @@
 extends ../layout
 block content
 	div.container
-		h1= studio.name
-		h5
-			a(href='#{studio.link}', target = '_blank')  主页连接
-		address= studio.address
+		h4.text-info
+			span=studio.name 
+		p.text-warning
+			span(class="glyphicon glyphicon-home")
+				a(href='#{studio.link}', target = '_blank', style='text-decoration: none;') 主页连接
+		h6 
+			span 地址 
+			span.text-warning=studio.address
 		
-		h6 联系电话(座机)  
-			abbr(title="Phone") #{studio.contactDeskPhone}
-		h6  联系电话 (手机) 
-			abbr(title="Phone") #{studio.contactMobilePhone}
+		h6 联系电话  
+			abbr(title="Phone") #{studio.contactDeskPhone} #{studio.contactMobilePhone}
 			
-		p.text-danger 拥有超过 
-			span(class='label label-info') #{userCount} 
-			名客户以及他们的
-			span(class='label label-danger') #{itemCount}
-			个相册。 
+		p.text-danger 有 
+			span(class='label label-info', style='margin-right:4px;') #{userCount}名客户
+			span(class='label label-danger') #{itemCount}个相册
+
 		if paginate.hasPreviousPages || paginate.hasNextPages(pageCount)
 			.navigation.well-sm#pagination
 				ul.pager
@@ -29,20 +30,25 @@ block content
 							a(href=paginate.href()).next
 								| 下一页
 							i.fa.fa-arrow-circle-right
-							
+		div.row
+			div(class='col-sm-')
 		table(class='table table-bordered')
 			tr
-				th
-				th 相册名称
-				th 相册用户
-				th 相册被访问次数
-				th 相册欣赏链接
+				th(style='width:20%')
+				th(style='width:20%') 影楼套餐
+				th(style='width:20%') 相册名称
+				th(style='width:10%') 相册用户
+				th(style='width:10%') 相册被访问次数
+				th(style='width:20%') 相册欣赏链接
 			each gallery in galleries
 				tr
 					td
 						img(src="#{gallery.cover}!100", alt='...')
+					td
+						span.text-muted 豪华套餐
 					td= gallery.title
-					td= gallery._creator.displayName
+					td
+						span.text-info=gallery._creator.realName || gallery._creator.loginId
 					td= gallery.meta.accesses
 					td 
 						a(href='/gallery/#{gallery._id}',alt='...') 欣赏

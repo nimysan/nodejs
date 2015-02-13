@@ -122,7 +122,8 @@ exports.management = {
 			});
 		},
 		update: function(req, res) {
-			var userId = req.body.loginId;
+			var userId = req.params.userId;
+			console.log('---------- ' + userId);
 			model_user.update(userId, req.body, function(err, data) {
 				delete data.salt;
 				delete data.password;

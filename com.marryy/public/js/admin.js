@@ -282,14 +282,21 @@
 			var tr = $('<tr>');
 			for (var j = 0; j < rows.size(); j++) {
 				var attr = $(rows.get(j)).attr('yt-attr');
-				var td = $('<td>').text(rowData[attr]);
+				var td = null;
+				if ('name' == attr) {
+					td = $('<td>').html('<a target="_blank" href="/studio/' + rowData._id + '">' + rowData[attr] + '</a>');
+				} else {
+					td = $('<td>').text(rowData[attr]);
+				}
 				td.appendTo(tr);
 			}
 			tr.data('rowId', rowData._id);
 			var buttonBar = $('<td>');
 			var deleteButton = $('<button class="btn btn-danger btn-sm yt-table-button">删除</btn>');
 			deleteButton.appendTo(buttonBar);
+			deleteButton.data('_id', rowData._id);
 			deleteButton.click(function() {
+				var _button = this;
 				BootstrapDialog.show({
 					title: '雅潼万象',
 					message: '你确定需要删除吗？',
@@ -304,7 +311,7 @@
 						action: function(dialog) {
 							dialog.close();
 							$.ajax({
-								url: '/studio/' + $(tr).data('rowId'),
+								url: '/studio/' + $(_button).data('_id'),
 								type: 'delete'
 							}).done(function() {
 								tr.remove();
@@ -318,9 +325,10 @@
 				});
 			});
 			var editButton = $('<button class="btn btn-info btn-sm yt-table-button">编辑</btn>');
+			editButton.data('_id', rowData._id);
 			editButton.appendTo(buttonBar);
 			editButton.click(function() {
-				var studioId = tr.data('rowId');
+				var studioId = $(this).data('_id');
 				clearStudioForm();
 				preloadStudioForm(studioId);
 			});

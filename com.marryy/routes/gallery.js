@@ -52,6 +52,12 @@ exports.gallery = {
 		});
 	},
 
+	listAllGalleries: function(req, res) {
+		model_gallery.listAll(req.query.page, req.query.limit, function(error, data, pageCount, itemCount) {
+			exports.gallery._galleryListView(data, req, res, pageCount, itemCount, 'json');
+		});
+	},
+
 	listByTag: function(req, res) {
 		// callback(error, paginatedResults, pageCount, itemCount);
 		model_gallery.listByTag(req.params.tagId, req.query.page, req.query.limit, function(error, data, pageCount, itemCount) {
@@ -64,7 +70,7 @@ exports.gallery = {
 			exports.gallery._galleryListView(data, req, res, pageCount, itemCount);
 		});
 	},
-	_galleryListView: function(data, req, res, pageCount, itemCount) {
+	_galleryListView: function(data, req, res, pageCount, itemCount, dataType) {
 		for (var j = 0; j < data.length; j++) {
 			var gallery = data[j];
 			if (gallery && gallery.images) {
@@ -81,11 +87,21 @@ exports.gallery = {
 				gallery.studio = gallery._creator.studios[0];
 			}
 		}
-		res.render('gallery/list', {
-			galleries: data,
-			pageCount: pageCount,
-			itemCount: itemCount
-		});
+		if ('json' == dataType) {
+			res.json({
+				galleries: data,
+				pageCount: pageCount,
+				itemCount: itemCount,
+				paginate: res.locals.paginate
+			});
+		} else {
+			res.render('gallery/list', {
+				galleries: data,
+				pageCount: pageCount,
+				itemCount: itemCount
+			});
+		}
+
 	},
 	verify: function(req, res) {
 		var galleryId = req.params.id;

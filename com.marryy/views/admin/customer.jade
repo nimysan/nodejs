@@ -90,7 +90,7 @@ block content
 								div.form-group
 									label(for="address" class="col-sm-2 control-label") 地址
 									div.col-sm-10
-										input#address(type='email', class='form-control',placeholder='影楼地址',value='', data-pattern='^([a-zA-Z0-9_-])+@([a-zA-Z0-9_-])+(.[a-zA-Z0-9_-])+$')
+										textarea#address(type='email',  rows='3', class='form-control',placeholder='影楼地址',value='', data-pattern='^([a-zA-Z0-9_-])+@([a-zA-Z0-9_-])+(.[a-zA-Z0-9_-])+$')
 										span#messages
 								div.form-group
 									label(for="contactName" class="col-sm-2 control-label") 联系人
@@ -218,6 +218,8 @@ block content
 				
 			
 	script(src='/js/admin.js')
+	//china city array
+	script(src='/js/sidecity.js')
 	script(src='http://cdn.bootcss.com/crypto-js/3.1.2/components/core-min.js')
 	script(src='http://cdn.bootcss.com/crypto-js/3.1.2/components/md5.js')				
 	script(src='/dropzone/dropzone.upyun.min.js')

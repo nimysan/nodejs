@@ -208,7 +208,6 @@
                     fn(ele);
                 } else {
                     // loading plugin - http://hekigan.github.io/is-loading/
-                    // var url = '';
                     function getUrl() {
                             if ($.isFunction(options.urlFn)) {
                                 if ($(ele).attr('_id')) {
@@ -218,6 +217,7 @@
                             } else {
                                 url = options.url;
                             }
+                            return url;
                         }
                         // comply with REST style
                     submitButton.addClass('disabled');
@@ -227,7 +227,7 @@
                     $.ajax({
                         url: getUrl(),
                         dataType: options.dataType || 'json',
-                        method: 'post',
+                        method: options.method ? options.method : 'post',
                         data: jsonFrom
                     }).done(function(result) {
                         offLoading();

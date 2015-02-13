@@ -274,3 +274,11 @@ body{
  	color: white;
  	margin-left: 4px;
  }
+
+ .gallery-detail-container {
+
+ }
+
+ .gallery-detail-container:hover{
+ 	background-color: rgba(255,204,229,0.1);
+ }

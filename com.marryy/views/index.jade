@@ -33,7 +33,7 @@ block content
 	script(src='/js/effect/jumpOver.js')
 	script(src='/jslib/unibox-master/js/unibox.min.js')
 	link(rel='stylesheet', href='/jslib/unibox-master/css/unibox.min.css')
-	div.container(class='container-body')
+	div.container(class='container-body', id='content')
 		div.row
 			div(class='col-md-2 col-sm-2 col-xs-12')
 				img(alt="雅潼万象", src="/img/yt-ico.png", style='float:right;margin-right:-20px;margin-top:16px')
@@ -49,19 +49,6 @@ block content
 
 			div(class='col-md-2 col-sm-12')
 			
-		//if paginate.hasPreviousPages || paginate.hasNextPages(pageCount)
-		//	.navigation.well-sm#pagination
-		//		ul.pager
-		//			if paginate.hasPreviousPages
-		//				li.previous
-		//					a(href=paginate.href(true)).prev
-		//						|  上一页
-		//					i.fa.fa-arrow-circle-left
-		//			if paginate.hasNextPages(pageCount)
-		//				li.next
-		//					a(href=paginate.href()).next
-		//						| 浏览更多相册
-		//					i.fa.fa-arrow-circle-right
 		
 		//---4 galleries in one column
 		input(type='hidden',id='galleries_data',value='#{JSON.stringify(galleries)}')
@@ -70,7 +57,10 @@ block content
 			div(class='col-md-3 col-sm-3 col-xs-12', id='container-column-2')
 			div(class='col-md-3 col-sm-3 col-xs-12', id='container-column-3')
 			div(class='col-md-3 col-sm-3 col-xs-12', id='container-column-4')
+		div.loading(style='text-align:center')
+			img(src='/img/ajax-loader3.gif',style='width:64px;height:64px;')
 				
 		script(src='/js/static.js')
 		script(src='/js/yt_portal.js')
+		script(src='/jquery/scrollpagination.js')
 

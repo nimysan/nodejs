@@ -97,6 +97,7 @@ app.use(filter.permission);
 app.get("/", routes.index, function(req, res, next) {
 	next();
 });
+app.get('/list/gallery', route_gallery.listAllGalleries);
 
 app.get("/suggests/*", routes.suggests, function(req, res, next) {
 	next();

@@ -75,6 +75,8 @@ function renderTags(gallery, container) {
 	if (gallery && gallery.tags && gallery.tags.length > 0) {
 		var tagsDiv = $('<div>').addClass('tags-container');
 		var tagsHtml = $('<ul>').addClass('tags');
+		var tagIcon = $('<li><span class="text-muted tag-container" style="font-size:12px;">标签:</span>');
+		tagIcon.appendTo(tagsHtml);
 		tagsHtml.appendTo(tagsDiv);
 		for (var i = 0; i < gallery.tags.length; i++) {
 			if ($.trim(gallery.tags[i]).length <= 0) {
@@ -87,9 +89,16 @@ function renderTags(gallery, container) {
 	}
 }
 
-function loadIndexPage() {
-	var galleries = jQuery.parseJSON($('#galleries_data').val());
+function loadIndexPage(galleriesParam) {
+	var galleries = galleriesParam;
+	if (!galleries) {
+		galleries = jQuery.parseJSON($('#galleries_data').val());
+	}
+	if (galleries == null) {
+		return;
+	}
 	if (galleries && galleries.length > 0) {
+		//var containerIndex = 1;
 		for (var i = 0; i < galleries.length; i++) {
 			var gallery = galleries[i];
 
@@ -144,17 +153,12 @@ function loadIndexPage() {
 			var desc = $('<div class="gallery-desc" style="display:none;"><p>' + gallery.desc + '</p></div>');
 			desc.appendTo(ghtml);
 
-			var htmlContainer = null;
-			if (i < 6) {
-				htmlContainer = $('div#container-column-1');
-			} else if (i >= 6 && i < 12) {
-				htmlContainer = $('div#container-column-2');
-			} else if (i >= 12 && i < 18) {
-				htmlContainer = $('div#container-column-3');
+			var htmlContainer = $('div#container-column-' + containerIndex);
+			if (containerIndex == 4) {
+				containerIndex = 1;
 			} else {
-				htmlContainer = $('div#container-column-4');
+				containerIndex++;
 			}
-
 			ghtml.appendTo(htmlContainer);
 
 		}
@@ -192,21 +196,38 @@ function initSearchBox() {
 }
 
 function scrollPagination() {
-	$('#content').scrollPagination({
-		'contentPage': 'democontent.html', // the page where you are searching for results
+	$('#gallery_container').scrollPagination({
+		'contentPage': function() {
+			return '/list/gallery/?page=' + currentPage + '&limit=10'
+		}, // the page where you are searching for results
 		'contentData': {}, // you can pass the children().size() to know where is the pagination
 		'scrollTarget': $(window), // who gonna scroll? in this example, the full window
-		'heightOffset': 10, // how many pixels before reaching end of the page would loading start? positives numbers only please
+		'heightOffset': 10, // how many pixels befor+'&limit=10'e reaching end of the page would loading start? positives numbers only please
+		'dataType': 'json',
+		'renderAppendData': function(obj, data) {
+			// if (data.pageCount * 10 > data.itemCount) {
+			// 	//$('#gallery_container').stopScrollPagination();
+			// }
+			if (data && data.galleries && data.galleries.length > 0) {
+				loadIndexPage(data.galleries);
+				currentPage = data.paginate.page;
+				if (currentPage >= data.pageCount) {
+					$('#gallery_container').stopScrollPagination();
+				}
+				currentPage++;
+
+			}
+		},
 		'beforeLoad': function() { // before load, some function, maybe display a preloader div
 			$('.loading').fadeIn();
 		},
 		'afterLoad': function(elementsLoaded) { // after loading, some function to animate results and hide a preloader div
 			$('.loading').fadeOut();
-			var i = 0;
-			$(elementsLoaded).fadeInWithDelay();
-			if ($('#content').children().size() > 100) { // if more than 100 results loaded stop pagination (only for test)
-				$('#content').stopScrollPagination();
-			}
+			// var i = 0;
+			// $(elementsLoaded).fadeInWithDelay();
+			// if ($('#gallery_container').children().size() > 100) { // if more than 100 results loaded stop pagination (only for test)
+			// 	$('#gallery_container').stopScrollPagination();
+			// }
 		}
 	});
 
@@ -222,6 +243,8 @@ function scrollPagination() {
 	};
 }
 
+var currentPage = 2;
+var containerIndex = 1;
 (function($) {
 	$(document).ready(function() {
 		//render galleries to the index page --- 

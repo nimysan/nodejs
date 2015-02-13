@@ -4,7 +4,7 @@
 
 	function generateQrCode() {
 		$('img.qr').each(function(index, ele) {
-			$(ele).prop('src', 'http://qr.liantu.com/api.php?bg=000000&fg=ffffff&m=5&text=' + 'http://' + window.location.hostname + '/' + $(ele).attr('gallery_id'));
+			$(ele).prop('src', 'http://qr.liantu.com/api.php?bg=000000&fg=ffffff&m=5&text=' + 'http://' + window.location.hostname + '/gallery/' + $(ele).attr('gallery_id'));
 		});
 	};
 

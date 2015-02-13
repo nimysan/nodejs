@@ -1,7 +1,7 @@
 extends ../layout
 block content
 	div.container(class='container-body')
-		if paginate.hasPreviousPages || paginate.hasNextPages(pageCount)
+		-if (paginate.hasPreviousPages || paginate.hasNextPages(pageCount))
 			.navigation.well-sm#pagination
 				ul.pager
 					if paginate.hasPreviousPages
@@ -13,11 +13,11 @@ block content
 						li.next
 							a(href=paginate.href()).next
 								| 浏览更多相册
-							i.fa.fa-arrow-circle-right
+								i.fa.fa-arrow-circle-right
 		-if (galleries)
 			each item in galleries
 				dir.row
-					div.thumbnail
+					div.thumbnail(class='gallery-detail-container')
 						div.row
 							div.col-md-2(class='col-sm-2 col-xs-6')
 								a(href='/gallery/#{item._id}')
@@ -38,10 +38,10 @@ block content
 												span.text-muted 被欣赏 
 												code.num(style='color:darkviolet') #{item.meta.accesses == null ? 0  : item.meta.accesses}
 											blockquote(style='font-size:12px;')= item.desc
-											-if (item._creator.studios && item._creator.studios.length > 0)
-												- var studio=item._creator.studios[0]
-												h5  来自 
-													a.strong(href='#{studio.link}',target="_blank") #{studio.name}
+											-if (item._creator.fromStudio)
+												- var studio=item._creator.fromStudio
+												h6.text-info  来自 
+													a.strong(href='/studio/#{studio._id}',target="_blank") #{studio.name}
 											-else
 												h6.text-muted 没有提供影楼信息
 												
