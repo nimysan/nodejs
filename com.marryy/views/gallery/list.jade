@@ -49,12 +49,12 @@ block content
 												span.text-muted #{item.date.getFullYear()+'/'+(item.date.getMonth()+1)+'/'+item.date.getDate()}
 											
 											div
-												button(class='btn btn-success thumbs-up', gallery_id='#{item._id}')
+												button(class='btn btn-info thumbs-up btn-sm', gallery_id='#{item._id}')
 													span(class='glyphicon glyphicon-thumbs-up')
 													-if (item.meta && item.meta.votes > 0)
-														span.up-vote-number #{item.meta.votes}
+														span.up-vote-number(class='num') #{item.meta.votes}
 													-else
-														span.up-vote-number 0
+														span.up-vote-number(class='num') 0
 												
 										div(class='col-sm-4 col-md-2 col-xd-4')
 											h6.text-muted 扫一扫

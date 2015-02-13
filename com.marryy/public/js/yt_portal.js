@@ -191,33 +191,42 @@ function initSearchBox() {
 	$("#index_search_box").unibox(settings);
 }
 
+function scrollPagination() {
+	$('#content').scrollPagination({
+		'contentPage': 'democontent.html', // the page where you are searching for results
+		'contentData': {}, // you can pass the children().size() to know where is the pagination
+		'scrollTarget': $(window), // who gonna scroll? in this example, the full window
+		'heightOffset': 10, // how many pixels before reaching end of the page would loading start? positives numbers only please
+		'beforeLoad': function() { // before load, some function, maybe display a preloader div
+			$('.loading').fadeIn();
+		},
+		'afterLoad': function(elementsLoaded) { // after loading, some function to animate results and hide a preloader div
+			$('.loading').fadeOut();
+			var i = 0;
+			$(elementsLoaded).fadeInWithDelay();
+			if ($('#content').children().size() > 100) { // if more than 100 results loaded stop pagination (only for test)
+				$('#content').stopScrollPagination();
+			}
+		}
+	});
+
+	// code for fade in element by element with delay
+	$.fn.fadeInWithDelay = function() {
+		var delay = 0;
+		return this.each(function() {
+			$(this).delay(delay).animate({
+				opacity: 1
+			}, 200);
+			delay += 100;
+		});
+	};
+}
+
 (function($) {
 	$(document).ready(function() {
 		//render galleries to the index page --- 
 		loadIndexPage();
 		initSearchBox();
-		$('#carousel-banner').carousel({
-			interval: 2000
-		});
-		$('img.qr').each(function(index, qrImg) {
-			var $qrImg = $(qrImg);
-			var src = 'http://qr.liantu.com/api.php?bg=ffffff&fg=000000&text=http://' + window.location.host + '/gallery/' + $qrImg.attr('gallery_id');
-			$qrImg.prop('src', src);
-		});
-
-		$('button.thumbs-up').click(function() {
-			var galleryId = $(this).attr('gallery_id');
-			var _button = this;
-			$.ajax({
-				url: '/vote/gallery/' + galleryId,
-				dataType: 'json',
-				type: 'post'
-			}).done(function(data) {
-				if (data.votes && data.votes > 0) {
-					$(_button).find('.up-vote-number').text(data.votes);
-				}
-			});
-
-		})
+		scrollPagination();
 	});
 })(jQuery);
