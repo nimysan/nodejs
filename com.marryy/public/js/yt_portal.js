@@ -117,7 +117,7 @@ function loadIndexPage(galleriesParam) {
 			if (gallery.meta && gallery.meta.accesses > 0) {
 				accesses = gallery.meta.accesses;
 			}
-			var titleH = $('<h4><span class="marryy-type"></span>' + padToFixLength(gallery.title, 10) + '</h4>');
+			var titleH = $('<h5><span class="marryy-type"></span>' + padToFixLength(gallery.title, 10) + '</h5>');
 
 			//var titleH = $('<h4>'+ gallery.title +'</h4>').addClass('tile-text');
 			//var viewsH = $();

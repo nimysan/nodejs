@@ -11,7 +11,15 @@ exports.studio = {
 	show: function(req, res) {
 		model_studio.loadById(req.params.id, function(err, studio) {
 			if (err || studio == null) {
-				callback(err, studio);
+				if ((req.get('Content-Type') + '').indexOf('json') >= 0) {
+					res.json({
+						err: '该影楼不存在或被删除了'
+					});
+				} else {
+					res.render('studio/index', {
+						studio: {}
+					});
+				}
 				return;
 			}
 			model_user.loadByStudio(studio, function(err, users) {
