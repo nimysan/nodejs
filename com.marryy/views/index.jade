@@ -44,21 +44,30 @@ block content
 					div.input-group(id='unibox')
 						input(type='text', class= 'form-control', id='index_search_box')
 						div(class='input-group-btn')
-							button(class='btn btn-info btn-medium', style='margin-top: -4px;') 找
+							button#index_search_button(class='btn btn-info btn-medium', style='margin-top: -4px;margin-right:20px;')
+								span 找
+							img#search_loader(class='hide', src='/img/ajax-loader2.gif', style="width:32px;height:32px;")
+						
+					p.yt-warning-message(class='hide text-warning') 没有你要找的内容
 						
 
 			div(class='col-md-2 col-sm-12')
+		
 			
 		
 		//---4 galleries in one column
 		input(type='hidden',id='galleries_data',value='#{JSON.stringify(galleries)}')
+		div.row(id='search_result_container')
+			div(class='col-md-10 col-sm-10 col-xs-12', id='search_result_list')
+			div(class='col-md-2 col-sm-2 col-xs-0', id='search_hots_words')
+
 		div.row(id='gallery_container')
 			div(class='col-md-3 col-sm-3 col-xs-12', id='container-column-1')
 			div(class='col-md-3 col-sm-3 col-xs-12', id='container-column-2')
 			div(class='col-md-3 col-sm-3 col-xs-12', id='container-column-3')
 			div(class='col-md-3 col-sm-3 col-xs-12', id='container-column-4')
-		div.loading(style='text-align:center')
-			img(src='/img/ajax-loader.gif',style='width:128px;height:128px;')
+			div.loading(style='text-align:center')
+				img(src='/img/ajax-loader.gif',style='width:128px;height:128px;')
 				
 		script(src='/js/static.js')
 		script(src='/js/yt_portal.js')

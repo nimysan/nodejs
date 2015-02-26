@@ -61,17 +61,21 @@ GalleryDao.prototype = {
 		});
 	},
 	load: function(id, callback) {
+		console.log('Load Gallery ' + id);
 		this.model.findOne({
 			'_id': id
 		}).populate('_creator').exec(function(err, gallery) {
 			if (err) {
 				callback("can't find the gallery with " + id, gallery);
 			} else {
-				model_studio.loadById(gallery._creator.fromStudio, function(err, studio) {
-					console.log('----------- ' + studio);
-					gallery.studio = studio;
+				if (gallery && gallery._creator) {
+					model_studio.loadById(gallery._creator.fromStudio, function(err, studio) {
+						gallery.studio = studio;
+						callback(err, gallery);
+					});
+				} else {
 					callback(err, gallery);
-				});
+				}
 			}
 		});
 	},

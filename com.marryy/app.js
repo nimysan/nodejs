@@ -7,6 +7,7 @@ var express = require('express'),
 	route_gallery = require('./routes/gallery').gallery,
 	studio = require('./routes/studio').studio,
 	management = require('./routes/admin_route').management,
+	search_client = require('./routes/search').search_client,
 	filter = require('./routes/authFilter').filter,
 	http = require('http'),
 	path = require('path'),
@@ -24,7 +25,10 @@ var errorhandler = require('errorhandler');
 var MongoStore = require('express-session-mongo');
 
 var app = express();
-
+//connect to solr server
+search_client.init();
+console.log('$$$$');
+console.log(search_client);
 // model
 // var cookieParser = require('cookie-parser');
 
@@ -116,6 +120,12 @@ app.route('/tag/gallery/:tagId').get(route_gallery.listByTag);
 app.route('/marry/:marryId').get(route_gallery.listByMarryType);
 // app users
 app.get('/price', pathFunction);
+
+// Search part
+console.log('--------------');
+console.log(search_client.key_word_search);
+app.get('/search', search_client.key_word_search);
+// Search part
 
 app.route('/user/:userId').get(route_gallery.user.show).put(function(req, res, next) {
 	if (req.params.userId !== req.session.user_name && req.session.user_name != 'supervisor') {

@@ -282,3 +282,8 @@ body{
  .gallery-detail-container:hover{
  	background-color: rgba(255,204,229,0.1);
  }
+
+ .search-result-item {
+ 	border-top:  1px #9c27b0 solid;
+
+ }

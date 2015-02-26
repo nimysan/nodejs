@@ -195,6 +195,85 @@ function initSearchBox() {
 	$("#index_search_box").unibox(settings);
 }
 
+
+function getWrappedById(wrapped, id) {
+	for (var i = 0; i < wrapped.length; i++) {
+		if (wrapped[i]._id == id) {
+			return wrapped[i];
+		}
+	}
+}
+
+function _rGallery(obj) {
+	var body = $('<div>').addClass('search-result-item thumbnail');
+	var header = $('<h6><a href="/gallery/' + obj._id + '" target="_blank">' + obj.title + '</a>');
+	var desc = $('<p>' + obj.desc + '</p>');
+	body.append(header);
+	body.append(desc);
+	renderTags(obj, body);
+	return body;
+}
+
+function _rStudio(obj) {
+	var body = $('<div>').addClass('search-result-item thumbnail');
+	var header = $('<h6><a href="/studio/' + obj._id + '" target="_blank">' + obj.name + '</a>');
+	body.append(header);
+	var desc = $('<p>' + obj.desc + '</p>');
+	body.append(desc);
+	//renderTags(obj, body);
+	return body;
+}
+
+function renderSearchResult(data, wrapped) {
+	// $('#search_result_container').text(133333333333333);
+	var docs = data.response.docs;
+	var list_div = $('#search_result_list');
+	list_div.empty();
+	for (var i = 0; i < docs.length; i++) {
+		var sdoc = docs[i];
+		if ('marryy.galleries' == sdoc.ns) {
+			list_div.append(_rGallery(getWrappedById(wrapped, sdoc._id)));
+		} else if ('marryy.studios' == sdoc.ns) {
+			list_div.append(_rStudio(getWrappedById(wrapped, sdoc._id)));
+		}
+	}
+}
+
+function initSearchQuery() {
+	$('#index_search_button').click(function() {
+		var search_key = $.trim($('#index_search_box').val());
+		if (search_key == '') {
+			$('.yt-warning-message').removeClass('hide').text('请输入关键字...');
+		} else {
+			$('.yt-warning-message').addClass('hide');
+			var button = this;
+			$('#search_loader').removeClass('hide');
+			$(button).attr('disabled', true);
+			$.ajax({
+				url: '/search',
+				dataType: 'json',
+				data: {
+					q: search_key
+				},
+				type: 'get',
+				contentType: 'json'
+			}).done(function(data) {
+				if (!data || data.err) {
+					$('.yt-warning-message').removeClass('hide').text('查询不到任何结果');
+					$('#gallery_container').removeClass('hide');
+				} else if (data && data.result) {
+					$('#gallery_container').addClass('hide');
+					//---
+					renderSearchResult(data.result, data.wrapped);
+				}
+			}).always(function() {
+				$('#search_loader').addClass('hide');
+				$(button).attr('disabled', false);
+			});
+		}
+	});
+}
+
 function scrollPagination() {
 	$('#gallery_container').scrollPagination({
 		'contentPage': function() {
@@ -251,5 +330,6 @@ var containerIndex = 1;
 		loadIndexPage();
 		initSearchBox();
 		scrollPagination();
+		initSearchQuery();
 	});
 })(jQuery);

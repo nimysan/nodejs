@@ -146,10 +146,32 @@ exports.gallery = {
 			return false;
 		}
 	},
+	loadById: function(id, callback) {
+		var galleryId = id;
+		model_gallery.load(galleryId, function(err, gd) {
+			var gallery = gd;
+			if (gallery && gallery.images) {
+				for (var i = 0; i < gallery.images.length; i++) {
+					gallery.images[i] = yt_utils.getImageLink(gallery.images[i], gallery._creator.imagePath);
+				}
+			}
+			if (gallery && gallery.cover) {
+				gallery.cover = yt_utils.getImageLink(gallery.cover, gallery._creator.imagePath);
+			} else {
+				gallery.cover = yt_utils.getImageLink(gallery.images[0], gallery._creator.imagePath);
+			}
+
+			if (gallery._creator.studios && gallery._creator.studios.length > 0) {
+				gallery.studio = gallery._creator.studios[0];
+			}
+			callback(err, gallery);
+			return;
+		});
+	},
 	show: function(req, res, next) {
 		var galleryId = req.params.id;
 		model_gallery.load(galleryId, function(err, gd) {
-			console.log(arguments);
+			//console.log(arguments);
 			var meta = gd.meta;
 			if (meta == null) {
 				meta = {};
