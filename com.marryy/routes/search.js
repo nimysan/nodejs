@@ -53,11 +53,16 @@ exports.search_client = {
 	},
 	key_word_search: function(req, res) {
 		var query = client.createQuery();
-		query.q(req.query.q);
+		console.log('--------- Query ' + req.query);
+		// ---
+		query.q(req.query.q).start(req.query.start).rows(req.query.rows ? req.query.rows : 10);
+		// ---
+
 		client.search(query, function(err, obj) {
-			if (err || obj.response.numFound == 0) {
+			if (err) {
+				console.log('Search Err->' + err);
 				res.json({
-					err: '没有任何查询结果'
+					err: '查询出现错误'
 				})
 			} else {
 				if (obj.response.numFound > 0) {

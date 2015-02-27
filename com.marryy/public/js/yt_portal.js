@@ -70,6 +70,25 @@ function showPageMessage(message, trueOrFalse) {
 	}
 }
 
+function getImageLink(imageName, imagePath) {
+	if (imageName != null && imageName.indexOf('http') == 0) {
+		return imageName;
+	}
+	return 'http://pic.marryy.com/' + imagePath + '/' + imageName;
+}
+
+function warpImageLink(gallery) {
+	if (gallery && gallery._creator && gallery.images) {
+		for (var i = 0; i < gallery.images.length; i++) {
+			gallery.images[i] = getImageLink(gallery.images[i], gallery._creator.imagePath);
+		}
+	}
+	if (gallery && gallery.cover) {
+		gallery.cover = getImageLink(gallery.cover, gallery._creator.imagePath);
+	} else {
+		gallery.cover = getImageLink(gallery.images[0], gallery._creator.imagePath);
+	}
+}
 
 function renderTags(gallery, container) {
 	if (gallery && gallery.tags && gallery.tags.length > 0) {
@@ -205,10 +224,25 @@ function getWrappedById(wrapped, id) {
 }
 
 function _rGallery(obj) {
+	warpImageLink(obj);
 	var body = $('<div>').addClass('search-result-item thumbnail');
 	var header = $('<h6><a href="/gallery/' + obj._id + '" target="_blank">' + obj.title + '</a>');
+	var icon = ('<img style="width:24px;height:auto;display:inline;margin-right:8px;" src="/img/gallery.png"></img>');
+	header.prepend(icon);
+	var cover = $('<img src="' + obj.cover + '!100"></img>');
+	var count = 0;
+	var imgRow = $('<div>');
+	if (obj.images) {
+		while (count <= 4 && count < obj.images.length) {
+			var image = $('<img class="img-thumbnail" src="' + obj.images[count] + '!100"></img>');
+			imgRow.append(image);
+			count++;
+		}
+	}
 	var desc = $('<p>' + obj.desc + '</p>');
 	body.append(header);
+	body.append(imgRow);
+	imgRow.append('<h7><a href="/gallery/' + obj._id + '" target="_blank">查看更多图片</a></h7>');
 	body.append(desc);
 	renderTags(obj, body);
 	return body;
@@ -217,6 +251,9 @@ function _rGallery(obj) {
 function _rStudio(obj) {
 	var body = $('<div>').addClass('search-result-item thumbnail');
 	var header = $('<h6><a href="/studio/' + obj._id + '" target="_blank">' + obj.name + '</a>');
+	var icon = ('<img style="width:24px;height:auto;display:inline;margin-right:8px;" src="/img/studio.png"></img>');
+	header.prepend(icon);
+	// body.append(icon);
 	body.append(header);
 	var desc = $('<p>' + obj.desc + '</p>');
 	body.append(desc);
@@ -224,11 +261,13 @@ function _rStudio(obj) {
 	return body;
 }
 
-function renderSearchResult(data, wrapped) {
-	// $('#search_result_container').text(133333333333333);
+function renderSearchResult(data, wrapped, isInitialize) {
 	var docs = data.response.docs;
 	var list_div = $('#search_result_list');
-	list_div.empty();
+	if (isInitialize) {
+		list_div.empty();
+		currentPage = 1;
+	}
 	for (var i = 0; i < docs.length; i++) {
 		var sdoc = docs[i];
 		if ('marryy.galleries' == sdoc.ns) {
@@ -239,11 +278,16 @@ function renderSearchResult(data, wrapped) {
 	}
 }
 
+var searchKey = '';
+
 function initSearchQuery() {
 	$('#index_search_button').click(function() {
+		isInSearchModel = true;
+		currentPage = 0;
 		var search_key = $.trim($('#index_search_box').val());
-		if (search_key == '') {
-			$('.yt-warning-message').removeClass('hide').text('请输入关键字...');
+		searchKey = search_key;
+		if (search_key == '' || $.trim(search_key) == '*') {
+			$('.yt-warning-message').removeClass('hide').text('请输入有意义的关键字...');
 		} else {
 			$('.yt-warning-message').addClass('hide');
 			var button = this;
@@ -252,19 +296,22 @@ function initSearchQuery() {
 			$.ajax({
 				url: '/search',
 				dataType: 'json',
+				//pagination
 				data: {
-					q: search_key
+					q: search_key,
+					start: currentPage == 1 ? 0 : (currentPage * 10),
+					limit: 10
 				},
 				type: 'get',
 				contentType: 'json'
 			}).done(function(data) {
-				if (!data || data.err) {
+				if (!data || data.err || data.result.response.numFound <= 0) {
 					$('.yt-warning-message').removeClass('hide').text('查询不到任何结果');
 					$('#gallery_container').removeClass('hide');
 				} else if (data && data.result) {
 					$('#gallery_container').addClass('hide');
 					//---
-					renderSearchResult(data.result, data.wrapped);
+					renderSearchResult(data.result, data.wrapped, true);
 				}
 			}).always(function() {
 				$('#search_loader').addClass('hide');
@@ -274,10 +321,12 @@ function initSearchQuery() {
 	});
 }
 
+var isInSearchModel = false; // default is not in search model
+
 function scrollPagination() {
 	$('#gallery_container').scrollPagination({
 		'contentPage': function() {
-			return '/list/gallery/?page=' + currentPage + '&limit=10'
+			return isInSearchModel === true ? '/search?q=' + searchKey + '&start=' + (currentPage * 10 + 1) + '&limit=10' : '/list/gallery/?page=' + currentPage + '&limit=10'
 		}, // the page where you are searching for results
 		'contentData': {}, // you can pass the children().size() to know where is the pagination
 		'scrollTarget': $(window), // who gonna scroll? in this example, the full window
@@ -287,14 +336,28 @@ function scrollPagination() {
 			// if (data.pageCount * 10 > data.itemCount) {
 			// 	//$('#gallery_container').stopScrollPagination();
 			// }
-			if (data && data.galleries && data.galleries.length > 0) {
-				loadIndexPage(data.galleries);
-				currentPage = data.paginate.page;
-				if (currentPage >= data.pageCount) {
-					$('#gallery_container').stopScrollPagination();
-				}
-				currentPage++;
+			if (isInSearchModel) {
+				//render more search result
+				console.log('Render more search results');
+				if (data.err) {
 
+				} else {
+					renderSearchResult(data.result, data.wrapped, false);
+					if ((currentPage + 1) * 10 > data.result.response.numFound) {
+						$('#gallery_container').stopScrollPagination();
+					} else {
+						currentPage++;
+					}
+				}
+			} else {
+				if (data && data.galleries && data.galleries.length > 0) {
+					loadIndexPage(data.galleries);
+					currentPage = data.paginate.page;
+					if (currentPage >= data.pageCount) {
+						$('#gallery_container').stopScrollPagination();
+					}
+					currentPage++;
+				}
 			}
 		},
 		'beforeLoad': function() { // before load, some function, maybe display a preloader div
@@ -309,7 +372,6 @@ function scrollPagination() {
 			// }
 		}
 	});
-
 	// code for fade in element by element with delay
 	$.fn.fadeInWithDelay = function() {
 		var delay = 0;
