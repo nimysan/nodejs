@@ -478,10 +478,89 @@
 		});
 	}
 
+	function addValidatePasswordForm() {
+		$('form#update_password_form').validate({
+			onKeyup: true,
+			onSubmit: true,
+			sendForm: false,
+			eachValidField: function(event, status, options) {
+				$(this).closest('div.form-group').addClass('has-feedback').removeClass('has-error').addClass('has-success');
+				$(this).closest('div').find('span.temp').remove();
+				$(this).closest('div').find('span#messages').addClass('hide');
+			},
+			eachInvalidField: function(event, status, options) {
+				$(this).closest('div.form-group').addClass('has-feedback').addClass('has-error').removeClass('has-success');
+				$(this).closest('div').append('<span class="glyphicon glyphicon-remove form-control-feedback temp" aria-hidden="true"></span>');
+				$(this).closest('div').append('<span id="' + $(this).attr('id') + 'Error" class="sr-only temp">(不能为空)</span>');
+				var log = '';
+				var fieldDescription = options.description[$(this).attr('id')];
+				if (!status.required) {
+					log = fieldDescription.required;
+				} else if (!status.pattern) {
+					log = fieldDescription.pattern;
+				} else if (!status.conditional) {
+					log = fieldDescription.conditional;
+				}
+				$(this).closest('div').find('span#messages').removeClass('hide').html(log);
+			},
+			description: {
+				pf_old_password: {
+					required: '必须填写'
+				},
+				pf_new_password: {
+					required: '必须填写',
+					pattern: '密码格式不正确, 密码中必须包含字母、数字、特称字符，至少8个字符，最多30个字符'
+				},
+				pf_new_password_repeat: {
+					required: '必须填写',
+					pattern: '密码格式不正确, 密码中必须包含字母、数字、特称字符，至少8个字符，最多30个字符'
+				}
+			},
+			valid: function() {
+				submitPasswordUpdateForm();
+			},
+			invalid: function() {}
+		});
+	}
+
+	function submitPasswordUpdateForm() {
+		if ($('#pf_new_password').val() !== $('#pf_new_password_repeat').val()) {
+			$('#pf_new_password_repeat').closest('div').find('span#messages').removeClass('hide').html('两次输入的密码不一致，重复输入');
+			return false;
+		} else {
+			showLoading({
+				'text': '密码修改请求提交中, 请耐心等候。。。'
+			});
+			$.ajax({
+				url: '/password/update',
+				dataType: 'json',
+				type: 'put',
+				data: {
+					old_password: $('#pf_old_password').val(),
+					new_password: $('#pf_new_password').val()
+				}
+			}).done(function(data) {
+				if (data && !data.err) {
+					showInfo('密码修改成功');
+					//reset
+					$('#pf_old_password').val('');
+					$('#pf_new_password').val('');
+					$('#pf_new_password_repeat').val('');
+
+				} else {
+					showError('修改密码出现错误, 未能成功修改密码')
+				}
+			}).always(function() {
+				offLoading();
+			});
+		}
+	}
+
 	$(document).ready(function() {
 		initUserInfoForm();
 		listGalleries();
 		addCoverDroppable();
 		initGalleryForm();
+		addValidatePasswordForm();
 	});
 })(window, jQuery);

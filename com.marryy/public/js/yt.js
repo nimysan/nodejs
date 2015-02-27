@@ -178,9 +178,9 @@
             }
 
             var buttonBar = $('<div>').addClass('yt-form-button-bar');
-            var submitButton = $('<button type="submit" class="btn btn-primary yt-form-button">').text(options.submitText);
+            var submitButton = $('<button type="button" class="btn btn-primary btn-sm yt-form-button">').text(options.submitText);
             submitButton.appendTo(buttonBar);
-            var cleanButton = $('<button type="submit" class="btn btn-danger yt-form-button">').text('重置');
+            var cleanButton = $('<button type="button" class="btn btn-danger btn-sm yt-form-button">').text('重置');
             cleanButton.click(function() {
                 $(ele).find('[data-id]').val(''); // clean all values
                 return false;

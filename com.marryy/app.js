@@ -27,8 +27,6 @@ var MongoStore = require('express-session-mongo');
 var app = express();
 //connect to solr server
 search_client.init();
-console.log('$$$$');
-console.log(search_client);
 // model
 // var cookieParser = require('cookie-parser');
 
@@ -122,8 +120,6 @@ app.route('/marry/:marryId').get(route_gallery.listByMarryType);
 app.get('/price', pathFunction);
 
 // Search part
-console.log('--------------');
-console.log(search_client.key_word_search);
 app.get('/search', search_client.key_word_search);
 // Search part
 
@@ -139,6 +135,7 @@ app.route('/user/:userId').get(route_gallery.user.show).put(function(req, res, n
 
 // ------------------ admin routes --------------------------
 app.put('/admin/password', management.user.passwordUpdate);
+app.put('/password/update', management.user.passwordUpdateBySelf);
 app.route("/login").get(function(req, res, next) {
 	if (req.session.user_name) {
 		if (req.session.user_name = 'supervisor') {

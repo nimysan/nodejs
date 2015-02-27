@@ -364,7 +364,7 @@
 		// page initialize
 		$('#user_password_form').yt({
 			submitText: '提交',
-			url: '/user/password',
+			url: '/admin/password',
 			method: 'put',
 			doneFn: function() {
 				$.fn.yt.tooltip({
@@ -374,7 +374,7 @@
 			},
 			preSubmitFn: function(ele) {
 				var password = $(ele).find('[data-id="password"]');
-				if ($load.trim(password) == '') {
+				if ($.trim(password) == '') {
 					if ($.trim(password.val()) != $.trim(password2.val())) {
 						showError('你没有输入密码！');
 						return false;

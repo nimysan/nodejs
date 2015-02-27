@@ -21,7 +21,35 @@ block content
 				div.row(style='margin-top:20px;',class='text-center')
 					div(class='col-md-2 col-sm-12')
 					div(class='col-md-8 col-sm-12')
-						div(role='form', class="gallery_form",id='user_info_part')
+						div.well
+							div(role='form', class="form",id='user_password_part')
+								h5.text-info 在这里更改用户密码
+								form.form-horizontal#update_password_form
+									div(role='form', class="gallery_form")
+										div.form-group
+											label(for="pf_old_password" class="col-sm-2 control-label") 用户旧密码
+											div.col-sm-10
+												input#pf_old_password(type='password', class='form-control',placeholder='',value='', data-required='true')
+												span#messages
+										div.form-group
+											label(for="pf_new_password" class="col-sm-2 control-label") 输入新密码
+											div.col-sm-10
+												input#pf_new_password(type='password', class='form-control',placeholder='',value='',data-required='true', data-pattern="(?=.*[0-9])(?=.*[a-zA-Z])(?=.*[^a-zA-Z0-9]).{8,30}")
+												span#messages
+										div.form-group
+											label(for="pf_new_password_repeat" class="col-sm-2 control-label") 重复新密码
+											div.col-sm-10
+												input#pf_new_password_repeat(type='password', class='form-control',placeholder='',value='', data-pattern="(?=.*[0-9])(?=.*[a-zA-Z])(?=.*[^a-zA-Z0-9]).{8,30}", data-required='true')
+												span#messages
+
+										div.form-group
+											div(class="col-sm-offset-2 col-sm-10")
+												button#pf_password_submit(type='submit', class='btn btn-primary btn-sm', style='margin-right: 20px;') 提交
+													
+						div(style='clear:both')
+						div.well
+							h5.text-info 更改用户信息
+							div(role='form', class="gallery_form",id='user_info_part')
 					div(class='col-md-2 col-sm-12')
 						
 			div#tab_galleries(role="tabpanel" class="tab-pane fade in active")

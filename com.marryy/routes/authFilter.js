@@ -70,7 +70,6 @@ exports.filter = {
 					}
 					return;
 				} else {
-					console.log(' Search ----------');
 					next();
 					return;
 				}

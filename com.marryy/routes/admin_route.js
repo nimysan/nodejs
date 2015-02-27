@@ -144,15 +144,58 @@ exports.management = {
 				return;
 			}
 			var userId = req.body.loginId;
+			if (userId == null) {
+				userId = req.session.user_name
+			}
 			model_user.update(userId, req.body, function(err, data) {
-				delete data.salt;
-				delete data.password;
-				delete data.hashPassword;
+				if (typeof data == 'object') {
+					delete data.salt;
+					delete data.password;
+					delete data.hashPassword;
+				}
 				res.json({
 					err: err,
 					user: data
 				});
 			});
+		},
+		passwordUpdateBySelf: function(req, res) {
+			if (req.body.new_password.length == 0 || req.body.new_password.trim() == '') {
+				res.json({
+					err: '你输入的密码不符合规矩'
+				});
+				return;
+			}
+			var userId = req.body.loginId;
+			if (userId == null) {
+				userId = req.session.user_name
+			}
+			console.log('------------------');
+			console.log(req.body);
+			model_user.authenticate(userId, req.body.old_password, function(err, user) {
+				//we need to authenticate at first and then let it update the password
+				if (err) {
+					res.json({
+						err: err,
+						user: {}
+					});
+					return;
+				}
+
+				model_user.update(userId, {
+					password: req.body.new_password
+				}, function(err, data) {
+					if (typeof data == 'object') {
+						delete data.salt;
+						delete data.password;
+						delete data.hashPassword;
+					}
+					res.json({
+						err: err,
+						user: data
+					});
+				});
+			})
 		},
 		fileupload: function(req, res) {
 			var imagePath = req.params.imagePath;
