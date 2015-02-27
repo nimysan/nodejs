@@ -5,11 +5,12 @@ block content
 		input(type='hidden',id='galleryId',value='#{galleryId}')
 		<div class="alert hide" role="alert" id="message"></div>
 		div(class="alert alert-warning ", role="alert")
-			h3 相册已被设置为私密级别，你需要回答问题。如果回答正确，你就能够访问这个相册
+			h6 相册已被设置为私密级别，你需要回答问题。如果回答正确，你就能够访问这个相册
 		div.row
-			h3 问题是：
-			h1= question
-			h3 答案是：
+			h6 问题是：
+			h7.text-info= question
+			br
+			h7 答案是：
 			div.input-group
 				input.form-control(type='text',id='gallery_answer')
 			div.input-group

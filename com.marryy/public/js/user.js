@@ -156,12 +156,15 @@
 					dataType: 'json',
 				}).done(function(result) {
 					if (result.err) {
-						showInfo('你还没有图片');
+						openWarning('相册管理', '你还没有图片');
 						return;
 					}
 					var linksContainer = $('#links');
 					// Add the demo images as links with thumbnails to the page:
 					userPhotos = result;
+					if (userPhotos.length == 0) {
+						openWarning('相册管理', '你还没有图片,请联系你的管理员帮你上传照片。待照片上传完之后你就可以过来编辑相册了！');
+					}
 
 					$.each(result, function(index, photo) {
 						var photoUrl = photo + '!100'; // use thumbnail

@@ -125,9 +125,11 @@ exports.management = {
 			var userId = req.params.userId;
 			console.log('---------- ' + userId);
 			model_user.update(userId, req.body, function(err, data) {
-				delete data.salt;
-				delete data.password;
-				delete data.hashPassword;
+				if (typeof data == 'object') {
+					delete data.salt;
+					delete data.password;
+					delete data.hashPassword;
+				}
 				res.json({
 					err: err,
 					user: data

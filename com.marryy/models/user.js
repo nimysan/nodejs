@@ -41,6 +41,15 @@ UserDao.prototype = {
 			callback(err, data);
 		});
 	},
+	/*all self register */
+	queryBySuperVisor: function(owner, callback) {
+		var query = this.model.find({
+			'_owner': owner._id
+		});
+		query.populate('fromStudio').exec(function(err, data) {
+			callback(err, data);
+		});
+	},
 	create: function(name, password, options, callback) {
 		var _model = this.model;
 		var salt = this._generateSalt();
@@ -70,16 +79,18 @@ UserDao.prototype = {
 			if (options.password) {
 				options.hashPassword = that._hashPassword(user.salt, options.password);
 			}
-			
+
 			if (options) {
 				delete options.password;
 				delete options._id;
 				merge(user, options);
 			}
 			user.save(function(err, data) {
-				delete data.password;
-				delete data.hashPassword;
-				delete data.salt;
+				if (typeof data == 'object') {
+					delete data.password;
+					delete data.hashPassword;
+					delete data.salt;
+				}
 				callback(err, data);
 			});
 		});

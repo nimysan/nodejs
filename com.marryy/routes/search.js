@@ -99,7 +99,6 @@ exports.search_client = {
 					Promise.all(promises).done(function() {
 						res.json({
 							result: obj,
-							promises: promises,
 							wrapped: wrappedObjs
 						});
 					})

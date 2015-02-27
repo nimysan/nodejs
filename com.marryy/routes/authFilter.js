@@ -20,7 +20,6 @@ exports.filter = {
 		res.locals.user = {};
 		//Send login user information to front-end
 		if (req.session.user_name) {
-			console.log(' $$$$$$$$$$ ' + req.session.user_name);
 			if (req.url == '/logout') {
 				next();
 				return;
@@ -40,12 +39,11 @@ exports.filter = {
 			});
 
 		} else {
-			console.log(' $$$$$$$$$$  no user');
 			//only get method is allowed for non-authorized access.
 			//filter req.method and req.url
 			if (req.method.toLowerCase() != 'get') {
 				//non-login not-get
-				if (['/login', '/signup'].indexOf(req.url) >= 0) {
+				if (['/login', '/signup'].indexOf(req.url) >= 0 || req.url.indexOf('/gallery/verify' === 0)) {
 					//next 
 					next();
 					return;

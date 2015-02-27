@@ -81,13 +81,15 @@
 			}).done(function(result) {
 				offLoading();
 				if (result.user) {
-					showInfo('更新用户信息成功');
+					openWarning('用户管理', '更新用户信息成功');
+					$('#user_edit_form').modal('hide');
 					cleanUserForm();
 				} else {
-					showError(result.err);
+					openWarning('用户管理', result.err);
 				}
 			}).always(function() {
 				offLoading();
+				
 			});
 		} else {
 			// create
@@ -98,13 +100,15 @@
 				data: json
 			}).done(function(result) {
 				if (result.user) {
-					showInfo('新用户创建成功');
+					openWarning('用户管理', '用户创建成功');
 					cleanUserForm();
+					$('#user_edit_form').modal('hide');
 				} else {
-					showError(result.err);
+					openWarning('用户管理', result.err);
 				}
 			}).always(function() {
 				offLoading();
+				
 			});
 		}
 	}

@@ -88,7 +88,7 @@ GalleryDao.prototype = {
 	},
 	listAll: function(page, perPage, callback) {
 		this.model.paginate({
-			isPrivate: false
+			//isPrivate: false
 		}, page, perPage, function(error, pageCount, paginatedResults, itemCount) {
 			var userList = [];
 			for (var i = 0; i < paginatedResults.length; i++) {
@@ -112,7 +112,7 @@ GalleryDao.prototype = {
 			});
 		}, {
 			sortBy: {
-				'meta.accesses': -1,
+				'date': -1,
 			},
 			populate: '_creator'
 		});
