@@ -171,6 +171,11 @@ exports.gallery = {
 	show: function(req, res, next) {
 		var galleryId = req.params.id;
 		model_gallery.load(galleryId, function(err, gd) {
+			if (gd == null || err) {
+				console.log(' ###Error### galleryId does not exist: gallery ID: ' + galleryId );
+				res.redirect('/404');
+				return;
+			}
 			//console.log(arguments);
 			var meta = gd.meta;
 			if (meta == null) {
